@@ -42,24 +42,6 @@ yarn run lint
 ```
 
 
-### Other
-
-- **IMPORTANT : Issue feedback !! when opening Issue read [Issue / PR Contributing](https://github.com/vueComponent/ant-design-vue-pro/issues/90)**
-
-- [Vue-cli3](https://cli.vuejs.org/guide/) used by the project.
-
-- Disable Eslint (not recommended): remove `eslintConfig`  field in `package.json`  and `vue.config.js` field `lintOnSave: false`
-
-- Load on Demand `/src/main.js` L14, in `import './core/lazy_use'`, `import './core/use''`. more [load-on-demand.md](./docs/load-on-demand.md)
-
-- Customize Theme:  [Custom Theme Config (@kokoroli)](https://github.com/kokoroli/antd-awesome/blob/master/docs/Ant_Design_%E6%A0%B7%E5%BC%8F%E8%A6%86%E7%9B%96.md)
-
-- I18n: [locales (@musnow)](./src/locales/index.js)
-
-- Production env `mock` is disabled. use `src/mock/index.js`
-
-- pls use `release` version
-
 ## Browsers support
 
 Modern browsers and IE10.
@@ -69,7 +51,3 @@ Modern browsers and IE10.
 | IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
 
-## Contributors
-
-This project exists thanks to all the people who contribute. 
-<a href="https://github.com/vueComponent/ant-design-vue-pro/graphs/contributors"><img src="https://opencollective.com/ant-design-pro-vue/contributors.svg?width=890&button=false" /></a>

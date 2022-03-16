@@ -45,26 +45,6 @@ yarn run lint
 ```
 
 
-
-其他说明
-----
-
-- **关于 Issue 反馈 (重要!重要!重要!) 请在开 *Issue* 前，先阅读该内容：[Issue / PR 编写建议](https://github.com/vueComponent/ant-design-vue-pro/issues/90)** 
-
-- 项目使用的 [vue-cli3](https://cli.vuejs.org/guide/), 请确保你所使用的 vue-cli 是新版，并且已经学习 cli 官方文档使用教程
-
-- 关闭 Eslint (不推荐) 移除 `package.json` 中 `eslintConfig` 整个节点代码, `vue.config.js` 下的 `lintOnSave` 值改为 `false`
-
-- 组件按需加载 `/src/main.js` L14 相关代码 `import './core/lazy_use'` / `import './core/use'` 
-
-- [修改 Ant Design 配色 (@kokoroli)](https://github.com/kokoroli/antd-awesome/blob/master/docs/Ant_Design_%E6%A0%B7%E5%BC%8F%E8%A6%86%E7%9B%96.md)
-
-- I18n: [多语言支持 (@musnow)](./src/locales/index.js)
-
-- 生产环境默认不加载 `mock`，更多详情请看 `src/mock/index.js`
-
-- **用于生产环境，请使用 `release` 版本代码，使用 master 代码出现的任何问题需要你自行解决**
-
 ## 浏览器兼容
 
 Modern browsers and IE10.
@@ -74,7 +54,3 @@ Modern browsers and IE10.
 | IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
 
-## Contributors
-
-This project exists thanks to all the people who contribute. 
-<a href="https://github.com/vueComponent/ant-design-vue-pro/graphs/contributors"><img src="https://opencollective.com/ant-design-pro-vue/contributors.svg?width=890&button=false" /></a>
