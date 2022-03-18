@@ -6,11 +6,12 @@
         <select-lang class="select-lang-trigger" />
       </div>
       <div class="user-layout-content">
+        <br><br><br>
         <div class="top">
           <div class="header">
             <a href="/">
               <img src="~@/assets/logo.svg" class="logo" alt="logo">
-              <span class="title">Ant Design</span>
+              <span class="title">大学生心理测试平台</span>
             </a>
           </div>
           <div class="desc">
@@ -22,12 +23,27 @@
 
         <div class="footer">
           <div class="links">
-            <a href="_self">帮助</a>
-            <a href="_self">隐私</a>
-            <a href="_self">条款</a>
+            <a-tooltip trigger="click">
+              <template slot="title">
+                我只负责好看 (*/ω＼*)
+              </template>
+              <a >帮助</a>
+            </a-tooltip >
+            <a-tooltip trigger="click">
+              <template slot="title">
+                我只负责好看 (*/ω＼*)
+              </template>
+              <a >隐私</a>
+            </a-tooltip>
+            <a-tooltip trigger="click">
+              <template slot="title">
+                我只负责好看 (*/ω＼*)
+              </template>
+              <a >条款</a>
+            </a-tooltip>
           </div>
           <div class="copyright">
-            Copyright &copy; 2018 vueComponent
+            Copyright &copy; 2022 大学生心理测试平台研发小组
           </div>
         </div>
       </div>
@@ -139,7 +155,7 @@ export default {
 
       .main {
         min-width: 260px;
-        width: 368px;
+        width: 369px;
         margin: 0 auto;
       }
 

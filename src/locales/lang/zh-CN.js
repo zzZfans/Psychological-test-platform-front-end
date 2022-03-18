@@ -21,7 +21,7 @@ export default {
 
   'layouts.usermenu.dialog.title': '信息',
   'layouts.usermenu.dialog.content': '您确定要注销吗？',
-  'layouts.userLayout.title': 'Ant Design 是西湖区最具影响力的 Web 设计规范',
+  'layouts.userLayout.title': '大学生心理测试平台是重庆交通大学最具影响力的心理健康诊断辅助系统',
   ...components,
   ...global,
   ...menu,

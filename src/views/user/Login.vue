@@ -12,8 +12,13 @@
         :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
         @change="handleTabClick"
       >
-        <a-tab-pane key="tab1" :tab="$t('user.login.tab-login-credentials')">
-          <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px;" :message="$t('user.login.message-invalid-credentials')" />
+        <a-tab-pane key="username and password" :tab="$t('user.login.tab-login-credentials')">
+          <a-alert
+            v-if="isLoginError"
+            type="error"
+            showIcon
+            style="margin-bottom: 24px;"
+            :message="$t('user.login.message-invalid-credentials')" />
           <a-form-item>
             <a-input
               size="large"
@@ -21,10 +26,13 @@
               :placeholder="$t('user.login.username.placeholder')"
               v-decorator="[
                 'username',
-                {rules: [{ required: true, message: $t('user.userName.required') }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
+                {rules: [{ required: true,
+                           message: $t('user.userName.required') },
+                         { validator: handleUsernameOrEmail }],
+                 validateTrigger: 'change'}
               ]"
             >
-              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
           </a-form-item>
 
@@ -37,22 +45,69 @@
                 {rules: [{ required: true, message: $t('user.password.required') }], validateTrigger: 'blur'}
               ]"
             >
-              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input-password>
           </a-form-item>
         </a-tab-pane>
-        <a-tab-pane key="tab2" :tab="$t('user.login.tab-login-mobile')">
+        <a-tab-pane key="mobile" :tab="$t('user.login.tab-login-mobile')">
           <a-form-item>
-            <a-input size="large" type="text" :placeholder="$t('user.login.mobile.placeholder')" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: $t('user.login.mobile.placeholder') }], validateTrigger: 'change'}]">
-              <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            <a-input
+              size="large"
+              type="text"
+              :placeholder="$t('user.login.mobile.placeholder')"
+              v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: $t('user.login.mobile.placeholder') }], validateTrigger: 'change'}]">
+              <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
           </a-form-item>
 
           <a-row :gutter="16">
             <a-col class="gutter-row" :span="16">
               <a-form-item>
-                <a-input size="large" type="text" :placeholder="$t('user.login.mobile.verification-code.placeholder')" v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
-                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                <a-input
+                  size="large"
+                  type="text"
+                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <a-button
+                class="getCaptcha"
+                tabindex="-1"
+                :disabled="state.smsSendBtn"
+                @click.stop.prevent="getCaptcha"
+                v-text="!state.smsSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
+              ></a-button>
+            </a-col>
+          </a-row>
+        </a-tab-pane>
+        <a-tab-pane key="email" :tab="$t('user.login.tab-login-email')">
+          <a-form-item>
+            <a-input
+              size="large"
+              type="text"
+              :placeholder="$t('user.login.email.placeholder')"
+              v-decorator="['email',
+                            {rules: [{ required: true,
+                                       pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+                                       message: $t('user.login.email.placeholder') }],
+                             validateTrigger: 'change'}
+              ]">
+              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
+            </a-input>
+          </a-form-item>
+
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input
+                  size="large"
+                  type="text"
+                  :placeholder="$t('user.login.email.verification-code.placeholder')"
+                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
                 </a-input>
               </a-form-item>
             </a-col>
@@ -70,12 +125,14 @@
       </a-tabs>
 
       <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">{{ $t('user.login.remember-me') }}</a-checkbox>
+        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">{{ $t('user.login.remember-me') }}
+        </a-checkbox>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
           style="float: right;"
-        >{{ $t('user.login.forgot-password') }}</router-link>
+        >{{ $t('user.login.forgot-password') }}
+        </router-link>
       </a-form-item>
 
       <a-form-item style="margin-top:24px">
@@ -86,72 +143,80 @@
           class="login-button"
           :loading="state.loginBtn"
           :disabled="state.loginBtn"
-        >{{ $t('user.login.login') }}</a-button>
+        >{{ $t('user.login.login') }}
+        </a-button>
       </a-form-item>
 
       <div class="user-login-other">
         <span>{{ $t('user.login.sign-in-with') }}</span>
-        <a>
-          <a-icon class="item-icon" type="alipay-circle"></a-icon>
-        </a>
-        <a>
-          <a-icon class="item-icon" type="taobao-circle"></a-icon>
-        </a>
-        <a>
-          <a-icon class="item-icon" type="weibo-circle"></a-icon>
-        </a>
+
+        <a-tooltip trigger="click">
+          <template slot="title">
+            经费不足，尚未开发
+          </template>
+          <a>
+            <a-icon class="item-icon" type="alipay-circle"></a-icon>
+          </a>
+        </a-tooltip>
+
+        <a-tooltip trigger="click">
+          <template slot="title">
+            经费不足，尚未开发
+          </template>
+          <a>
+            <a-icon class="item-icon" type="taobao-circle"></a-icon>
+          </a>
+        </a-tooltip>
+
+        <a-tooltip trigger="click">
+          <template slot="title">
+            经费不足，尚未开发
+          </template>
+          <a>
+            <a-icon class="item-icon" type="weibo-circle"></a-icon>
+          </a>
+        </a-tooltip>
+
         <router-link class="register" :to="{ name: 'register' }">{{ $t('user.login.signup') }}</router-link>
       </div>
     </a-form>
-
-    <two-step-captcha
-      v-if="requiredTwoStepCaptcha"
-      :visible="stepCaptchaVisible"
-      @success="stepCaptchaSuccess"
-      @cancel="stepCaptchaCancel"
-    ></two-step-captcha>
   </div>
 </template>
 
 <script>
 import md5 from 'md5'
-import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getSmsCaptcha, get2step } from '@/api/login'
+import { getSmsCaptcha } from '@/api/login'
 
 export default {
   components: {
-    TwoStepCaptcha
+
   },
   data () {
     return {
-      customActiveKey: 'tab1',
+      customActiveKey: 'username and password',
+      // 是否按下登录
       loginBtn: false,
-      // login type: 0 email, 1 username, 2 telephone
+      /* login type
+      * 0 email or username or telephone and password
+      * 1 telephone and captcha
+      * 2 email and captcha
+      * */
       loginType: 0,
       isLoginError: false,
-      requiredTwoStepCaptcha: false,
-      stepCaptchaVisible: false,
+
       form: this.$form.createForm(this),
       state: {
         time: 60,
         loginBtn: false,
-        // login type: 0 email, 1 username, 2 telephone
         loginType: 0,
         smsSendBtn: false
       }
     }
   },
   created () {
-    get2step({ })
-      .then(res => {
-        this.requiredTwoStepCaptcha = res.result.stepCode
-      })
-      .catch(() => {
-        this.requiredTwoStepCaptcha = false
-      })
-    // this.requiredTwoStepCaptcha = true
+
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
@@ -237,15 +302,6 @@ export default {
         }
       })
     },
-    stepCaptchaSuccess () {
-      this.loginSuccess()
-    },
-    stepCaptchaCancel () {
-      this.Logout().then(() => {
-        this.loginBtn = false
-        this.stepCaptchaVisible = false
-      })
-    },
     loginSuccess (res) {
       console.log(res)
       // check res.homePage define, set $router.push name res.homePage
@@ -281,7 +337,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
 .user-layout-login {
   label {
     font-size: 14px;

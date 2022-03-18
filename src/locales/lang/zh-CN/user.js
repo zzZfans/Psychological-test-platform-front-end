@@ -1,20 +1,32 @@
 export default {
   'user.login.userName': '用户名',
   'user.login.password': '密码',
-  'user.login.username.placeholder': '账户: admin',
-  'user.login.password.placeholder': '密码: admin or ant.design',
+  'user.login.username.placeholder': '用户名 | 手机号 | 邮箱',
+  'user.login.password.placeholder': '密码',
   'user.login.message-invalid-credentials': '账户或密码错误（admin/ant.design）',
   'user.login.message-invalid-verification-code': '验证码错误',
   'user.login.tab-login-credentials': '账户密码登录',
+
   'user.login.tab-login-mobile': '手机号登录',
   'user.login.mobile.placeholder': '手机号',
   'user.login.mobile.verification-code.placeholder': '验证码',
+
+  'user.login.tab-login-email': '邮箱登录',
+  'user.login.email.placeholder': '邮箱',
+  'user.login.email.verification-code.placeholder': '验证码',
+
   'user.login.remember-me': '自动登录',
   'user.login.forgot-password': '忘记密码',
   'user.login.sign-in-with': '其他登录方式',
   'user.login.signup': '注册账户',
   'user.login.login': '登录',
+
   'user.register.register': '注册',
+  'user.mobile.validate': '手机验证',
+  'user.email.validate': '邮箱验证',
+
+  'user.register.username.placeholder': '用户名',
+
   'user.register.email.placeholder': '邮箱',
   'user.register.password.placeholder': '请至少输入 6 个字符。请不要使用容易被猜到的密码。',
   'user.register.password.popover-message': '请至少输入 6 个字符。请不要使用容易被猜到的密码。',
@@ -28,7 +40,7 @@ export default {
   'user.register-result.view-mailbox': '查看邮箱',
   'user.email.required': '请输入邮箱地址！',
   'user.email.wrong-format': '邮箱地址格式错误！',
-  'user.userName.required': '请输入帐户名或邮箱地址',
+  'user.userName.required': '请输入用户名或手机号或邮箱',
   'user.password.required': '请输入密码！',
   'user.password.twice.msg': '两次输入的密码不匹配!',
   'user.password.strength.msg': '密码强度不够 ',

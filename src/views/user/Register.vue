@@ -1,16 +1,26 @@
 <template>
   <div class="main user-layout-register">
-    <h3><span>{{ $t('user.register.register') }}</span></h3>
     <a-form ref="formRegister" :form="form" id="formRegister">
+      <!-- 注册 -->
+      <h3><span>{{ $t('user.register.register') }}</span></h3>
+      <!-- 用户名 -->
       <a-form-item>
         <a-input
           size="large"
           type="text"
-          :placeholder="$t('user.register.email.placeholder')"
-          v-decorator="['email', {rules: [{ required: true, type: 'email', message: $t('user.email.required') }], validateTrigger: ['change', 'blur']}]"
-        ></a-input>
+          :placeholder="$t('user.register.username.placeholder')"
+          v-decorator="[
+            'username',
+            {rules: [{ required: true,
+                       message: $t('user.userName.required') },
+                     { validator: handleUsernameOrEmail }],
+             validateTrigger: 'change'}
+          ]"
+        >
+          <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
+        </a-input>
       </a-form-item>
-
+      <!-- 密码 -->
       <a-popover
         placement="rightTop"
         :trigger="['focus']"
@@ -35,7 +45,7 @@
           ></a-input-password>
         </a-form-item>
       </a-popover>
-
+      <!-- 再次密码 -->
       <a-form-item>
         <a-input-password
           size="large"
@@ -43,40 +53,84 @@
           v-decorator="['password2', {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}]"
         ></a-input-password>
       </a-form-item>
-
-      <a-form-item>
-        <a-input size="large" :placeholder="$t('user.login.mobile.placeholder')" v-decorator="['mobile', {rules: [{ required: true, message: $t('user.phone-number.required'), pattern: /^1[3456789]\d{9}$/ }, { validator: this.handlePhoneCheck } ], validateTrigger: ['change', 'blur'] }]">
-          <a-select slot="addonBefore" size="large" defaultValue="+86">
-            <a-select-option value="+86">+86</a-select-option>
-            <a-select-option value="+87">+87</a-select-option>
-          </a-select>
-        </a-input>
-      </a-form-item>
-      <!--<a-input-group size="large" compact>
-            <a-select style="width: 20%" size="large" defaultValue="+86">
-              <a-select-option value="+86">+86</a-select-option>
-              <a-select-option value="+87">+87</a-select-option>
-            </a-select>
-            <a-input style="width: 80%" size="large" placeholder="11 位手机号"></a-input>
-          </a-input-group>-->
-
-      <a-row :gutter="16">
-        <a-col class="gutter-row" :span="16">
+      <!-- 手机验证 or 邮箱验证 -->
+      <a-tabs
+        :activeKey="customActiveKey"
+        :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
+        @change="handleTabClick">
+        <a-tab-pane key="mobile validate" :tab="$t('user.mobile.validate')">
+          <!-- 手机号 -->
           <a-form-item>
-            <a-input size="large" type="text" :placeholder="$t('user.login.mobile.verification-code.placeholder')" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
-              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            <a-input size="large" :placeholder="$t('user.login.mobile.placeholder')" v-decorator="['mobile', {rules: [{ required: true, message: $t('user.phone-number.required'), pattern: /^1[3456789]\d{9}$/ }, { validator: this.handlePhoneCheck } ], validateTrigger: ['change', 'blur'] }]">
+              <a-select slot="addonBefore" size="large" defaultValue="+86">
+                <a-select-option value="+86">+86</a-select-option>
+                <!--<a-select-option value="+87">+87</a-select-option>-->
+              </a-select>
             </a-input>
           </a-form-item>
-        </a-col>
-        <a-col class="gutter-row" :span="8">
-          <a-button
-            class="getCaptcha"
-            size="large"
-            :disabled="state.smsSendBtn"
-            @click.stop.prevent="getCaptcha"
-            v-text="!state.smsSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
-        </a-col>
-      </a-row>
+          <!--<a-input-group size="large" compact>
+                <a-select style="width: 20%" size="large" defaultValue="+86">
+                  <a-select-option value="+86">+86</a-select-option>
+                  <a-select-option value="+87">+87</a-select-option>
+                </a-select>
+                <a-input style="width: 80%" size="large" placeholder="11 位手机号"></a-input>
+              </a-input-group>-->
+          <!-- 验证码 -->
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input size="large" type="text" :placeholder="$t('user.login.mobile.verification-code.placeholder')" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <a-button
+                class="getCaptcha"
+                size="large"
+                :disabled="state.smsSendBtn"
+                @click.stop.prevent="getCaptcha"
+                v-text="!state.smsSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+            </a-col>
+          </a-row>
+        </a-tab-pane>
+        <a-tab-pane key="email validate" :tab="$t('user.email.validate')">
+          <!-- 邮箱 -->
+          <a-form-item>
+            <a-input
+              size="large"
+              type="text"
+              :placeholder="$t('user.register.email.placeholder')"
+              v-decorator="['email', {rules: [{ required: true, type: 'email', message: $t('user.email.required') }], validateTrigger: ['change', 'blur']}]"
+            >
+              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
+            </a-input>
+          </a-form-item>
+          <!-- 验证码 -->
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input
+                  size="large"
+                  type="text"
+                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <a-button
+                class="getCaptcha"
+                tabindex="-1"
+                :disabled="state.smsSendBtn"
+                @click.stop.prevent="getCaptcha"
+                v-text="!state.smsSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
+              ></a-button>
+            </a-col>
+          </a-row>
+        </a-tab-pane>
+      </a-tabs>
 
       <a-form-item>
         <a-button
@@ -125,6 +179,7 @@ export default {
   mixins: [deviceMixin],
   data () {
     return {
+      customActiveKey: 'mobile validate',
       form: this.$form.createForm(this),
 
       state: {
@@ -151,6 +206,10 @@ export default {
     }
   },
   methods: {
+    handleTabClick (key) {
+      this.customActiveKey = key
+      // this.form.resetFields()
+    },
     handlePasswordLevel (rule, value, callback) {
       if (value === '') {
        return callback()
