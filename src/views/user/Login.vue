@@ -135,6 +135,7 @@
         </router-link>
       </a-form-item>
 
+      <!-- 登录 -->
       <a-form-item style="margin-top:24px">
         <a-button
           size="large"
@@ -147,6 +148,7 @@
         </a-button>
       </a-form-item>
 
+      <!-- 其他登录方式 -->
       <div class="user-login-other">
         <span>{{ $t('user.login.sign-in-with') }}</span>
 
@@ -246,7 +248,7 @@ export default {
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password'] : ['mobile', 'captcha']
+      const validateFieldsKey = customActiveKey === 'username and password' ? ['username', 'password'] : ['mobile', 'captcha']
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
@@ -268,6 +270,7 @@ export default {
         }
       })
     },
+
     getCaptcha (e) {
       e.preventDefault()
       const { form: { validateFields }, state } = this
