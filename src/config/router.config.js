@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
+import { BasicLayout, PageView, UserLayout } from '@/layouts'
 import { bxAnaalyse } from '@/core/icons'
 
 const RouteView = {
@@ -15,6 +15,34 @@ export const asyncRouterMap = [
     meta: { title: 'menu.home' },
     redirect: '/dashboard/workplace',
     children: [
+      // 摄像头测试
+      {
+        path: '/CameraTest',
+        name: 'CameraTest',
+        component: () => import('@/views/CameraTest'),
+        meta: { title: '摄像头测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
+      },
+      // 录音测试
+      {
+        path: '/SoundRecordingTest',
+        name: 'SoundRecordingTest',
+        component: () => import('@/views/SoundRecordingTest'),
+        meta: { title: '录音测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
+      },
+      // 题目切换测试
+      {
+        path: '/SubjectSwitchingTest',
+        name: 'SubjectSwitchingTest',
+        component: () => import('@/views/SubjectSwitchingTest'),
+        meta: { title: '题目切换测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
+      },
+      // 页面设计测试
+      {
+        path: '/PageDesignTest',
+        name: 'PageDesignTest',
+        component: () => import('@/views/PageDesignTest'),
+        meta: { title: '页面设计测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
+      },
       // dashboard
       {
         path: '/dashboard',
@@ -267,10 +295,9 @@ export const asyncRouterMap = [
             ]
           }
         ]
-      }
+      },
 
       // other
-      /*
       {
         path: '/other',
         name: 'otherPage',
@@ -314,12 +341,12 @@ export const asyncRouterMap = [
                 component: () => import('@/views/other/RoleList'),
                 meta: { title: '角色列表', keepAlive: true }
               },
-              {
-                path: '/other/list/system-role',
-                name: 'SystemRole',
-                component: () => import('@/views/role/RoleList'),
-                meta: { title: '角色列表2', keepAlive: true }
-              },
+              // {
+              //   path: '/other/list/system-role',
+              //   name: 'SystemRole',
+              //   component: () => import('@/views/role/RoleList'),
+              //   meta: { title: '角色列表2', keepAlive: true }
+              // },
               {
                 path: '/other/list/permission-list',
                 name: 'PermissionList',
@@ -330,7 +357,6 @@ export const asyncRouterMap = [
           }
         ]
       }
-      */
     ]
   },
   {

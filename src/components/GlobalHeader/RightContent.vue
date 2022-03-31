@@ -1,6 +1,10 @@
 <template>
   <div :class="wrpCls">
+    <!-- 摄像头 -->
+    <camera-dropdown v-if="cameraDropdownVisible" :class="prefixCls"></camera-dropdown>
+    <!-- 用户 -->
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
+    <!-- 语言切换 -->
     <select-lang :class="prefixCls" />
   </div>
 </template>
@@ -8,10 +12,13 @@
 <script>
 import AvatarDropdown from './AvatarDropdown'
 import SelectLang from '@/components/SelectLang'
+import CameraDropdown from '@/components/GlobalHeader/CameraDropdown'
+import events from '@/components/MultiTab/events'
 
 export default {
   name: 'RightContent',
   components: {
+    CameraDropdown,
     AvatarDropdown,
     SelectLang
   },
@@ -36,7 +43,8 @@ export default {
   data () {
     return {
       showMenu: true,
-      currentUser: {}
+      currentUser: {},
+      cameraDropdownVisible: false
     }
   },
   computed: {
@@ -53,6 +61,19 @@ export default {
         name: 'Serati Ma'
       }
     }, 1500)
+
+    // 监听打开摄像头消息
+    events.$on('openCamera', () => {
+      this.cameraDropdownVisible = true
+    })
+
+    // 监听关闭摄像头消息
+    events.$on('closeCamera', () => {
+      this.cameraDropdownVisible = false
+    })
+  },
+  methods: {
+
   }
 }
 </script>
