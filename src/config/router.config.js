@@ -15,12 +15,21 @@ export const asyncRouterMap = [
     meta: { title: 'menu.home' },
     redirect: '/dashboard/workplace',
     children: [
-      // 摄像头测试
+      // 系统监控
       {
-        path: '/CameraTest',
-        name: 'CameraTest',
-        component: () => import('@/views/CameraTest'),
-        meta: { title: '摄像头测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
+        path: '/systemMonitor',
+        component: RouteView,
+        redirect: '/systemMonitor/systemInfo',
+        name: 'systemMonitor',
+        meta: { title: '系统监控', icon: 'radar-chart' },
+        children: [
+          {
+            path: '/systemMonitor/systemInfo',
+            name: 'systemInfo',
+            component: () => import('@/views/systemMonitor/systemInfo'),
+            meta: { title: '系统信息', icon: 'laptop' }
+          }
+        ]
       },
       // 录音测试
       {
@@ -28,20 +37,6 @@ export const asyncRouterMap = [
         name: 'SoundRecordingTest',
         component: () => import('@/views/SoundRecordingTest'),
         meta: { title: '录音测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
-      },
-      // 题目切换测试
-      {
-        path: '/SubjectSwitchingTest',
-        name: 'SubjectSwitchingTest',
-        component: () => import('@/views/SubjectSwitchingTest'),
-        meta: { title: '题目切换测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
-      },
-      // 页面设计测试
-      {
-        path: '/PageDesignTest',
-        name: 'PageDesignTest',
-        component: () => import('@/views/PageDesignTest'),
-        meta: { title: '页面设计测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
       },
       // dashboard
       {

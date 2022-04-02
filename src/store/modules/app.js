@@ -1,18 +1,17 @@
 import storage from 'store'
 import {
+  APP_LANGUAGE,
   SIDEBAR_TYPE,
-  TOGGLE_MOBILE_TYPE,
-  TOGGLE_NAV_THEME,
-  TOGGLE_LAYOUT,
+  TOGGLE_COLOR,
+  TOGGLE_CONTENT_WIDTH,
   TOGGLE_FIXED_HEADER,
   TOGGLE_FIXED_SIDEBAR,
-  TOGGLE_CONTENT_WIDTH,
   TOGGLE_HIDE_HEADER,
-  TOGGLE_COLOR,
-  TOGGLE_WEAK,
+  TOGGLE_LAYOUT,
+  TOGGLE_MOBILE_TYPE,
   TOGGLE_MULTI_TAB,
-  // i18n
-  APP_LANGUAGE
+  TOGGLE_NAV_THEME,
+  TOGGLE_WEAK
 } from '@/store/mutation-types'
 import { loadLanguageAsync } from '@/locales'
 
@@ -29,7 +28,7 @@ const app = {
     color: '',
     weak: false,
     multiTab: true,
-    lang: 'en-US',
+    lang: 'zh-CN',
     _antLocale: {}
   },
   mutations: {

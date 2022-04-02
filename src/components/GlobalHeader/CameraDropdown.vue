@@ -1,25 +1,25 @@
 <template>
   <a-dropdown id="cameraDropdown" placement="bottomCenter">
 
-    <span class="ant-pro-drop-down">
+    <span :style="{opacity: cameraIconOpacity}" class="ant-pro-drop-down">
       <a-icon type="camera" theme="twoTone" />
     </span>
 
     <template v-slot:overlay>
       <div style="position: relative;">
         <video
-          :style="{'border-radius': (isNeedRecVis?8:4)+'px'}"
+          :style="{'border-radius': (isNeedRecVis ? 8 : 4)+'px'}"
           @loadedmetadata="runFaceExpressions"
           ref="video"
           autoplay
           muted
           playsinline
-          :width="isNeedRecVis?videoEl.videoWidth:192"
-          :height="isNeedRecVis?videoEl.videoHeight:108"></video>
+          :width="isNeedRecVis?videoEl.videoWidth:videoWidth"
+          :height="isNeedRecVis?videoEl.videoHeight:videoHeight"></video>
 
         <canvas
-          :style="{width: (isNeedRecVis?videoEl.videoWidth:192)+'px',
-                   height: (isNeedRecVis?videoEl.videoHeight:108)+'px',
+          :style="{width: (isNeedRecVis?videoEl.videoWidth:videoWidth)+'px',
+                   height: (isNeedRecVis?videoEl.videoHeight:videoHeight)+'px',
                    position: 'absolute',
                    top: '0'}"
           ref="canvas" />
@@ -52,14 +52,22 @@ export default {
   props: {},
   data () {
     return {
+      // 摄像头图标透明度
+      cameraIconOpacity: 0,
       // 是否需要人脸检测可视化
       isNeedRecVis: false,
       // 摄像头视频流
       cameraStream: null,
       // 播放器元素
       videoEl: null,
+      // 限定 videoWidth
+      videoWidth: 192,
+      // 限定 videoHeight
+      videoHeight: 108,
+      // 画布元素
+      canvasEl: null,
       // 模型
-      nets: 'tinyFaceDetector',
+      faceDetectionModelName: 'tinyFaceDetector',
       // 模型参数
       options: null,
       willBeDestroyed: false,
@@ -71,12 +79,12 @@ export default {
         video: {
           // ideal（应用最理想的）
           width: {
-            min: 384,
+            min: 576,
             ideal: 1920,
             max: 1920
           },
           height: {
-            min: 216,
+            min: 324,
             ideal: 1080,
             max: 1080
           },
@@ -122,14 +130,16 @@ export default {
     // 模型加载
     async modelInit () {
       console.log('modelInit ' + Date.now())
-      await faceapi.nets[this.nets].loadFromUri('/models') // 算法模型
-      // 表情识别
-      await faceapi.loadFaceExpressionModel('/models') // 表情识别模型
-      // 人脸识别
-      await faceapi.loadFaceLandmarkModel('/models') // 轮廓模型
-      await faceapi.loadFaceRecognitionModel('/models') // 人脸识别模型
-      // 根据算法模型参数识别调整结果
-      switch (this.nets) {
+      // 人脸检测模型
+      await faceapi.nets[this.faceDetectionModelName].loadFromUri('/models')
+      // 表情识别模型
+      await faceapi.loadFaceExpressionModel('/models')
+      // 人脸面部标志模型（提高人脸识别、表情识别精度）
+      await faceapi.loadFaceLandmarkModel('/models')
+      // 人脸识别模型
+      await faceapi.loadFaceRecognitionModel('/models')
+      // 根据人脸检测模型选择对应的参数
+      switch (this.faceDetectionModelName) {
         case 'ssdMobilenetv1':
           this.options = new faceapi.SsdMobilenetv1Options({
             minConfidence: 0.5 // (0,1) 0.5(default)
@@ -158,7 +168,7 @@ export default {
       }
 
       const username = 'zfans'
-      const imageUri = 'https://aliyuncs.com/123.jpg'
+      const imageUri = 'avatar2.jpg'
 
       const imageEl = await faceapi.fetchImage(imageUri)
       const result = await this.detectSingleFaceAndLandmarksAndDescriptor(imageEl)
@@ -169,13 +179,6 @@ export default {
       // const imageEl2 = await faceapi.fetchImage('https://...........png')
       // const result2 = await this.detectSingleFaceAndLandmarksAndDescriptor(imageEl2)
       // descriptors.push(result2.descriptor)
-
-      // const descriptors = []
-      // // 临时图片转码数据，将图片对象转数据矩阵对象
-      // console.log('pre const imageEl = await faceapi.fetchImage(imageUri)')
-      // const imageEl = await faceapi.fetchImage(imageUri)
-      // console.log('pre descriptors.push(await faceapi.computeFaceDescriptor(imageEl))')
-      // descriptors.push(await faceapi.computeFaceDescriptor(imageEl))
 
       // 返回图片用户和图片转码数组
       console.log('pre const labeledFaceDescriptors = new faceapi.LabeledFaceDescriptors(username, descriptors)')
@@ -199,9 +202,9 @@ export default {
         this.closeCamera()
       }
     },
+    // 模拟 hover 让 cameraDropdown 的 overlay 先渲染出来
     simulateDropdown () {
       console.log('simulateDropdown ' + Date.now())
-      // 模拟 hover 让 cameraDropdown 的 overlay 先渲染出来
       document.getElementById('cameraDropdown').dispatchEvent(new Event('mouseenter'))
       setTimeout(() => {
         if (this.willBeDestroyed) {
@@ -211,6 +214,7 @@ export default {
         this.bindVideoAndCameraStream()
       }, 200)
     },
+    // 将摄像头视频流绑定到 Video 上
     bindVideoAndCameraStream () {
       console.log('bindVideoAndCameraStream ' + Date.now())
       if (this.willBeDestroyed) {
@@ -221,6 +225,7 @@ export default {
           this.videoEl = this.$refs.video
           if (this.videoEl) {
             this.videoEl.srcObject = this.cameraStream
+            this.cameraIconOpacity = 1
           }
         }
       } else {
@@ -260,12 +265,12 @@ export default {
         console.log('expressions:' + JSON.stringify(expressions))
 
         if (this.isNeedRecVis) {
-          const canvas = this.$refs.canvas
+          this.canvasEl = this.$refs.canvas
           console.log('get dims')
-          if (!(canvas && this.videoEl)) {
+          if (!(this.canvasEl && this.videoEl)) {
             return
           }
-          const dims = faceapi.matchDimensions(canvas, this.videoEl, true)
+          const dims = faceapi.matchDimensions(this.canvasEl, this.videoEl, true)
           console.log('dims.width:' + dims.width + ' dims.height:' + dims.height)
           const resizedResult = faceapi.resizeResults(result, dims)
 
@@ -276,12 +281,16 @@ export default {
 
           const label = this.faceMatcher.findBestMatch(descriptor).toString()
           const options = { label: label, drawLabelOptions: { anchorPosition: AnchorPosition.TOP_LEFT } }
-          new faceapi.draw.DrawBox(detection.box, options).draw(canvas)
+          new faceapi.draw.DrawBox(detection.box, options).draw(this.canvasEl)
 
-          faceapi.draw.drawDetections(canvas, resizedResult)
+          faceapi.draw.drawDetections(this.canvasEl, resizedResult)
           console.log('drawDetections')
-          faceapi.draw.drawFaceExpressions(canvas, resizedResult, minConfidence)
+          faceapi.draw.drawFaceExpressions(this.canvasEl, resizedResult, minConfidence)
           console.log('drawFaceExpressions-----------------------------------------------------')
+        } else if (this.canvasEl != null) {
+          console.log('清空画布 canvas')
+          this.canvasEl.getContext('2d').clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
+          this.canvasEl = null
         }
       }
       // 不断执行
