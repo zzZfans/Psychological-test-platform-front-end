@@ -680,6 +680,50 @@ const userNav = options => {
       component: 'ProfileAdvanced'
     },
 
+    // assess心理测评
+    {
+      name: 'assess',
+      parentId: 0,
+      id: 11001,
+      meta: {
+        title: '心理测评',
+        icon: 'profile',
+        show: true
+      },
+      redirect: '/assess/table',
+      component: 'RouteView'
+    },
+    {
+      name: 'fast',
+      parentId: 11001,
+      id: 11002,
+      meta: {
+        title: '快速测评',
+        show: true
+      },
+      component: 'AssessTableItem'
+    },
+    {
+      name: 'advanced',
+      parentId: 11001,
+      id: 11003,
+      meta: {
+        title: '多维度测评',
+        show: true
+      },
+      component: 'ProfileAdvanced'
+    },
+    {
+      name: 'table',
+      parentId: 11001,
+      id: 11004,
+      meta: {
+        title: '测量表',
+        show: false
+      },
+      component: 'AssessTables'
+    },
+
     // result
     {
       name: 'result',
