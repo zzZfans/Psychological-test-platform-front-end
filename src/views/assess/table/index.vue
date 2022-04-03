@@ -33,22 +33,22 @@ export default {
           description: 'sas用于焦虑测试'
         },
         {
-          title: '焦虑自评量表',
-          type: '2',
+          title: '抑郁自评量表',
+          type: 'sds',
           cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
-          description: 'sas用于焦虑测试'
+          description: 'sds用于抑郁测试'
         },
         {
-          title: '焦虑自评量表',
-          type: '3',
+          title: '双相情感障碍测试',
+          type: 'mdq',
           cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
-          description: 'sas用于焦虑测试'
+          description: 'mdq用于双相感情障碍测试'
         },
         {
-          title: '焦虑自评量表',
-          type: '4',
+          title: '轻躁狂症自测表',
+          type: 'HCL-32',
           cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
-          description: 'sas用于焦虑测试'
+          description: 'sas用于轻躁狂症测试'
         }
       ]
       // loading: true
