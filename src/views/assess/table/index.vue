@@ -10,8 +10,8 @@
                 <ellipsis :length="50">{{ item.description }}</ellipsis>
               </template>
             </a-card-meta>
-            <a-button style="left: 60%">
-              <a :href="toTable(item.type)">开始测试</a>
+            <a-button style="left: 60%" @click="toTable(item.type)">
+              开始测试
             </a-button>
           </a-card>
         </a-list-item>
@@ -21,16 +21,14 @@
 </template>
 
 <script>
-import { baseMixin } from '@/store/app-mixin'
 export default {
   name: 'Table',
-  mixins: [baseMixin],
   data () {
     return {
       data: [
         {
           title: '焦虑自评量表',
-          type: '1',
+          type: 'sas',
           cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
           description: 'sas用于焦虑测试'
         },
@@ -58,7 +56,7 @@ export default {
   },
   methods: {
     toTable (val) {
-      return '/assess/table?type=' + val
+      this.$emit('change', 'table-pro', val)
     }
   }
   // mounted () {
