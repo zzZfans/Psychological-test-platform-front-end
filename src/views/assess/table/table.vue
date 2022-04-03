@@ -95,6 +95,14 @@ export default {
     }
   },
   methods: {
+    reset () {
+      this.result = 0
+      this.number = 0
+      this.nums = 0
+      this.title = ''
+      this.wt = []
+      this.answer = []
+    },
     getValue (val) {
       this.result = this.result + val
     },
@@ -105,6 +113,7 @@ export default {
         alert(this.result)
         if (this.result > 40) {
           alert('焦虑！！！！！')
+          this.reset()
           this.$emit('change', 'table-index', val)
         }
       } else {
