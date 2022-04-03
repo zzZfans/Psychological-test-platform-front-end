@@ -10,13 +10,14 @@
           :percent="(number+1)*100/20"/>
         <span>&nbsp;&nbsp; {{ number+1 }}/20</span>
       </div>
+      <br/>
       <!--      问题-->
       <div v-for="(ques,index) in wt" :key="index">
         <div v-if="number === index">
-          <div id="question">{{ ques }}</div>
+          <div id="question" style="font-size: 17px">{{ ques }}</div>
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
-              <a-button  @click="next(index1 + 1)">{{ans}}</a-button>
+              <a-button style="border: none;font-size: 17px"  @click="next(index1 + 1)">{{ans}}</a-button>
             </div>
             <div style="clear: both"></div>
           </div>
@@ -43,7 +44,6 @@ export default {
             this.title = temp.title
             this.answer = temp.answer
             this.nums = temp.wt.length
-            alert(this.nums)
             break
           }
         }
@@ -99,24 +99,16 @@ export default {
       this.result = this.result + val
     },
     next (val) {
+      this.result = this.result + val
       if (this.number === (this.nums - 1)) {
+        // todo 将结果传入后端
         alert(this.result)
+        if (this.result > 40) {
+          alert('焦虑！！！！！')
+          this.$emit('change', 'table-index', val)
+        }
       } else {
         this.number++
-      }
-      this.result = this.result + val
-    },
-    getTables () {
-      for (let i = 0; i < this.tables.length; i++) {
-        const temp = this.tables[i]
-        if (temp.type === this.type) {
-          this.wt = temp.wt
-          this.title = temp.title
-          this.answer = temp.answer
-          this.num = temp.wt.length
-          alert(this.num)
-          break
-        }
       }
     }
   },
