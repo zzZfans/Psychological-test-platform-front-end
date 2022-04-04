@@ -17,8 +17,8 @@
           <div id="question" style="font-size: 17px">{{ ques }}</div>
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
-              <a-radio-group v-model="value" @change="onChange">
-                <a-radio :style="radioStyle" :value="1" style="border: none;font-size: 17px"  @click="next(index1 + 1)">
+              <a-radio-group v-model="value" style="radio:checked" >
+                <a-radio :value="1" style="border: none;font-size: 17px "  @click="next(index1 + 1)">
                   {{ans}}
                 </a-radio>
               </a-radio-group>
