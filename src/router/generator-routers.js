@@ -80,13 +80,13 @@ const rootRouter = {
 
 /**
  * 动态生成菜单
- * @param token
+ *
  * @returns {Promise<Router>}
  */
-export const generatorDynamicRouter = token => {
+export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     loginService
-      .getCurrentUserNav(token)
+      .getCurrentUserNav()
       .then(res => {
         console.log('generatorDynamicRouter response:', res)
         const { result } = res
