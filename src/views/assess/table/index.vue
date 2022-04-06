@@ -10,7 +10,7 @@
                 <ellipsis :length="50">{{ item.description }}</ellipsis>
               </template>
             </a-card-meta>
-            <a-button style="left: 60%" @click="toTable(item.type)">
+            <a-button style="left: 60%" type="primary" @click="toTable(item.type)">
               开始测试
             </a-button>
           </a-card>
@@ -21,6 +21,11 @@
 </template>
 
 <script>
+const close = () => {
+  console.log(
+    'Notification was closed. Either the close button was clicked or duration time elapsed.'
+  )
+}
 export default {
   name: 'Table',
   data () {
@@ -56,6 +61,33 @@ export default {
   },
   methods: {
     toTable (val) {
+      const key = `open${Date.now()}`
+      this.$notification.open({
+        message: '温馨提示',
+        description:
+          '请认真填写本次心理测试，禁止出现连续选相同选项，本系统将三次警告，警告次数完后将会自动退出测试！',
+        style: {
+          width: '600px',
+          marginLeft: `${-200}px`
+        },
+        btn: h => {
+          return h(
+            'a-button',
+            {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => this.$notification.close(key)
+              }
+            },
+            '已悉知。'
+          )
+        },
+        key,
+        onClose: close
+      })
       this.$emit('change', 'table-pro', val)
     }
   }

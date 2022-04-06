@@ -3,12 +3,15 @@
     <a-card class="ant-pro-pages-list-projects-cardList">
       <!--      进度条-->
       <div style=" width: 90%;white-space: nowrap ">
+        <div >
+          <a-text style="text-align:center;" type="primary">{{ dateFormat(date) }}</a-text>
+        </div>
         <a-progress
           :strokeWidth="17"
           stroke-linecap="square"
           :show-info="false"
           :percent="(number+1)*100/wt.length"/>
-        <span>&nbsp;&nbsp; {{ number+1 }}/{{wt.length}}</span>
+        <span>&nbsp;&nbsp; {{ number+1 }}/{{ wt.length }}</span>
       </div>
       <br/>
       <!--      问题-->
@@ -17,13 +20,27 @@
           <div id="question" style="font-size: 17px">{{ ques }}</div>
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
-              <a-radio-group v-model="value" style="radio:checked" >
-                <a-radio :value="1" style="border: none;font-size: 17px "  @click="next(index1 + 1)">
-                  {{ans}}
+              <a-radio-group v-model="value" @change="onChange(index1+1)" >
+                <a-radio :style="radioStyle" :value="index1"  style="border: none;font-size: 17px ">
+                  {{ ans }}
                 </a-radio>
               </a-radio-group>
             </div>
             <div style="clear: both"></div>
+          </div>
+          <div style="width: auto;height: 80px">
+            <div>
+              <a-config-provider style="top: 35px" :auto-insert-space-in-button="false">
+                <a-button :disabled="isAble" type="primary" @click="rollbackone(index)">
+                  <a-icon type="rollback" />返回上一题
+                </a-button>
+              </a-config-provider>
+            </div>
+            <div>
+              <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
+                退出测试
+              </a-button>
+            </div>
           </div>
         </div>
       </div>
@@ -56,6 +73,17 @@ export default {
   },
   data () {
     return {
+      date: new Date(),
+      gettime: '', // 当前时间
+      value: '', // 选项数字
+      timecode: '60',
+      data: ' ',
+      // 单项格式
+      radioStyle: {
+        display: 'block',
+        height: '30px',
+        lineHeight: '30px'
+      },
       result: 0,
       number: 0, // 第几题
       nums: 0, // 一共有几题
@@ -134,12 +162,12 @@ export default {
             '4、您睡觉比平时少，而且也不想睡？',
             '5、您话比平时多，或说话速度比平时快?',
             '6、您觉得脑子灵活，反应比平时快，或难以减慢您的思维？',
-           ' 7、您很容易被周围的事物干扰，以致不能集中注意力？',
-           ' 8、您的精力比平时好？',
+            ' 7、您很容易被周围的事物干扰，以致不能集中注意力？',
+            ' 8、您的精力比平时好？',
             '9、您比平时积极主动，或比平时做了更多的事情？',
             '10、您比平时喜欢社交或外出，如在半夜仍给朋友打电话？',
             '11、您的性欲比平时强？',
-           ' 12、您做了一些平时不会做的事情，别人认为那些事情有些过分、愚蠢或冒险？',
+            ' 12、您做了一些平时不会做的事情，别人认为那些事情有些过分、愚蠢或冒险？',
             '13、您花钱太多，使自己或家庭陷入困境？'
           ],
           answer: [
@@ -189,13 +217,31 @@ export default {
             '否'
           ]
         }
-        ],
+      ],
       title: '',
       wt: [],
       answer: []
     }
   },
   methods: {
+    // created () { // 显示当前时间
+    //   this.gettimes()
+    // },
+    // 时间格式化
+    dateFormat (time) {
+      var date = new Date(time)
+      var year = date.getFullYear()
+      /* 在日期格式中，月份是从0开始的，因此要加0
+      * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+      * */
+      var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      var hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+      var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+      var seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+      // 拼接
+      return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+    },
     reset () {
       this.result = 0
       this.number = 0
@@ -207,7 +253,10 @@ export default {
     getValue (val) {
       this.result = this.result + val
     },
-    next (val) {
+    onChange (val) {
+      console.log('radio checked', this.value)
+      // alert('到onchange')
+      this.isAble = false
       this.result = this.result + val
       if (this.number === (this.nums - 1)) {
         // todo 将结果传入后端
@@ -220,11 +269,66 @@ export default {
       } else {
         this.number++
       }
+    },
+    // next (val) {
+    //   // eslint-disable-next-line no-undef
+    //   // onchange()
+    //   // alert('到下一步')
+    //
+    //   // this.gettimes()
+    //   this.isAble = false
+    //   this.result = this.result + val
+    //   if (this.number === (this.nums - 1)) {
+    //     // todo 将结果传入后端
+    //     alert(this.result)
+    //     if (this.result > 40) {
+    //       alert('焦虑！！！！！')
+    //       this.reset()
+    //       this.$emit('change', 'table-index', val)
+    //     }
+    //   } else {
+    //     this.number++
+    //   }
+    // },
+    // gettimes () {
+    //   // var data = new Date()
+    //   // alert(data.getSeconds())
+    //   var _this = this
+    //   const yy = new Date().getFullYear()
+    //   const mm = new Date().getMonth() + 1
+    //   const dd = new Date().getDate()
+    //   const hh = new Date().getHours()
+    //   const mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
+    //   const ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
+    //   _this.gettime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
+    //   alert(_this.gettime)
+    // },
+    rollbackone (val) {
+      this.val = val
+      if (this.val === 0) {
+        alert('无题可退！')
+      } else {
+        this.number--
+        this.isAble = true
+      }
+    },
+    backtop () {
+      this.$emit('change', 'table-index')
     }
   },
   mounted () {
     // 1. 获取题目
     // this.getTables()
+    // 显示当前日期时间
+    const _this = this// 声明一个变量指向Vue实例this，保证作用域一致
+    this.timer = setInterval(() => {
+      _this.date = new Date() // 修改数据date
+    }, 1000)
+  },
+  beforeDestroy () {
+    if (this.timer) {
+      clearInterval(this.timer) // 在Vue实例销毁前，清除我们的定时器
+    }
   }
 }
 </script>
