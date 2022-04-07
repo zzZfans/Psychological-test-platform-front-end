@@ -298,7 +298,6 @@ export default {
       this.$emit('change', 'table-index')
     },
     getCode () {
-      // const TIME_COUNT = val
       if (!this.timer) {
         this.count = 0
         this.show = false
