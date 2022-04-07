@@ -4,7 +4,13 @@
       <!--      进度条-->
       <div style=" width: 90%;white-space: nowrap ">
         <div >
-          <a-text style="text-align:center;" type="primary">{{ dateFormat(date) }}</a-text>
+          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>
+        </div>
+        <div>
+          <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
+        </div>
+        <div>
+          <span v-show="!show" class="count">建议时间:{{wt.length * 10}}s！</span>
         </div>
         <a-progress
           :strokeWidth="17"
@@ -21,7 +27,7 @@
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
               <a-radio-group v-model="value" @change="onChange(index1+1)" >
-                <a-radio :style="radioStyle" :value="index1"  style="border: none;font-size: 17px ">
+                <a-radio :style="radioStyle" :value="index1" style="border: none;font-size: 17px ">
                   {{ ans }}
                 </a-radio>
               </a-radio-group>
@@ -38,6 +44,7 @@
             </div>
             <div>
               <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
+                <a-icon type="up-square-o" />
                 退出测试
               </a-button>
             </div>
@@ -73,6 +80,9 @@ export default {
   },
   data () {
     return {
+      show: true, // 计时器所用属性
+      count: '', // 计时器所用属性
+      timer: null, // 计时器所用属性
       date: new Date(),
       gettime: '', // 当前时间
       value: '', // 选项数字
@@ -254,55 +264,27 @@ export default {
       this.result = this.result + val
     },
     onChange (val) {
-      console.log('radio checked', this.value)
-      // alert('到onchange')
-      this.isAble = false
-      this.result = this.result + val
-      if (this.number === (this.nums - 1)) {
-        // todo 将结果传入后端
-        alert(this.result)
-        if (this.result > 40) {
-          alert('焦虑！！！！！')
-          this.reset()
-          this.$emit('change', 'table-index', val)
-        }
-      } else {
-        this.number++
-      }
-    },
-    // next (val) {
-    //   // eslint-disable-next-line no-undef
-    //   // onchange()
-    //   // alert('到下一步')
-    //
-    //   // this.gettimes()
-    //   this.isAble = false
-    //   this.result = this.result + val
-    //   if (this.number === (this.nums - 1)) {
-    //     // todo 将结果传入后端
-    //     alert(this.result)
-    //     if (this.result > 40) {
-    //       alert('焦虑！！！！！')
-    //       this.reset()
-    //       this.$emit('change', 'table-index', val)
-    //     }
-    //   } else {
-    //     this.number++
-    //   }
-    // },
-    // gettimes () {
-    //   // var data = new Date()
-    //   // alert(data.getSeconds())
-    //   var _this = this
-    //   const yy = new Date().getFullYear()
-    //   const mm = new Date().getMonth() + 1
-    //   const dd = new Date().getDate()
-    //   const hh = new Date().getHours()
-    //   const mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
-    //   const ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
-    //   _this.gettime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
-    //   alert(_this.gettime)
-    // },
+        console.log('radio checked', this.value)
+        // alert('到onchange')
+        this.isAble = false
+        this.result = this.result + val
+        if (this.number === (this.nums - 1)) {
+          // todo 将结果传入后端
+          // 作假判断
+          if (this.getCode() >= this.wt.length * 10) {
+            alert(this.result)
+            if (this.result > 40) {
+              alert('焦虑！！！！！')
+              this.reset()
+              this.$emit('change', 'table-index', val)
+            }
+          } else {
+            alert('存在作假测试！')
+          }
+          } else {
+            this.number++
+          }
+      },
     rollbackone (val) {
       this.val = val
       if (this.val === 0) {
@@ -314,6 +296,23 @@ export default {
     },
     backtop () {
       this.$emit('change', 'table-index')
+    },
+    getCode () {
+      // const TIME_COUNT = val
+      if (!this.timer) {
+        this.count = 0
+        this.show = false
+        this.timer = setInterval(() => {
+          if (this.count >= 0) {
+            this.count++
+          } else {
+            this.show = true
+            clearInterval(this.timer)
+            this.timer = null
+         }
+        }, 1000)
+      }
+      return this.count
     }
   },
   mounted () {
