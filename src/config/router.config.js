@@ -74,7 +74,6 @@ export const asyncRouterMap = [
         meta: {
               title: '心理测评',
               icon: 'profile',
-              show: true,
               permission: ['dashboard']
         },
         children: [
@@ -83,7 +82,6 @@ export const asyncRouterMap = [
               path: '/assess/fast',
               meta: {
                 title: '快速测评',
-                show: true,
                 permission: ['dashboard']
               },
               component: () => import('@/views/assess/table/conf')

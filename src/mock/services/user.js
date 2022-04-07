@@ -1183,15 +1183,6 @@ const userNav = options => {
       },
       component: 'ProfileAdvanced'
     },
-    {
-      name: 'table',
-      parentId: 11001,
-      id: 11004,
-      meta: {
-        title: '测量表'
-      },
-      component: 'AssessTables'
-    },
 
     // result
     {

@@ -35,7 +35,7 @@ const constantRouterComponents = {
   ProfileAdvanced: () => import('@/views/profile/advanced/Advanced'),
 
   // assess
-  AssessTableItem: () => import('@/views/assess/table/index'),
+  AssessTableItem: () => import('@/views/assess/table/conf'),
   AssessTables: () => import('@/views/assess/table/table'),
   // result
   ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
