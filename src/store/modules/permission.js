@@ -4,15 +4,15 @@ import cloneDeep from 'lodash.clonedeep'
 /**
  * 过滤账户是否拥有某一个权限，并将菜单从加载列表移除
  *
- * @param permission
+ * @param permissions
  * @param route
  * @returns {boolean}
  */
-function hasPermission (permission, route) {
+function hasPermission (permissions, route) {
   if (route.meta && route.meta.permission) {
     let flag = false
-    for (let i = 0, len = permission.length; i < len; i++) {
-      flag = route.meta.permission.includes(permission[i])
+    for (let i = 0, len = permissions.length; i < len; i++) {
+      flag = route.meta.permission.includes(permissions[i])
       if (flag) {
         return true
       }
@@ -38,17 +38,16 @@ function hasRole(roles, route) {
   }
 }
 
-function filterAsyncRouter (routerMap, roles) {
-  const accessedRouters = routerMap.filter(route => {
-    if (hasPermission(roles.permissionList, route)) {
+function filterAsyncRouter (routerMap, permissions) {
+  return routerMap.filter(route => {
+    if (hasPermission(permissions, route)) {
       if (route.children && route.children.length) {
-        route.children = filterAsyncRouter(route.children, roles)
+        route.children = filterAsyncRouter(route.children, permissions)
       }
       return true
     }
     return false
   })
-  return accessedRouters
 }
 
 const permission = {
@@ -63,12 +62,14 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes ({ commit }, data) {
+    GenerateRoutes ({ commit }, permissions) {
       return new Promise(resolve => {
-        const { roles } = data
         const routerMap = cloneDeep(asyncRouterMap)
-        const accessedRouters = filterAsyncRouter(routerMap, roles)
-        commit('SET_ROUTERS', accessedRouters)
+        const accessedRouters = filterAsyncRouter(routerMap, permissions)
+        console.log('accessedRouters:' + JSON.stringify(accessedRouters))
+        console.log('routerMap:' + JSON.stringify(routerMap))
+        // 开发期间不过滤
+        commit('SET_ROUTERS', cloneDeep(asyncRouterMap))
         resolve()
       })
     }

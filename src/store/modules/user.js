@@ -1,5 +1,5 @@
 import storage from 'store'
-import { login, getInfo, logout } from '@/api/login'
+import { getInfo, login, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
@@ -10,6 +10,7 @@ const user = {
     welcome: '',
     avatar: '',
     roles: [],
+    permissions: [],
     info: {}
   },
 
@@ -27,6 +28,9 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
+    SET_PERMISSIONS: (state, permissions) => {
+      state.permissions = permissions
+    },
     SET_INFO: (state, info) => {
       state.info = info
     }
@@ -37,6 +41,7 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
+          console.log('login(userInfo):' + JSON.stringify(response))
           const result = response.result
           storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', result.token)
@@ -52,24 +57,18 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.result
-
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
-            role.permissions.map(per => {
-              if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-                const action = per.actionEntitySet.map(action => { return action.action })
-                per.actionList = action
-              }
-            })
-            role.permissionList = role.permissions.map(permission => { return permission.permissionId })
-            commit('SET_ROLES', result.role)
+          console.log('getInfo().then(response => {:' + JSON.stringify(response))
+          if (result.roles.length > 0 && result.permissions.length > 0) {
+            commit('SET_ROLES', result.roles)
+            commit('SET_PERMISSIONS', result.permissions)
+            delete result.roles
+            delete result.permissions
             commit('SET_INFO', result)
           } else {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
 
-          commit('SET_NAME', { name: result.name, welcome: welcome() })
+          commit('SET_NAME', { name: result.username, welcome: welcome() })
           commit('SET_AVATAR', result.avatar)
 
           resolve(response)
