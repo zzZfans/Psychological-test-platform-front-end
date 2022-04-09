@@ -10,7 +10,7 @@
           <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
         </div>
         <div>
-          <span v-show="!show" class="count">建议时间:{{wt.length * 10}}s！</span>
+          <span v-show="!show" class="count">建议时间:{{ wt.length * 10 }}s！</span>
         </div>
         <a-progress
           :strokeWidth="17"
@@ -298,6 +298,7 @@ export default {
       this.$emit('change', 'table-index')
     },
     getCode () {
+      // const TIME_COUNT = val
       if (!this.timer) {
         this.count = 0
         this.show = false
@@ -311,7 +312,14 @@ export default {
          }
         }, 1000)
       }
-      return this.count
+      return this.shownum(parseInt(this.count / 60) % 60) + ':' + this.shownum(this.count % 60)
+    },
+    shownum (num) {
+      if (num < 10) {
+        return '0' + num
+      } else {
+        return num
+      }
     }
   },
   mounted () {
