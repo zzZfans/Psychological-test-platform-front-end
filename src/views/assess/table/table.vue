@@ -6,30 +6,36 @@
         <div >
           <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>
         </div>
-        <div>
+        <div style="font-size: 25px;white-space: nowrap">
           <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
-        </div>
-        <div>
-          <span v-show="!show" class="count">建议时间:{{ wt.length * 10 }}s！</span>
-        </div>
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt(wt.length*10 / 60) % 60) }}:{{ shownum(wt.length % 60) }}s！</span>
+          <!--          <div>-->
+          <!--            <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>-->
+          <!--          </div>-->
+          <!--          <div style="float: right">-->
+          <!--            <span v-show="!show" class="count">建议时间:{{ wt.length * 10 }}s！</span>-->
+          <!--          </div>-->
+        </div>s
         <a-progress
           :strokeWidth="17"
           stroke-linecap="square"
           :show-info="false"
           :percent="(number+1)*100/wt.length"/>
-        <span>&nbsp;&nbsp; {{ number+1 }}/{{ wt.length }}</span>
+        <span style="font-size: 18px">&nbsp;&nbsp; {{ number+1 }}/{{ wt.length }}</span>
       </div>
       <br/>
       <!--      问题-->
       <div v-for="(ques,index) in wt" :key="index">
         <div v-if="number === index">
-          <div id="question" style="font-size: 17px">{{ ques }}</div>
+          <div id="question" style="font-size: 25px">{{ ques }}</div>
+          <br>
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
-              <a-radio-group v-model="value" @change="onChange(index1+1)" >
-                <a-radio :style="radioStyle" :value="index1" style="border: none;font-size: 17px ">
+              <a-radio-group v-model="vlue" @change="onChange(index1+1)" >
+                <a-radio :style="radioStyle" :value="index1" style="border: none;font-size: 25px ">
                   {{ ans }}
                 </a-radio>
+                <br>
               </a-radio-group>
             </div>
             <div style="clear: both"></div>
@@ -80,6 +86,8 @@ export default {
   },
   data () {
     return {
+      resultplus: 0,
+      lastvalue: '',
       show: true, // 计时器所用属性
       count: '', // 计时器所用属性
       timer: null, // 计时器所用属性
@@ -263,7 +271,14 @@ export default {
     getValue (val) {
       this.result = this.result + val
     },
-    onChange (val) {
+    sleep (duration) {
+      return new Promise(resolve => {
+        setTimeout(resolve, duration * 300)
+      })
+    },
+    async onChange (val) {
+      this.lastvalue = val
+        await this.sleep(1)
         console.log('radio checked', this.value)
         // alert('到onchange')
         this.isAble = false
@@ -282,9 +297,36 @@ export default {
             alert('存在作假测试！')
           }
           } else {
+          alert(this.types)
             this.number++
           }
+         this.value = ''
       },
+    // 计算方法分类
+    computefunction () {
+      if (this.types === 'sas') {
+          this.resultplus = this.result * 1.25
+      }
+      if (this.types === 'sas') {
+        this.resultplus = this.result * 1.25
+      }
+      if (this.types === 'mdq') {
+        this.resultplus = this.result
+        if (this.result >= 7) {
+          alert('7分以上（含），属于阳性（异常）；这种情况建议及时就医，咨询专业医生。')
+        } else {
+          alert('7分以下，属于阴性（正常）；7分以下建议适度关注自己的情绪和状态变化。')
+        }
+      }
+      if (this.types === 'HCL-32') {
+        this.resultplus = this.result
+        if (this.result >= 14) {
+          alert('阳性')
+        } else {
+          alert('阴性')
+        }
+      }
+    },
     rollbackone (val) {
       this.val = val
       if (this.val === 0) {
@@ -292,6 +334,7 @@ export default {
       } else {
         this.number--
         this.isAble = true
+        this.result -= this.lastvalue
       }
     },
     backtop () {

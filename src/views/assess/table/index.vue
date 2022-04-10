@@ -68,7 +68,8 @@ export default {
           '请认真填写本次心理测试，禁止出现连续选相同选项，本系统将三次警告，警告次数完后将会自动退出测试，每道题建议时间为20秒！',
         style: {
           width: '600px',
-          marginLeft: `${-200}px`
+          marginLeft: `${-850}px`,
+          marginTop: `${300}px`
         },
         btn: h => {
           return h(
