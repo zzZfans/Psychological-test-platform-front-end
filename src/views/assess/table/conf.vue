@@ -14,7 +14,8 @@ export default {
   },
   components: {
     'table-index': () => Promise.resolve(require('@/views/assess/table/index')),
-    'table-pro': () => Promise.resolve(require('@/views/assess/table/table'))
+    'table-pro': () => Promise.resolve(require('@/views/assess/table/table')),
+    'table-random': () => Promise.resolve(require('@/views/assess/table/tableRandom'))
   },
   methods: {
     change (param) {

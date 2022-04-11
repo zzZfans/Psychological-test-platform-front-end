@@ -1183,6 +1183,15 @@ const userNav = options => {
       },
       component: 'ProfileAdvanced'
     },
+    {
+      name: 'randomAccess',
+      parentId: 11001,
+      id: 11004,
+      meta: {
+        title: '随机测评'
+      },
+      component: 'AssessTableRandom'
+    },
 
     // result
     {

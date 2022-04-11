@@ -37,6 +37,7 @@ const constantRouterComponents = {
   // assess
   AssessTableItem: () => import('@/views/assess/table/conf'),
   AssessTables: () => import('@/views/assess/table/table'),
+  AssessTableRandom: () => import('@/views/assess/table/tableRandom'),
   // result
   ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
   ResultFail: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),

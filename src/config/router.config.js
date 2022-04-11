@@ -92,7 +92,16 @@ export const asyncRouterMap = [
                 permission: ['dashboard']
               },
               component: () => import('@/views/assess/table/conf')
-            }
+            },
+          {
+            name: 'fast',
+            path: '/assess/randomfast',
+            meta: {
+              title: '随机测评',
+              permission: ['dashboard']
+            },
+            component: () => import('@/views/assess/table/conf')
+          }
           ]
       },
       // forms
