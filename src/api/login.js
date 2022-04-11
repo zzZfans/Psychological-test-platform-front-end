@@ -1,12 +1,12 @@
 import request from '@/utils/request'
 
 const userApi = {
-  Login: '/auth/login',
+  Login: '/user/login',
   Logout: '/auth/logout',
   ForgePassword: '/auth/forge-password',
-  Register: '/auth/register',
+  Register: '/user/register',
   twoStepCode: '/auth/2step-code',
-  SendSms: '/account/sms',
+  SendCaptcha: '/captcha',
   SendSmsErr: '/account/sms_err',
   // get my info
   UserInfo: '/user/info',
@@ -32,9 +32,17 @@ export function login (parameter) {
   })
 }
 
-export function getSmsCaptcha (parameter) {
+export function register (parameter) {
   return request({
-    url: userApi.SendSms,
+    url: userApi.Register,
+    method: 'post',
+    data: parameter
+  })
+}
+
+export function getCaptcha (parameter) {
+  return request({
+    url: userApi.SendCaptcha,
     method: 'post',
     data: parameter
   })

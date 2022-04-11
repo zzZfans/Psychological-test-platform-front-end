@@ -13,7 +13,7 @@
             'username',
             {rules: [{ required: true,
                        message: $t('user.userName.required') },
-                     { validator: handleUsernameOrEmail }],
+                     { validator: handleUsername }],
              validateTrigger: 'change'}
           ]"
         >
@@ -39,9 +39,10 @@
         <a-form-item>
           <a-input-password
             size="large"
-            @click="handlePasswordInputClick"
             :placeholder="$t('user.register.password.placeholder')"
-            v-decorator="['password', {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }], validateTrigger: ['change', 'blur']}]"
+            v-decorator="['password',
+                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                           validateTrigger: 'change'}]"
           ></a-input-password>
         </a-form-item>
       </a-popover>
@@ -50,36 +51,42 @@
         <a-input-password
           size="large"
           :placeholder="$t('user.register.confirm-password.placeholder')"
-          v-decorator="['password2', {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}]"
+          v-decorator="['confirmPassword',
+                        {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordCheck }],
+                         validateTrigger: 'change'}]"
         ></a-input-password>
       </a-form-item>
       <!-- 手机验证 or 邮箱验证 -->
       <a-tabs
-        :activeKey="customActiveKey"
+        :activeKey="registrationType"
         :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
         @change="handleTabClick">
-        <a-tab-pane key="mobile validate" :tab="$t('user.mobile.validate')">
+        <a-tab-pane :key="registrationTypeEnum.MOBILE" :tab="$t('user.mobile.validate')">
           <!-- 手机号 -->
           <a-form-item>
-            <a-input size="large" :placeholder="$t('user.login.mobile.placeholder')" v-decorator="['mobile', {rules: [{ required: true, message: $t('user.phone-number.required'), pattern: /^1[3456789]\d{9}$/ }, { validator: this.handlePhoneCheck } ], validateTrigger: ['change', 'blur'] }]">
+            <a-input
+              size="large"
+              :placeholder="$t('user.login.mobile.placeholder')"
+              v-decorator="['mobile',
+                            {rules: [{ required: true, message: $t('user.phone-number.required')},
+                                     { validator: this.handlePhoneCheck } ],
+                             validateTrigger: 'change' }]">
               <a-select slot="addonBefore" size="large" defaultValue="+86">
                 <a-select-option value="+86">+86</a-select-option>
-                <!--<a-select-option value="+87">+87</a-select-option>-->
               </a-select>
             </a-input>
           </a-form-item>
-          <!--<a-input-group size="large" compact>
-                <a-select style="width: 20%" size="large" defaultValue="+86">
-                  <a-select-option value="+86">+86</a-select-option>
-                  <a-select-option value="+87">+87</a-select-option>
-                </a-select>
-                <a-input style="width: 80%" size="large" placeholder="11 位手机号"></a-input>
-              </a-input-group>-->
           <!-- 验证码 -->
           <a-row :gutter="16">
             <a-col class="gutter-row" :span="16">
               <a-form-item>
-                <a-input size="large" type="text" :placeholder="$t('user.login.mobile.verification-code.placeholder')" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
+                <a-input
+                  size="large"
+                  type="text"
+                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                  v-decorator="['mobileCaptcha',
+                                {rules: [{ required: true, message: '请输入验证码' }],
+                                 validateTrigger: 'change'}]">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
                 </a-input>
               </a-form-item>
@@ -88,20 +95,22 @@
               <a-button
                 class="getCaptcha"
                 size="large"
-                :disabled="state.smsSendBtn"
+                :disabled="state.captchaSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="email validate" :tab="$t('user.email.validate')">
+        <a-tab-pane :key="registrationTypeEnum.EMAIL" :tab="$t('user.email.validate')">
           <!-- 邮箱 -->
           <a-form-item>
             <a-input
               size="large"
               type="text"
               :placeholder="$t('user.register.email.placeholder')"
-              v-decorator="['email', {rules: [{ required: true, type: 'email', message: $t('user.email.required') }], validateTrigger: ['change', 'blur']}]"
+              v-decorator="['title',
+                            {rules: [{ required: true, type: 'title', message: $t('user.email.required') }],
+                             validateTrigger: 'change'}]"
             >
               <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
@@ -113,8 +122,9 @@
                 <a-input
                   size="large"
                   type="text"
-                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
-                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  :placeholder="$t('user.login.email.verification-code.placeholder')"
+                  v-decorator="['emailCaptcha', {rules: [{ required: true, message: $t('user.verification-code.required') }],
+                                                 validateTrigger: 'change'}]">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
                 </a-input>
               </a-form-item>
@@ -123,9 +133,9 @@
               <a-button
                 class="getCaptcha"
                 tabindex="-1"
-                :disabled="state.smsSendBtn"
+                :disabled="state.captchaSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
+                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
               ></a-button>
             </a-col>
           </a-row>
@@ -138,9 +148,9 @@
           type="primary"
           htmlType="submit"
           class="register-button"
-          :loading="registerBtn"
+          :loading="registerBtnLoading"
           @click.stop.prevent="handleSubmit"
-          :disabled="registerBtn">{{ $t('user.register.register') }}
+          :disabled="registerBtnLoading">{{ $t('user.register.register') }}
         </a-button>
         <router-link class="login" :to="{ name: 'login' }">{{ $t('user.register.sign-in') }}</router-link>
       </a-form-item>
@@ -150,7 +160,8 @@
 </template>
 
 <script>
-import { getSmsCaptcha } from '@/api/login'
+import md5 from 'md5'
+import { getCaptcha, register } from '@/api/login'
 import { deviceMixin } from '@/store/device-mixin'
 import { scorePassword } from '@/utils/util'
 
@@ -179,20 +190,27 @@ export default {
   mixins: [deviceMixin],
   data () {
     return {
-      customActiveKey: 'mobile validate',
+      registrationTypeEnum: {
+        MOBILE: 0,
+        EMAIL: 1
+      },
+      registrationType: null,
       form: this.$form.createForm(this),
 
       state: {
         time: 60,
         level: 0,
-        smsSendBtn: false,
+        captchaSendBtn: false,
         passwordLevel: 0,
         passwordLevelChecked: false,
         percent: 10,
         progressColor: '#FF0000'
       },
-      registerBtn: false
+      registerBtnLoading: false
     }
+  },
+  created () {
+    this.registrationType = this.registrationTypeEnum.MOBILE
   },
   computed: {
     passwordLevelClass () {
@@ -207,14 +225,25 @@ export default {
   },
   methods: {
     handleTabClick (key) {
-      this.customActiveKey = key
+      this.registrationType = key
       // this.form.resetFields()
     },
+    handleUsername (rule, value, callback) {
+      // 用户名正则，1 到 32 位（中文，字母，数字，下划线，减号）
+      const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,32}$/
+      const phoneNumberRegex = /^1[3456789]\d{9}$/
+      if (usernameRegex.test(value) && !phoneNumberRegex.test(value)) {
+        callback()
+      } else {
+        callback(new Error('用户名 1 到 32 位（中文，字母，数字，下划线，减号），且不能将手机号作为用户名！'))
+      }
+    },
     handlePasswordLevel (rule, value, callback) {
-      if (value === '') {
+      if (value === undefined) {
        return callback()
       }
-      console.log('scorePassword ; ', scorePassword(value))
+      this.handlePasswordInputClick()
+      console.log('scorePassword:', scorePassword(value))
       if (value.length >= 6) {
         if (scorePassword(value) >= 30) {
           this.state.level = 1
@@ -237,10 +266,6 @@ export default {
 
     handlePasswordCheck (rule, value, callback) {
       const password = this.form.getFieldValue('password')
-      // console.log('value', value)
-      if (value === undefined) {
-        callback(new Error(this.$t('user.password.required')))
-      }
       if (value && password && value.trim() !== password.trim()) {
         callback(new Error(this.$t('user.password.twice.msg')))
       }
@@ -251,7 +276,13 @@ export default {
       console.log('handlePhoneCheck, rule:', rule)
       console.log('handlePhoneCheck, value', value)
       console.log('handlePhoneCheck, callback', callback)
-
+      if (value === undefined) {
+         return callback()
+      }
+      const phoneNumberRegex = /^1[3456789]\d{9}$/
+      if (!phoneNumberRegex.test(value)) {
+        callback(new Error(this.$t('user.phone-number.wrong-format')))
+      }
       callback()
     },
 
@@ -264,11 +295,52 @@ export default {
     },
 
     handleSubmit () {
-      const { form: { validateFields }, state, $router } = this
-      validateFields({ force: true }, (err, values) => {
+      const { form: { validateFields }, state, $router, registrationType } = this
+
+      const validateFieldsKeys = ['username', 'password', 'confirmPassword']
+
+      switch (registrationType) {
+        case this.registrationTypeEnum.MOBILE:
+          validateFieldsKeys.push('mobile')
+          validateFieldsKeys.push('mobileCaptcha')
+          break
+        case this.registrationTypeEnum.EMAIL:
+          validateFieldsKeys.push('title')
+          validateFieldsKeys.push('emailCaptcha')
+      }
+
+      validateFields(validateFieldsKeys, { force: true }, (err, values) => {
+        console.log('values:' + JSON.stringify(values))
         if (!err) {
+          this.registerBtnLoading = true
           state.passwordLevelChecked = false
-          $router.push({ name: 'registerResult', params: { ...values } })
+
+          let parameter
+
+          switch (this.registrationType) {
+            case this.registrationTypeEnum.MOBILE:
+              parameter = { registrationType: 'mobile',
+                username: values.username,
+                password: md5(values.password),
+                mobile: values.mobile,
+                captcha: values.mobileCaptcha
+              }
+              break
+            case this.registrationTypeEnum.EMAIL:
+              parameter = { registrationType: 'title',
+                username: values.username,
+                password: md5(values.password),
+                email: values.email,
+                captcha: values.emailCaptcha
+              }
+          }
+          console.log('parameter:' + JSON.stringify(parameter))
+          register(parameter).then(res => {
+            $router.push({ name: 'registerResult', params: { ...values } })
+          }).catch(err => {
+            this.registerBtnLoading = false
+            this.requestFailed(err)
+          })
         }
       })
     },
@@ -277,33 +349,58 @@ export default {
       e.preventDefault()
       const { form: { validateFields }, state, $message, $notification } = this
 
-      validateFields(['mobile'], { force: true },
+      let validateFieldsKey
+
+      switch (this.registrationType) {
+        case this.registrationTypeEnum.MOBILE:
+          validateFieldsKey = ['mobile']
+          break
+        case this.registrationTypeEnum.EMAIL:
+          validateFieldsKey = ['title']
+      }
+
+      validateFields(validateFieldsKey, { force: true },
         (err, values) => {
+          console.log('values:' + JSON.stringify(values))
           if (!err) {
-            state.smsSendBtn = true
+            state.captchaSendBtn = true
 
             const interval = window.setInterval(() => {
               if (state.time-- <= 0) {
                 state.time = 60
-                state.smsSendBtn = false
+                state.captchaSendBtn = false
                 window.clearInterval(interval)
               }
             }, 1000)
 
-            const hide = $message.loading('验证码发送中..', 0)
+            const hide = $message.loading('验证码发送中...', 0)
 
-            getSmsCaptcha({ mobile: values.mobile }).then(res => {
-              setTimeout(hide, 2500)
+            let parameter
+            let registrationType
+
+            switch (this.registrationType) {
+              case this.registrationTypeEnum.MOBILE:
+                parameter = { captchaType: 'mobile', value: values.mobile }
+                registrationType = '短信信息！'
+                break
+              case this.registrationTypeEnum.EMAIL:
+                parameter = { captchaType: 'title', value: values.email }
+                registrationType = '邮箱信息！'
+            }
+
+            getCaptcha(parameter).then(res => {
+              console.log('res:' + JSON.stringify(res))
+              setTimeout(hide)
               $notification['success']({
                 message: '提示',
-                description: '验证码获取成功，您的验证码为：' + res.result.captcha,
+                description: '验证码发送成功，请留意您的' + registrationType,
                 duration: 8
               })
             }).catch(err => {
               setTimeout(hide, 1)
               clearInterval(interval)
               state.time = 60
-              state.smsSendBtn = false
+              state.captchaSendBtn = false
               this.requestFailed(err)
             })
           }
@@ -316,7 +413,7 @@ export default {
         description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
         duration: 4
       })
-      this.registerBtn = false
+      this.registerBtnLoading = false
     }
   },
   watch: {

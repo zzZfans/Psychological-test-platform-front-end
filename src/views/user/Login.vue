@@ -8,17 +8,18 @@
       @submit="handleSubmit"
     >
       <a-tabs
-        :activeKey="customActiveKey"
+        :activeKey="loginType"
         :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
         @change="handleTabClick"
       >
-        <a-tab-pane key="username and password" :tab="$t('user.login.tab-login-credentials')">
+        <a-tab-pane :key="loginTypeEnum.USERNAMEANDPASSWORD" :tab="$t('user.login.tab-login-credentials')">
           <a-alert
             v-if="isLoginError"
             type="error"
             showIcon
             style="margin-bottom: 24px;"
             :message="$t('user.login.message-invalid-credentials')" />
+          <!-- 用户名 -->
           <a-form-item>
             <a-input
               size="large"
@@ -35,27 +36,29 @@
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
           </a-form-item>
-
+          <!-- 密码 -->
           <a-form-item>
             <a-input-password
               size="large"
               :placeholder="$t('user.login.password.placeholder')"
               v-decorator="[
                 'password',
-                {rules: [{ required: true, message: $t('user.password.required') }], validateTrigger: 'blur'}
+                {rules: [{ required: true, message: $t('user.password.required') }], validateTrigger: 'change'}
               ]"
             >
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input-password>
           </a-form-item>
         </a-tab-pane>
-        <a-tab-pane key="mobile" :tab="$t('user.login.tab-login-mobile')">
+        <a-tab-pane :key="loginTypeEnum.MOBILE" :tab="$t('user.login.tab-login-mobile')">
           <a-form-item>
             <a-input
               size="large"
               type="text"
               :placeholder="$t('user.login.mobile.placeholder')"
-              v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: $t('user.login.mobile.placeholder') }], validateTrigger: 'change'}]">
+              v-decorator="['mobile',
+                            {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: $t('user.mobile.required') }],
+                             validateTrigger: 'change'}]">
               <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input>
           </a-form-item>
@@ -67,7 +70,9 @@
                   size="large"
                   type="text"
                   :placeholder="$t('user.login.mobile.verification-code.placeholder')"
-                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  v-decorator="['mobileCaptcha',
+                                {rules: [{ required: true, message: $t('user.verification-code.required') }],
+                                 validateTrigger: 'change'}]">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
                 </a-input>
               </a-form-item>
@@ -83,7 +88,7 @@
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="email" :tab="$t('user.login.tab-login-email')">
+        <a-tab-pane :key="loginTypeEnum.EMAIL" :tab="$t('user.login.tab-login-email')">
           <a-form-item>
             <a-input
               size="large"
@@ -92,7 +97,7 @@
               v-decorator="['email',
                             {rules: [{ required: true,
                                        pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-                                       message: $t('user.login.email.placeholder') }],
+                                       message: $t('user.email.required') }],
                              validateTrigger: 'change'}
               ]">
               <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -106,7 +111,9 @@
                   size="large"
                   type="text"
                   :placeholder="$t('user.login.email.verification-code.placeholder')"
-                  v-decorator="['captcha', {rules: [{ required: true, message: $t('user.verification-code.required') }], validateTrigger: 'blur'}]">
+                  v-decorator="['emailCaptcha',
+                                {rules: [{ required: true, message: $t('user.verification-code.required') }],
+                                 validateTrigger: 'change'}]">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
                 </a-input>
               </a-form-item>
@@ -189,7 +196,7 @@
 import md5 from 'md5'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getSmsCaptcha } from '@/api/login'
+import { getCaptcha } from '@/api/login'
 
 export default {
   components: {
@@ -197,44 +204,41 @@ export default {
   },
   data () {
     return {
-      customActiveKey: 'username and password',
+      loginTypeEnum: {
+      USERNAMEANDPASSWORD: 0,
+      MOBILE: 1,
+        EMAIL: 2
+      },
+      loginType: null,
       // 是否按下登录
       loginBtn: false,
-      /* login type
-      * 0 email or username or telephone and password
-      * 1 telephone and captcha
-      * 2 email and captcha
-      * */
-      loginType: 0,
       isLoginError: false,
 
       form: this.$form.createForm(this),
       state: {
         time: 60,
         loginBtn: false,
-        loginType: 0,
         smsSendBtn: false
       }
     }
   },
   created () {
-
+    this.loginType = this.loginTypeEnum.USERNAMEANDPASSWORD
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
     // handler
     handleUsernameOrEmail (rule, value, callback) {
-      const { state } = this
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (regex.test(value)) {
-        state.loginType = 0
+
       } else {
-        state.loginType = 1
+
       }
       callback()
     },
     handleTabClick (key) {
-      this.customActiveKey = key
+      this.loginType = key
       // this.form.resetFields()
     },
     handleSubmit (e) {
@@ -242,21 +246,56 @@ export default {
       const {
         form: { validateFields },
         state,
-        customActiveKey,
+        loginType,
         Login
       } = this
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'username and password' ? ['username', 'password'] : ['mobile', 'captcha']
+      let validateFieldsKeys
 
-      validateFields(validateFieldsKey, { force: true }, (err, values) => {
+        switch (loginType) {
+          case this.loginTypeEnum.USERNAMEANDPASSWORD:
+            validateFieldsKeys = ['username', 'password']
+            break
+          case this.loginTypeEnum.MOBILE:
+            validateFieldsKeys = ['mobile', 'mobileCaptcha']
+            break
+          case this.loginTypeEnum.EMAIL:
+            validateFieldsKeys = ['email', 'emailCaptcha']
+            break
+          default:
+            validateFieldsKeys = []
+        }
+
+      validateFields(validateFieldsKeys, { force: true }, (err, values) => {
         if (!err) {
           console.log('login form', values)
-          const loginParams = { ...values }
-          delete loginParams.username
-          loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = md5(values.password)
+
+          const loginParams = {}
+
+          switch (loginType) {
+            case this.loginTypeEnum.USERNAMEANDPASSWORD:
+              loginParams['loginType'] = 'usernameAndPassword'
+              loginParams['identity'] = values.username
+              loginParams['credentials'] = md5(values.password)
+              break
+            case this.loginTypeEnum.MOBILE:
+              loginParams['loginType'] = 'mobile'
+              loginParams['identity'] = values.mobile
+              loginParams['credentials'] = values.mobileCaptcha
+              break
+            case this.loginTypeEnum.EMAIL:
+              loginParams['loginType'] = 'email'
+              loginParams['identity'] = values.email
+              loginParams['credentials'] = values.emailCaptcha
+              break
+            default:
+              loginParams['loginType'] = 'usernameAndPassword'
+              loginParams['identity'] = values.username
+              loginParams['credentials'] = md5(values.password)
+          }
+
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
@@ -288,7 +327,7 @@ export default {
           }, 1000)
 
           const hide = this.$message.loading('验证码发送中..', 0)
-          getSmsCaptcha({ mobile: values.mobile }).then(res => {
+          getCaptcha({ mobile: values.mobile }).then(res => {
             setTimeout(hide, 2500)
             this.$notification['success']({
               message: '提示',

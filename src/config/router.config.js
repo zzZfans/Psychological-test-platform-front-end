@@ -15,7 +15,14 @@ export const asyncRouterMap = [
     meta: { title: 'menu.home' },
     redirect: '/dashboard/workplace',
     children: [
-      //
+      // 权限管理
+      {
+        path: '/permissionManagement',
+        component: () => import('@/views/permissionManagement'),
+        name: 'permissionManagement',
+        meta: { title: '权限管理', icon: 'radar-chart' }
+      },
+      // 系统监控
       {
         path: '/systemMonitor',
         component: RouteView,
