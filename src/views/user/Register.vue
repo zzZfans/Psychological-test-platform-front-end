@@ -388,6 +388,8 @@ export default {
                 registrationType = '邮箱信息！'
             }
 
+            parameter.scene = 'register'
+
             getCaptcha(parameter).then(res => {
               console.log('res:' + JSON.stringify(res))
               setTimeout(hide)

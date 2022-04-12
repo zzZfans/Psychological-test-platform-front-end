@@ -352,6 +352,8 @@ export default {
                 loginType = '邮箱信息！'
             }
 
+            parameter.scene = 'login'
+
             getCaptcha(parameter).then(res => {
               console.log('res:' + JSON.stringify(res))
               setTimeout(hide)
