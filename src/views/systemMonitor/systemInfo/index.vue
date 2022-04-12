@@ -99,9 +99,9 @@ export default {
     systemInfo().then((res) => {
       console.log(JSON.stringify(res))
       this.loading = false
-      this.javaInfo = res.data.javaRuntimeInfo
-      this.osInfo = res.data.osInfo
-      this.jvmMemInfo = res.data.jvmInfo
+      this.javaInfo = res.result.javaRuntimeInfo
+      this.osInfo = res.result.osInfo
+      this.jvmMemInfo = res.result.jvmInfo
     })
   },
   methods: {

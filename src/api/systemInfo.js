@@ -6,7 +6,7 @@ const systemInfoApi = {
 
 export function systemInfo () {
   return request({
-    url: 'http://localhost:8080' + systemInfoApi.systemInfo,
+    url: systemInfoApi.systemInfo,
     method: 'get'
   })
 }
