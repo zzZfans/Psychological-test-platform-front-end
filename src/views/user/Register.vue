@@ -108,8 +108,8 @@
               size="large"
               type="text"
               :placeholder="$t('user.register.email.placeholder')"
-              v-decorator="['title',
-                            {rules: [{ required: true, type: 'title', message: $t('user.email.required') }],
+              v-decorator="['email',
+                            {rules: [{ required: true, type: 'email', message: $t('user.email.required') }],
                              validateTrigger: 'change'}]"
             >
               <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -305,7 +305,7 @@ export default {
           validateFieldsKeys.push('mobileCaptcha')
           break
         case this.registrationTypeEnum.EMAIL:
-          validateFieldsKeys.push('title')
+          validateFieldsKeys.push('email')
           validateFieldsKeys.push('emailCaptcha')
       }
 
@@ -327,7 +327,7 @@ export default {
               }
               break
             case this.registrationTypeEnum.EMAIL:
-              parameter = { registrationType: 'title',
+              parameter = { registrationType: 'email',
                 username: values.username,
                 password: md5(values.password),
                 email: values.email,
@@ -356,7 +356,7 @@ export default {
           validateFieldsKey = ['mobile']
           break
         case this.registrationTypeEnum.EMAIL:
-          validateFieldsKey = ['title']
+          validateFieldsKey = ['email']
       }
 
       validateFields(validateFieldsKey, { force: true },
@@ -384,7 +384,7 @@ export default {
                 registrationType = '短信信息！'
                 break
               case this.registrationTypeEnum.EMAIL:
-                parameter = { captchaType: 'title', value: values.email }
+                parameter = { captchaType: 'email', value: values.email }
                 registrationType = '邮箱信息！'
             }
 

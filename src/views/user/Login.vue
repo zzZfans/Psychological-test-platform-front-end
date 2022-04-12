@@ -81,9 +81,9 @@
               <a-button
                 class="getCaptcha"
                 tabindex="-1"
-                :disabled="state.smsSendBtn"
+                :disabled="state.captchaSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
+                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
               ></a-button>
             </a-col>
           </a-row>
@@ -122,9 +122,9 @@
               <a-button
                 class="getCaptcha"
                 tabindex="-1"
-                :disabled="state.smsSendBtn"
+                :disabled="state.captchaSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
+                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code') || (state.time+' s')"
               ></a-button>
             </a-col>
           </a-row>
@@ -218,7 +218,7 @@ export default {
       state: {
         time: 60,
         loginBtn: false,
-        smsSendBtn: false
+        captchaSendBtn: false
       }
     }
   },
@@ -309,40 +309,67 @@ export default {
         }
       })
     },
-
     getCaptcha (e) {
       e.preventDefault()
-      const { form: { validateFields }, state } = this
+      const { form: { validateFields }, state, $message, $notification } = this
 
-      validateFields(['mobile'], { force: true }, (err, values) => {
-        if (!err) {
-          state.smsSendBtn = true
+      let validateFieldsKey
 
-          const interval = window.setInterval(() => {
-            if (state.time-- <= 0) {
-              state.time = 60
-              state.smsSendBtn = false
-              window.clearInterval(interval)
+      switch (this.loginType) {
+        case this.loginTypeEnum.MOBILE:
+          validateFieldsKey = ['mobile']
+          break
+        case this.loginTypeEnum.EMAIL:
+          validateFieldsKey = ['email']
+      }
+
+      validateFields(validateFieldsKey, { force: true },
+        (err, values) => {
+          console.log('values:' + JSON.stringify(values))
+          if (!err) {
+            state.captchaSendBtn = true
+
+            const interval = window.setInterval(() => {
+              if (state.time-- <= 0) {
+                state.time = 60
+                state.captchaSendBtn = false
+                window.clearInterval(interval)
+              }
+            }, 1000)
+
+            const hide = $message.loading('验证码发送中...', 0)
+
+            let parameter
+            let loginType
+
+            switch (this.loginType) {
+              case this.loginTypeEnum.MOBILE:
+                parameter = { captchaType: 'mobile', value: values.mobile }
+                loginType = '短信信息！'
+                break
+              case this.loginTypeEnum.EMAIL:
+                parameter = { captchaType: 'email', value: values.email }
+                loginType = '邮箱信息！'
             }
-          }, 1000)
 
-          const hide = this.$message.loading('验证码发送中..', 0)
-          getCaptcha({ mobile: values.mobile }).then(res => {
-            setTimeout(hide, 2500)
-            this.$notification['success']({
-              message: '提示',
-              description: '验证码获取成功，您的验证码为：' + res.result.captcha,
-              duration: 8
+            getCaptcha(parameter).then(res => {
+              console.log('res:' + JSON.stringify(res))
+              setTimeout(hide)
+              $notification['success']({
+                message: '提示',
+                description: '验证码发送成功，请留意您的' + loginType,
+                duration: 8
+              })
+            }).catch(err => {
+              setTimeout(hide, 1)
+              clearInterval(interval)
+              state.time = 60
+              state.captchaSendBtn = false
+              this.requestFailed(err)
             })
-          }).catch(err => {
-            setTimeout(hide, 1)
-            clearInterval(interval)
-            state.time = 60
-            state.smsSendBtn = false
-            this.requestFailed(err)
-          })
+          }
         }
-      })
+      )
     },
     loginSuccess (res) {
       console.log(res)
