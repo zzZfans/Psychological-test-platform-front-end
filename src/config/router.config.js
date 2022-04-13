@@ -269,6 +269,12 @@ export const asyncRouterMap = [
             meta: { title: 'menu.account.center', keepAlive: true, permission: ['user'] }
           },
           {
+            path: '/account/record',
+            name: 'record',
+            component: () => import('@/views/account/record/index'),
+            meta: { title: '测试记录', keepAlive: true, permission: ['user'] }
+          },
+          {
             path: '/account/settings',
             name: 'settings',
             component: () => import('@/views/account/settings/Index'),
@@ -276,6 +282,12 @@ export const asyncRouterMap = [
             redirect: '/account/settings/basic',
             hideChildrenInMenu: true,
             children: [
+              {
+                path: '/account/settings/basic',
+                name: 'BasicSettings',
+                component: () => import('@/views/account/settings/BasicSetting'),
+                meta: { title: 'account.settings.menuMap.basic', hidden: true, permission: ['user'] }
+              },
               {
                 path: '/account/settings/basic',
                 name: 'BasicSettings',

@@ -9,6 +9,7 @@ import dashboard from './zh-CN/dashboard'
 import form from './zh-CN/form'
 import result from './zh-CN/result'
 import account from './zh-CN/account'
+import record from './zh-CN/record'
 
 const components = {
   antLocale: antd,
@@ -24,6 +25,7 @@ export default {
   'layouts.userLayout.title': '大学生心理测试平台是重庆交通大学最具影响力的心理健康诊断辅助系统',
   ...components,
   ...global,
+  ...record,
   ...menu,
   ...setting,
   ...user,
