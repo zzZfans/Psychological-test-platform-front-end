@@ -26,7 +26,7 @@
           <br>
           <div id="answer">
             <div v-for="(ans,index1) in answer" :key="index1">
-              <a-radio-group v-model="vlue" @change="onChange(index1+1)" >
+              <a-radio-group v-model="value" @change="onChange(index1+1)" >
                 <a-radio :style="radioStyle" :value="index1+1" style="border: none;font-size: 25px ">
                   {{ ans }}
                 </a-radio>
