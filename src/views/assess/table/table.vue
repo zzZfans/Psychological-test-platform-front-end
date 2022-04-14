@@ -1,6 +1,14 @@
 <template>
   <page-header-wrapper>
     <a-card class="ant-pro-pages-list-projects-cardList">
+      <a-modal
+        v-model="modal2Visible"
+        title="测试结果展示"
+        centered
+        @ok="modal2Visible = false"
+      >
+        <p>{{ this.access_results }}</p>
+      </a-modal>
       <!--      进度条-->
       <div style=" width: 90%;white-space: nowrap ">
         <div >
@@ -86,6 +94,12 @@ export default {
   },
   data () {
     return {
+      // 测试结果
+      visible: false,
+      modal1Visible: false,
+      modal2Visible: false,
+      access_results: '',
+      // 测试结果
       resultplus: 0,
       lastvalue: '',
       show: true, // 计时器所用属性
@@ -286,18 +300,16 @@ export default {
         if (this.number === (this.nums - 1)) {
           // todo 将结果传入后端
           // 作假判断
+          this.computefunction()
+          this.modal2Visible = true
           if (this.getCode() >= this.wt.length * 10) {
-            alert(this.result)
-            if (this.result > 40) {
-              alert('焦虑！！！！！')
+            // alert(this.result)
               this.reset()
               this.$emit('change', 'table-index', val)
-            }
           } else {
             alert('存在作假测试！')
           }
           } else {
-          alert(this.types)
             this.number++
           }
          this.value = ''
@@ -313,17 +325,17 @@ export default {
       if (this.types === 'mdq') {
         this.resultplus = this.result
         if (this.result >= 7) {
-          alert('7分以上（含），属于阳性（异常）；这种情况建议及时就医，咨询专业医生。')
+          this.access_results = '7分以上（含），属于阳性（异常）；这种情况建议及时就医，咨询专业医生。'
         } else {
-          alert('7分以下，属于阴性（正常）；7分以下建议适度关注自己的情绪和状态变化。')
+          this.access_results = '7分以下，属于阴性（正常）；7分以下建议适度关注自己的情绪和状态变化。'
         }
       }
       if (this.types === 'HCL-32') {
         this.resultplus = this.result
         if (this.result >= 14) {
-          alert('阳性')
+          this.access_results = '阳性'
         } else {
-          alert('阴性')
+          this.access_results = '阴性'
         }
       }
     },
