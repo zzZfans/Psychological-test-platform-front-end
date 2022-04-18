@@ -64,7 +64,7 @@
 
       <div class="table-operator">
         <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
-        <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+        <a-dropdown v-if="selectedRowKeys.length > 0">
           <a-menu slot="overlay">
             <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
             <!-- lock | unlock -->
@@ -120,7 +120,7 @@
 
 <script>
 import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
+import { Ellipsis, STable } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
 
 import StepByStepModal from './modules/StepByStepModal'

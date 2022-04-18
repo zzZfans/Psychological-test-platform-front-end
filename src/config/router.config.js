@@ -15,12 +15,29 @@ export const asyncRouterMap = [
     meta: { title: 'menu.home' },
     redirect: '/dashboard/workplace',
     children: [
-      // 权限管理
+      // 系统管理
       {
-        path: '/permissionManagement',
-        component: () => import('@/views/permissionManagement'),
-        name: 'permissionManagement',
-        meta: { title: '权限管理', icon: 'radar-chart' }
+        path: '/systemManagement',
+        component: RouteView,
+        redirect: '/permissionManagement',
+        name: 'systemManagement',
+        meta: { title: '系统管理', icon: 'setting' },
+        children: [
+          // 角色管理
+          {
+            path: '/roleManagement',
+            component: () => import('@/views/systemManagement/roleManagement'),
+            name: 'roleManagement',
+            meta: { title: '角色管理', icon: 'solution' }
+          },
+          // 权限管理
+          {
+            path: '/permissionManagement',
+            component: () => import('@/views/systemManagement/permissionManagement'),
+            name: 'permissionManagement',
+            meta: { title: '权限管理', icon: 'radar-chart' }
+          }
+        ]
       },
       // 系统监控
       {
@@ -35,6 +52,12 @@ export const asyncRouterMap = [
             name: 'systemInfo',
             component: () => import('@/views/systemMonitor/systemInfo'),
             meta: { title: '系统信息', icon: 'laptop' }
+          },
+          {
+            path: '/systemMonitor/operationLog',
+            name: 'operationLog',
+            component: () => import('@/views/systemMonitor/operationLog'),
+            meta: { title: '操作日志', icon: 'audit' }
           }
         ]
       },

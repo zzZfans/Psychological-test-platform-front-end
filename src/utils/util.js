@@ -93,3 +93,26 @@ export function scorePassword (pass) {
 
   return parseInt(score)
 }
+
+/**
+ * 数组转树形结构
+ * @param source 源数组
+ * @param tree 树
+ * @param parentId 父 ID
+ */
+export const treeData = (source, id, parentId, children) => {
+  const temp = JSON.parse(JSON.stringify(source))
+  // 以 id 为键，当前对象为值，存入一个新的对象中
+  const tempObj = {}
+  for (const i in temp) {
+    tempObj[temp[i][id]] = temp[i]
+  }
+  return temp.filter((father) => {
+    // 把当前节点的所有子节点找到
+    const childArr = temp.filter((child) => father[id] === child[parentId])
+    // eslint-disable-next-line no-unused-expressions
+    childArr.length > 0 ? (father[children] = childArr) : ''
+    // 只返回第一级数据；如果当前节点的 parentId 不为空，但是在父节点不存在，也为一级数据
+    return father[parentId] === null || !tempObj[father[parentId]]
+  })
+}

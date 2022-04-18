@@ -10,7 +10,9 @@
   >
     <a-spin :spinning="loading">
       <a-form :form="form">
-
+        <a-form-item v-show="false">
+          <a-input v-decorator="['id']" />
+        </a-form-item>
         <a-row>
 
           <a-col :md="12" :sm="24">
@@ -18,8 +20,8 @@
               <a-radio-group
                 v-decorator="['permissionType', { rules: [{ required: true, message: '请选择权限类型！' }] }]"
               >
-                <a-radio :value="permissionTypeEnum.MENU" @click="meneOpenTypeFunc(permissionTypeEnum.MENU)">菜单</a-radio>
-                <a-radio :value="permissionTypeEnum.BUTTON" @click="meneOpenTypeFunc(permissionTypeEnum.BUTTON)">按钮</a-radio>
+                <a-radio :value="permissionTypeEnum.MENU" @click="permissionTypeChangeFunc(permissionTypeEnum.MENU)">菜单</a-radio>
+                <a-radio :value="permissionTypeEnum.BUTTON" @click="permissionTypeChangeFunc(permissionTypeEnum.BUTTON)">按钮</a-radio>
               </a-radio-group>
             </a-form-item>
           </a-col>
@@ -189,7 +191,7 @@
 
 <script>
 import IconSelector from '@/components/IconSelector'
-import { permissionAdd, permissionList } from '@/api/permission'
+import { permissionList, permissionUpdate } from '@/api/permission'
 
 export default {
   components: { IconSelector },
@@ -227,13 +229,25 @@ export default {
     }
   },
   methods: {
-    add () {
+    edit (record) {
+      this.gettTreeDate()
       this.visible = true
-      this.form.getFieldDecorator('permissionType', { valuePropName: 'checked', initialValue: this.permissionTypeEnum.MENU })
-      this.permissionTypeSelect = this.permissionTypeEnum.MENU
-      this.form.getFieldDecorator('status', { valuePropName: 'checked', initialValue: !!this.permissionStatusEnum.ENABLE })
-      this.meneOpenTypeFunc(this.permissionTypeEnum.MENU)
-      this.getPermissionTreeDate()
+      this.permissionTypeChangeFunc(record.permissionType)
+      this.$nextTick(() => {
+        this.form.setFieldsValue({
+          id: record.id,
+          permissionType: record.permissionType,
+          permissionName: record.permissionName,
+          redirect: record.redirect,
+          status: !!record.status,
+          description: record.description,
+          routerName: record.routerName,
+          component: record.component,
+          icon: record.icon,
+          sort: record.sort,
+          permission: record.permission
+        })
+      })
     },
     handleSubmit () {
       const {
@@ -242,17 +256,16 @@ export default {
       this.confirmLoading = true
       validateFields((errors, values) => {
         if (!errors) {
-          values.status = values.status ? this.permissionStatusEnum.ENABLE : this.permissionStatusEnum.DISABLE
-          console.log('values:' + JSON.stringify(values))
-          permissionAdd(values)
+        values.status = values.status ? this.permissionStatusEnum.ENABLE : this.permissionStatusEnum.DISABLE
+          permissionUpdate(values)
             .then((res) => {
               this.confirmLoading = false
               if (res.success) {
-                this.$message.success('新增成功')
+                this.$message.success('更新成功')
                 this.$emit('ok', values)
                 this.handleCancel()
               } else {
-                this.$message.error('新增失败：' + res.message)
+                this.$message.error('更新失败：' + res.message)
               }
             })
             .finally((res) => {
@@ -262,6 +275,20 @@ export default {
           this.confirmLoading = false
         }
       })
+    },
+    permissionTypeChangeFunc (e) {
+      if (e === this.permissionTypeEnum.BUTTON) {
+        this.routerRequired = false
+        this.componentRequired = false
+        this.permissionRequired = true
+        this.componentNameRequired = false
+      } else {
+        this.routerRequired = true
+        this.componentRequired = true
+        this.permissionRequired = false
+        this.componentNameRequired = true
+      }
+      this.permissionTypeSelect = e
     },
     handleCancel () {
       this.form.resetFields()
@@ -278,21 +305,7 @@ export default {
     openIconSele () {
       this.visibleIcon = true
     },
-    meneOpenTypeFunc (e) {
-      if (e === this.permissionTypeEnum.BUTTON) {
-        this.routerRequired = false
-        this.componentRequired = false
-        this.permissionRequired = true
-        this.componentNameRequired = false
-      } else {
-        this.routerRequired = true
-        this.componentRequired = true
-        this.permissionRequired = false
-        this.componentNameRequired = true
-      }
-      this.permissionTypeSelect = e
-    },
-    getPermissionTreeDate () {
+    gettTreeDate () {
       permissionList().then((res) => {
         if (!res.success) {
           this.$message.error('菜单获取失败')

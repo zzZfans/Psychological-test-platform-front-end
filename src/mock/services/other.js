@@ -968,6 +968,6 @@ const permissions = () => {
 }
 
 Mock.mock(/\/org\/tree/, 'get', orgTree)
-Mock.mock(/\/role/, 'get', role)
+Mock.mock(/\/role_/, 'get', role)
 Mock.mock(/\/permission\/no-pager/, 'get', permissionNoPager)
 Mock.mock(/\/permission_/, 'get', permissions)

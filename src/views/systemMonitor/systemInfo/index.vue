@@ -83,7 +83,7 @@
   </page-header-wrapper>
 </template>
 <script>
-import { systemInfo } from '@/api/systemInfo'
+import { systemInfo } from '@/api/system'
 
 export default {
   data () {

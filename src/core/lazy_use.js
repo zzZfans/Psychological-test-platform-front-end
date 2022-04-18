@@ -45,6 +45,7 @@ import {
   Tag,
   TimePicker,
   Tooltip,
+  Tree,
   TreeSelect,
   Upload
 } from 'ant-design-vue'
@@ -93,6 +94,7 @@ Vue.use(DatePicker)
 Vue.use(TimePicker)
 Vue.use(Upload)
 Vue.use(TreeSelect)
+Vue.use(Tree)
 Vue.use(Progress)
 Vue.use(Skeleton)
 Vue.use(Popconfirm)
