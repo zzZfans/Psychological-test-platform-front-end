@@ -14,11 +14,10 @@ export function permissionList () {
   })
 }
 
-export function permissionDelete (parameter) {
+export function permissionDelete (id) {
   return request({
-    url: permissionApi.permissionDelete,
-    method: 'post',
-    data: parameter
+    url: permissionApi.permissionDelete + '/' + id,
+    method: 'delete'
   })
 }
 

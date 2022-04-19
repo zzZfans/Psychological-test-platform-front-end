@@ -145,7 +145,7 @@ export default {
         this.notification('error', '错误', '不能删除有子权限的节点，请先删除子节点！', 3)
         return
       }
-      permissionDelete(record).then((res) => {
+      permissionDelete(record.id).then((res) => {
         if (!res.success) {
           this.notification('error', '错误', '删除失败！', 3)
           return

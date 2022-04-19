@@ -160,7 +160,7 @@
             <div>
               <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="图标">
                 <a-input placeholder="请选择图标" disabled="disabled" v-decorator="['icon']">
-                  <a-icon slot="addonAfter" @click="openIconSele()" type="setting" />
+                  <a-icon slot="addonAfter" @click="openIconSelecter()" type="setting" />
                 </a-input>
               </a-form-item>
             </div>
@@ -229,8 +229,8 @@ export default {
     }
   },
   methods: {
-    edit (record) {
-      this.gettTreeDate()
+     edit (record) {
+       this.getTreeDate()
       this.visible = true
       this.permissionTypeChangeFunc(record.permissionType)
       this.$nextTick(() => {
@@ -239,6 +239,7 @@ export default {
           permissionType: record.permissionType,
           permissionName: record.permissionName,
           redirect: record.redirect,
+          parentId: record.parentId,
           status: !!record.status,
           description: record.description,
           routerName: record.routerName,
@@ -302,11 +303,11 @@ export default {
       this.form.getFieldDecorator('icon', { initialValue: icon })
       this.visibleIcon = false
     },
-    openIconSele () {
+    openIconSelecter () {
       this.visibleIcon = true
     },
-    gettTreeDate () {
-      permissionList().then((res) => {
+     getTreeDate () {
+       permissionList().then((res) => {
         if (!res.success) {
           this.$message.error('菜单获取失败')
           return
