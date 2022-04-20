@@ -49,8 +49,8 @@
             {{ record.emailAddress }}
           </a-descriptions-item>
           <a-descriptions-item label="性别">
-            <a-tag :color="record.sex === 1 ? 'purple' : 'cyan'">
-              {{ record.sex === 1 ? '男' : '女' }}
+            <a-tag :color="record.sex === 1 ? 'blue':record.sex === 0 ? 'cyan' : 'purple'">
+              {{ record.sex === 1 ? '男' : record.sex === 0 ? '女':'保密' }}
             </a-tag>
           </a-descriptions-item>
           <a-descriptions-item label="创建时间">
@@ -62,8 +62,8 @@
         </a-descriptions>
       </div>
       <span slot="sex" slot-scope="text, record">
-        <a-tag :color="record.sex === 1 ? 'purple' : 'cyan'">
-          {{ record.sex === 1 ? '男' : '女' }}
+        <a-tag :color="record.sex === 1 ? 'blue':record.sex === 0 ? 'cyan' : 'purple'">
+          {{ record.sex === 1 ? '男' : record.sex === 0 ? '女':'保密' }}
         </a-tag>
       </span>
       <span slot="status" slot-scope="text, record">
