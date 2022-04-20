@@ -100,7 +100,8 @@
 </template>
 
 <script>
-import { permissionIdList, roleDelete, roleListAndPermissionList, roleSaveOrUpdate } from '@/api/system'
+import { roleDelete, roleListAndPermissionList, roleSaveOrUpdate } from '@/api/role'
+import { permissionIdList } from '@/api/permission'
 import { treeData } from '@/utils/util.js'
 
 export default {

@@ -4,7 +4,8 @@ const permissionApi = {
   permissionList: '/permission/list',
   permissionDelete: '/permission/delete',
   permissionAdd: '/permission/add',
-  permissionUpdate: '/permission/update'
+  permissionUpdate: '/permission/update',
+  permissionIdList: '/role/permissionIdList'
 }
 
 export function permissionList () {
@@ -34,5 +35,12 @@ export function permissionUpdate (parameter) {
     url: permissionApi.permissionUpdate,
     method: 'post',
     data: parameter
+  })
+}
+
+export function permissionIdList (id) {
+  return request({
+    url: permissionApi.permissionIdList + '/' + id,
+    method: 'get'
   })
 }

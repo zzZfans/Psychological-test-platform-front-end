@@ -23,6 +23,13 @@ export const asyncRouterMap = [
         name: 'systemManagement',
         meta: { title: '系统管理', icon: 'setting' },
         children: [
+          // 用户管理
+          {
+            path: '/userManagement',
+            component: () => import('@/views/systemManagement/userManagement'),
+            name: 'userManagement',
+            meta: { title: '用户管理', icon: 'solution' }
+          },
           // 角色管理
           {
             path: '/roleManagement',
