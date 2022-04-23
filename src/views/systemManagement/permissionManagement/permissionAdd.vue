@@ -158,7 +158,7 @@
             <div>
               <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="图标">
                 <a-input placeholder="请选择图标" disabled="disabled" v-decorator="['icon']">
-                  <a-icon slot="addonAfter" @click="openIconSele()" type="setting" />
+                  <a-icon slot="addonAfter" @click="openIconSelector()" type="setting" />
                 </a-input>
               </a-form-item>
             </div>
@@ -274,7 +274,7 @@ export default {
       this.form.getFieldDecorator('icon', { initialValue: icon })
       this.visibleIcon = false
     },
-    openIconSele () {
+    openIconSelector () {
       this.visibleIcon = true
     },
     permissionTypeChangeFunc (e) {

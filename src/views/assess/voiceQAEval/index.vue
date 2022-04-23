@@ -124,11 +124,11 @@ export default {
       console.log('submit')
       this.recorder.pause() // 暂停录音
       this.timer = null
-      var formData = new FormData()
-      var blob = this.recorder.getWAVBlob()// 获取wav格式音频数据
-      // 此处获取到blob对象后需要设置fileName满足当前项目上传需求，其它项目可直接传把blob作为		  file塞入formData
-      var newbolb = new Blob([blob], { type: 'audio/wav' })
-      var fileOfBlob = new File([newbolb], new Date().getTime() + '.wav')
+      const formData = new FormData()
+      const blob = this.recorder.getWAVBlob()// 获取 wav 格式音频数据
+      // 此处获取到 blob 对象后需要设置 fileName 满足当前项目上传需求，其它项目可直接传把 blob 作为 file 塞入 formData
+      const newbolb = new Blob([blob], { type: 'audio/wav' })
+      const fileOfBlob = new File([newbolb], new Date().getTime() + '.wav')
       // formData是传给后端的对象,
       formData.append('file', fileOfBlob)
 

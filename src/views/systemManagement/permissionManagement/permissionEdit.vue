@@ -160,7 +160,7 @@
             <div>
               <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="图标">
                 <a-input placeholder="请选择图标" disabled="disabled" v-decorator="['icon']">
-                  <a-icon slot="addonAfter" @click="openIconSelecter()" type="setting" />
+                  <a-icon slot="addonAfter" @click="openIconSelector()" type="setting" />
                 </a-input>
               </a-form-item>
             </div>
@@ -300,10 +300,10 @@ export default {
       this.visibleIcon = false
     },
     handleIconChange (icon) {
-      this.form.getFieldDecorator('icon', { initialValue: icon })
+      this.form.setFieldsValue({ icon: icon })
       this.visibleIcon = false
     },
-    openIconSelecter () {
+    openIconSelector () {
       this.visibleIcon = true
     },
      getTreeDate () {
