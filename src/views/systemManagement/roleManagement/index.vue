@@ -63,6 +63,7 @@
                   checkStrictly
                   show-icon
                   multiple
+                  defaultExpandAll
                   :tree-data="treeData"
                   @select="onSelect"
                   @check="onCheck"

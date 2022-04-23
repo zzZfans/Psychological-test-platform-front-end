@@ -70,9 +70,9 @@ export const asyncRouterMap = [
       },
       // 录音测试
       {
-        path: '/SoundRecordingTest',
-        name: 'SoundRecordingTest',
-        component: () => import('@/views/SoundRecordingTest'),
+        path: '/voiceQAEval',
+        name: 'voiceQAEval',
+        component: () => import('@/views/assess/voiceQAEval'),
         meta: { title: '录音测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
       },
       // dashboard

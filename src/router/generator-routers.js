@@ -72,7 +72,7 @@ const rootRouter = {
   name: 'index',
   path: '',
   component: 'BasicLayout',
-  redirect: '/systemMonitor',
+  redirect: '/dashboard/info',
   meta: {
     title: '首页'
   },
