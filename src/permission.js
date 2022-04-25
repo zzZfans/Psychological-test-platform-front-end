@@ -7,18 +7,25 @@ import notification from 'ant-design-vue/es/notification'
 import { domTitle, setDocumentTitle } from '@/utils/domUtil'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { i18nRender } from '@/locales'
+import { tokenTest } from '@/api/login'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const allowList = ['login', 'register', 'registerResult'] // no redirect allowList
 const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
+const defaultRoutePath = '/dashboard/info'
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && typeof to.meta.title !== 'undefined' && setDocumentTitle(`${domTitle} - ${i18nRender(to.meta.title)}`)
   /* has token */
-  if (storage.get(ACCESS_TOKEN)) {
+  const accessToken = storage.get(ACCESS_TOKEN)
+  let isValidToken = false
+  await tokenTest().then(res => {
+    isValidToken = res.success
+  })
+  // console.log(accessToken, isValidToken)
+  if (accessToken && isValidToken) {
     if (to.path === loginRoutePath) {
       next({ path: defaultRoutePath })
       NProgress.done()

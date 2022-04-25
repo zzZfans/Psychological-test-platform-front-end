@@ -10,7 +10,8 @@ const userApi = {
   SendSmsErr: '/account/sms_err',
   // get my info
   UserInfo: '/user/info',
-  UserMenu: '/user/nav'
+  UserMenu: '/user/nav',
+  tokenTest: '/user/test'
 }
 
 /**
@@ -61,6 +62,13 @@ export function getInfo () {
 export function getCurrentUserNav () {
   return request({
     url: userApi.UserMenu,
+    method: 'get'
+  })
+}
+
+export function tokenTest () {
+  return request({
+    url: userApi.tokenTest,
     method: 'get'
   })
 }
