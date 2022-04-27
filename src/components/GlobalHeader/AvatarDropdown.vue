@@ -2,7 +2,9 @@
   <a-dropdown v-if="currentUser && currentUser.name" placement="bottomLeft">
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
-      <span>{{ currentUser.name }}</span>
+      <a-badge :count="count">
+        <span>{{ currentUser.name }}</span>
+      </a-badge>
     </span>
     <template v-slot:overlay>
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
@@ -11,7 +13,9 @@
           {{ $t('menu.account.center') }}
         </a-menu-item>
         <a-menu-item v-if="menu" key="settings" @click="handleToSettings">
-          <a-icon type="setting" />
+          <a-badge :count="count">
+            <a-icon type="setting" />
+          </a-badge>
           {{ $t('menu.account.settings') }}
         </a-menu-item>
         <a-menu-divider v-if="menu" />
@@ -41,6 +45,17 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  data () {
+    return {
+     count: ''
+    }
+  },
+  created () {
+    this.g_bus.$on('watch_unreadCount', () => {
+      // 具体函数内容
+      this.count = this.g_data.unreadCount
+    })
   },
   methods: {
     handleToCenter () {

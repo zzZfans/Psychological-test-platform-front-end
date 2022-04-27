@@ -75,6 +75,13 @@ export const asyncRouterMap = [
         component: () => import('@/views/assess/voiceQAEval'),
         meta: { title: '录音测试', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] }
       },
+      // 用户测试记录
+      {
+        path: '/UserAssessRecord',
+        name: 'UserAssessRecord',
+        component: () => import('@/views/assess/record/userRecord'),
+        meta: { title: '用户测试记录', keepAlive: true, icon: 'form', permission: ['dashboard'] }
+      },
       // dashboard
       {
         path: '/dashboard',

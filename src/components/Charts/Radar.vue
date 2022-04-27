@@ -5,8 +5,8 @@
     <v-axis :dataKey="axis2Opts.dataKey" :line="axis2Opts.line" :tickLine="axis2Opts.tickLine" :grid="axis2Opts.grid" />
     <v-legend dataKey="user" marker="circle" :offset="30" />
     <v-coord type="polar" radius="0.8" />
-    <v-line position="item*score" color="user" :size="2" />
-    <v-point position="item*score" color="user" :size="4" shape="circle" />
+    <v-line position="item*level" color="red" :size="2" />
+    <v-point position="item*level" color="red" :size="4" shape="circle" />
   </v-chart>
 </template>
 
@@ -19,11 +19,11 @@ const axis1Opts = {
     lineStyle: {
       lineDash: null
     },
-    hideFirstLine: false
+    hideFirstLine: true
   }
 }
 const axis2Opts = {
-  dataKey: 'score',
+  dataKey: 'level',
   line: null,
   tickLine: null,
   grid: {
@@ -36,12 +36,9 @@ const axis2Opts = {
 
 const scale = [
   {
-    dataKey: 'score',
+    dataKey: 'level',
     min: 0,
-    max: 80
-  }, {
-    dataKey: 'user',
-    alias: '类型'
+    max: 3
   }
 ]
 

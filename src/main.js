@@ -20,6 +20,10 @@ import './core/lazy_use' // use lazy load components
 import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
+// eslint-disable-next-line camelcase
+import g_data from '@/utils/global '
+// eslint-disable-next-line camelcase
+Vue.prototype.g_data = g_data
 
 Vue.config.productionTip = false
 

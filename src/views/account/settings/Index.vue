@@ -31,9 +31,11 @@
               </router-link>
             </a-menu-item>
             <a-menu-item key="/account/settings/notification">
-              <router-link :to="{ name: 'NotificationSettings' }">
-                {{ $t('account.settings.menuMap.notification') }}
-              </router-link>
+              <a-badge :count="count">
+                <router-link :to="{ name: 'NotificationSettings' }">
+                  {{ $t('account.settings.menuMap.notification') }}
+                </router-link>
+              </a-badge>
             </a-menu-item>
           </a-menu>
         </div>
@@ -61,6 +63,7 @@ export default {
     return {
       // horizontal  inline
       mode: 'inline',
+      count: 0,
 
       openKeys: [],
       selectedKeys: [],
@@ -88,6 +91,13 @@ export default {
   },
   mounted () {
     this.updateMenu()
+  },
+  created () {
+    this.g_bus.$on('watch_unreadCount', () => {
+      // 具体函数内容
+      this.count = this.g_data.unreadCount
+    })
+    this.count = this.g_data.unreadCount
   },
   methods: {
     onOpenChange (openKeys) {
