@@ -124,7 +124,7 @@
 </template>
 <script>
 import { Radar } from '@/components'
-import { getUserAnalysis, getUserAssessRecord, getUserHistoryList } from '@/api/asscess'
+import { getUserAnalysis, getUserAssessRecord, getUserHistoryList } from '@/api/assess'
 import { getPushHistory, savePushRecord } from '@/api/pushRecord'
 import { message, Timeline } from 'ant-design-vue'
 
