@@ -126,6 +126,7 @@ export default {
     return {
       isCameraLoading: false,
       hasVideoAndAudioPermission: false,
+      confirmDeclaration: false,
       preQuestionCnt: 0,
       curQueNum: 1,
       questionNum: 10,
@@ -145,11 +146,15 @@ export default {
     }
   },
   created () {
-    events.$on('VoiceQAEvalConfirm', () => {
+    events.$on('ConfirmDeclaration' + this.$options.name, () => {
       this.$refs.DA.visible = false
       this.$refs.DA.loading = false
       this.isCameraLoading = true
+      this.confirmDeclaration = true
       events.$emit('openCamera', this.$options.name, true)
+    })
+    events.$on('CancelDeclaration' + this.$options.name, () => {
+      this.notification('warning', '提示', '您未知悉 “测前须知”，若仍需测试，请点击 “下一题” 或 “录音” 按钮，重新知悉 “测前须知”。', 10)
     })
     events.$on('CameraOpenSuccess' + this.$options.name, () => {
       this.hasVideoAndAudioPermission = true
@@ -205,6 +210,11 @@ export default {
         this.curQueNum--
     },
     nextQuestion () {
+      if (!this.confirmDeclaration) {
+        this.$refs.DA.showModal(this.$options.name)
+        return
+      }
+
       if (!this.hasVideoAndAudioPermission) {
         this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
         return
@@ -254,6 +264,10 @@ export default {
     // 开始录音
     startRecording () {
       console.log('startRecording')
+      if (!this.confirmDeclaration) {
+        this.$refs.DA.showModal(this.$options.name)
+        return
+      }
       if (!this.hasVideoAndAudioPermission) {
         this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
         return

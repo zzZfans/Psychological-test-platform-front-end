@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-modal v-model="visible" :maskClosable="false" on-ok="handleOk">
+    <a-modal v-model="visible" :maskClosable="false" @cancel="handleCancel">
       <template slot="title">测前须知
         <a-icon type="sound" theme="twoTone" />
       </template>
@@ -22,10 +22,6 @@ import events from '@/components/MultiTab/events'
 export default {
   data () {
     return {
-      callerEnum: {
-        VoiceQAEval: 'VoiceQAEval',
-        other: 'other'
-      },
       caller: null,
       loading: false,
       visible: false
@@ -39,17 +35,13 @@ export default {
       this.caller = caller
     },
      handleOk (e) {
-      this.loading = true
-      switch (this.caller) {
-        case this.callerEnum.VoiceQAEval:
-          events.$emit('VoiceQAEvalConfirm')
-          break
-        case this.callerEnum.other:
-          console.log(2)
-      }
+       this.loading = true
+       events.$emit('ConfirmDeclaration' + this.caller)
     },
     handleCancel (e) {
+      console.log('handleCancel')
       this.visible = false
+      events.$emit('CancelDeclaration' + this.caller)
     }
   }
 }
