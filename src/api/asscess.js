@@ -43,3 +43,37 @@ export function getYears () {
     method: 'get'
   })
 }
+
+// 获取年份
+export function getAnalysis () {
+  return request({
+    url: '/assessResult/getAnalysis',
+    method: 'get'
+  })
+}
+
+// 获取年份
+export function getUserAssessRecord (data) {
+  return request({
+    url: '/assessResult/getUserAssessRecord',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取用户测试记录
+export function getUserHistoryList (data) {
+  return request({
+    url: '/assessResult/getUserHistoryList',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取用户分析结果
+export function getUserAnalysis (userId) {
+  return request({
+    url: '/assessResult/getUserAnalysis/' + userId,
+    method: 'get'
+  })
+}

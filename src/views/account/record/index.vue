@@ -1,55 +1,220 @@
 <template>
   <div>
-    <div>
-      <a-card :loading="loading" :bordered="true">
-        <div style="display: inline-block;margin: 0 20px;">
-          <span>选择年份</span>
-          <a-select v-model="searchForm.year" style="width: 120px">
-            <a-select-option v-for="(a,index) in selectYears" :key="index" :value="a">
-              {{a}}
-            </a-select-option>
-          </a-select>
-        </div>
-        <div style="display: inline-block;margin: 0 20px;">
-          <span>选择类型</span>
-          <a-select v-model="searchForm.type" style="width: 120px;">
-            <a-select-option value="">全部</a-select-option>
-            <a-select-option value="躯体化">躯体化</a-select-option>
-            <a-select-option value="强迫症">强迫症</a-select-option>
-            <a-select-option value="抑郁">抑郁</a-select-option>
-            <a-select-option value="焦虑">焦虑</a-select-option>
-            <a-select-option value="敌对">敌对</a-select-option>
-            <a-select-option value="恐怖">恐怖</a-select-option>
-            <a-select-option value="偏执">偏执</a-select-option>
-            <a-select-option value="精神病性">精神病性</a-select-option>
-          </a-select>
-        </div>
-        <div style="display: inline-block;margin: 0 20px;">
-          <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search">查询</a-button>
-          <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="countReset">重置</a-button>
-        </div>
-      </a-card>
-      <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
-        <div class="salesCard">
-          <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
-            <a-tab-pane loading="true" :tab="$t('record.total.count')" key="1">
-              <a-row>
-                <a-col :xl="22" :lg="12" :md="12" :sm="24" :xs="24">
-                  <bar :data="barData" :title="$t('')" />
-                </a-col>
-              </a-row>
-            </a-tab-pane>
-            <a-tab-pane :tab="$t('record.state.count')" key="2">
-              <a-row>
-                <a-col :xl="22" :lg="12" :md="12" :sm="24" :xs="24">
-                  <bar :data="barData2" :title="$t('')" />
-                </a-col>
-              </a-row>
-            </a-tab-pane>
-          </a-tabs>
-        </div>
-      </a-card>
-    </div>
+    <a-card :loading="loading" :bordered="false">
+      <div style="display: inline-block;margin: 0 20px;">
+        <span>选择年份</span>
+        <a-select v-model="searchForm.year" style="width: 120px">
+          <a-select-option v-for="(a,index) in selectYears" :key="index" :value="a">
+            {{ a }}
+          </a-select-option>
+        </a-select>
+      </div>
+      <div style="display: inline-block;margin: 0 20px;">
+        <span>选择类型</span>
+        <a-select v-model="searchForm.type" style="width: 120px;">
+          <a-select-option value="">全部</a-select-option>
+          <a-select-option value="躯体化">躯体化</a-select-option>
+          <a-select-option value="强迫症">强迫症</a-select-option>
+          <a-select-option value="抑郁">抑郁</a-select-option>
+          <a-select-option value="焦虑">焦虑</a-select-option>
+          <a-select-option value="敌对">敌对</a-select-option>
+          <a-select-option value="恐怖">恐怖</a-select-option>
+          <a-select-option value="偏执">偏执</a-select-option>
+          <a-select-option value="精神病性">精神病性</a-select-option>
+          <a-select-option value="人际关系敏感">人际关系敏感</a-select-option>
+        </a-select>
+      </div>
+      <div style="display: inline-block;margin: 0 20px;">
+        <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search">查询</a-button>
+        <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="countReset">重置</a-button>
+      </div>
+    </a-card>
+    <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
+      <div class="salesCard">
+        <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+          <a-tab-pane loading="true" :tab="$t('record.total.count')" key="1">
+            <a-row>
+              <a-col :xl="22" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :data="barData" :title="$t('')" />
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+          <a-tab-pane :tab="$t('record.state.count')" key="2">
+            <a-row>
+              <a-col :xl="22" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :data="barData2" :title="$t('')" />
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </a-card>
+    <a-row :gutter="24" type="flex" :style="{ marginTop: '24px'}">
+      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+        <a-tabs default-active-key="1" style="background-color: white">
+          <a-tab-pane key="1" tab="躯体化">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.躯体化[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.躯体化[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.躯体化[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.躯体化[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.躯体化> 0 ? (nearTerror.躯体化 > 1 ? (nearTerror.躯体化 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.躯体化 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.躯体化> 0 ? (nearExc.躯体化 > 1 ? (nearExc.躯体化 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.躯体化 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="强迫症">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.强迫症[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.强迫症[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.强迫症[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.强迫症[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.强迫症 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.强迫症 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="抑郁">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.抑郁[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.抑郁[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.抑郁[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.抑郁[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.抑郁> 0 ? (nearTerror.抑郁 > 1 ? (nearTerror.抑郁 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.抑郁 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.抑郁> 0 ? (nearExc.抑郁 > 1 ? (nearExc.抑郁 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.抑郁 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="4" tab="焦虑">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.焦虑[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.焦虑[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.焦虑[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.焦虑[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.焦虑> 0 ? (nearTerror.焦虑 > 1 ? (nearTerror.焦虑 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.焦虑 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.焦虑> 0 ? (nearExc.焦虑 > 1 ? (nearExc.焦虑 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.焦虑 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="5" tab="敌对">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.敌对[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.敌对[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.敌对[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.敌对[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.敌对> 0 ? (nearTerror.敌对 > 1 ? (nearTerror.敌对 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.敌对 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.敌对> 0 ? (nearExc.敌对 > 1 ? (nearExc.敌对 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.敌对 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="6" tab="恐怖">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.恐怖[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.恐怖[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.恐怖[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.恐怖[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.恐怖> 0 ? (nearTerror.恐怖 > 1 ? (nearTerror.恐怖 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.恐怖 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.恐怖> 0 ? (nearExc.恐怖 > 1 ? (nearExc.恐怖 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.恐怖 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="7" tab="偏执">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.偏执[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.偏执[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.偏执[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.偏执[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.偏执> 0 ? (nearTerror.偏执 > 1 ? (nearTerror.偏执 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.偏执 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.偏执> 0 ? (nearExc.偏执 > 1 ? (nearExc.偏执 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.偏执 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="8" tab="精神病性">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.精神病性[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.精神病性[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.精神病性[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.精神病性[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.精神病性> 0 ? (nearTerror.精神病性 > 1 ? (nearTerror.精神病性 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.精神病性 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.精神病性> 0 ? (nearExc.精神病性 > 1 ? (nearExc.精神病性 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.精神病性 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+          <a-tab-pane key="9" tab="人际关系敏感">
+            <a-descriptions :column="4" :bordered="true">
+              <a-descriptions-item label="正常">{{ nearAssess.人际关系敏感[0] }}次</a-descriptions-item>
+              <a-descriptions-item label="轻度">{{ nearAssess.人际关系敏感[1] }}次</a-descriptions-item>
+              <a-descriptions-item label="中度">{{ nearAssess.人际关系敏感[2] }}次</a-descriptions-item>
+              <a-descriptions-item label="重度">{{ nearAssess.人际关系敏感[3] }}次</a-descriptions-item>
+            </a-descriptions>
+            <br>
+            <a-descriptions :column="2" :bordered="true">
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.人际关系敏感> 0 ? (nearTerror.人际关系敏感 > 1 ? (nearTerror.人际关系敏感 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ terrorTime.人际关系敏感 }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.人际关系敏感> 0 ? (nearExc.人际关系敏感 > 1 ? (nearExc.人际关系敏感 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
+              <a-descriptions-item label="测试时间">{{ nearExcTIme.人际关系敏感 }}</a-descriptions-item>
+            </a-descriptions>
+          </a-tab-pane>
+        </a-tabs>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <a-card :title="$t('record.near.count')">
+          {{ nearAssess }}
+        </a-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <chart-card :loading="loading" :title="$t('dashboard.analysis.operational-effect')" total="78%">
+          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+          <div>
+            <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
+          </div>
+          <template slot="footer">
+            <trend flag="down" style="margin-right: 16px;">
+              <span slot="term">{{ $t('dashboard.analysis.week') }}</span>
+              12%
+            </trend>
+            <trend flag="up">
+              <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
+              80%
+            </trend>
+          </template>
+        </chart-card>
+      </a-col>
+    </a-row>
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="!isMobile && 'desktop'">
       <a-row :gutter="24" type="flex" :style="{ marginTop: '24px' }">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
@@ -59,7 +224,7 @@
                 <span>选择年份</span>
                 <a-select v-model="searchForm2.year" style="width: 80px">
                   <a-select-option v-for="(a,index) in selectYears" :key="index" :value="a">
-                    {{a}}
+                    {{ a }}
                   </a-select-option>
                 </a-select>
               </div>
@@ -92,64 +257,47 @@
                   <a-select-option value="恐怖">恐怖</a-select-option>
                   <a-select-option value="偏执">偏执</a-select-option>
                   <a-select-option value="精神病性">精神病性</a-select-option>
+                  <a-select-option value="人际关系敏感">人际关系敏感</a-select-option>
                 </a-select>
               </div>
               <div style="display: inline-block;margin: 0 10px;">
-                <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search1">查询</a-button>
+                <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search1(0)">查询</a-button>
                 <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="reset">重置</a-button>
               </div>
             </a-card>
             <div class="ant-table-wrapper">
               <a-table
-                size="small"
-                :columns="userRecordColumns"
                 :dataSource="userRecordData"
                 :pagination="pagination"
+                :columns="userRecordColumns"
+                :defaultExpandAllRows="true"
+                :loading="loading"
               >
+                <span slot="resultLevel" slot-scope="a, record">
+                  <a-tag :color="record.resultLevel > 0 ? (record.resultLevel > 1 ? (record.resultLevel > 2 ? 'red' : 'yellow') : 'blue') : 'green'">
+                    {{ record.resultLevel > 0 ? (record.resultLevel > 1 ? (record.resultLevel > 2 ? '重度' : '中度') : '轻度') : '正常' }}
+                  </a-tag>
+                </span>
               </a-table>
             </div>
           </a-card>
         </a-col>
         <a-col :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card class="antd-pro-pages-dashboard-analysis-salesCard" :loading="loading" :bordered="false" :title="$t('dashboard.analysis.the-proportion-of-sales')" :style="{ height: '100%' }">
-            <div slot="extra" style="height: inherit;">
-              <!-- style="bottom: 12px;display: inline-block;" -->
-              <span class="dashboard-analysis-iconGroup">
-                <a-dropdown :trigger="['click']" placement="bottomLeft">
-                  <a-icon type="ellipsis" class="ant-dropdown-link" />
-                  <a-menu slot="overlay">
-                    <a-menu-item>
-                      <a href="javascript:;">{{ $t('dashboard.analysis.dropdown-option-one') }}</a>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a href="javascript:;">{{ $t('dashboard.analysis.dropdown-option-two') }}</a>
-                    </a-menu-item>
-                  </a-menu>
-                </a-dropdown>
-              </span>
-              <div class="analysis-salesTypeRadio">
-                <a-radio-group defaultValue="a">
-                  <a-radio-button value="a">{{ $t('dashboard.analysis.channel.all') }}</a-radio-button>
-                  <a-radio-button value="b">{{ $t('dashboard.analysis.channel.online') }}</a-radio-button>
-                  <a-radio-button value="c">{{ $t('dashboard.analysis.channel.stores') }}</a-radio-button>
-                </a-radio-group>
-              </div>
-
-            </div>
-            <h4>{{ $t('dashboard.analysis.sales') }}</h4>
-            <div>
-              <!-- style="width: calc(100% - 240px);" -->
-              <div>
-                <v-chart :force-fit="true" :height="405" :data="pieData" :scale="pieScale">
-                  <v-tooltip :showTitle="false" dataKey="item*percent" />
-                  <v-axis />
-                  <!-- position="right" :offsetX="-140" -->
-                  <v-legend dataKey="item"/>
-                  <v-pie position="percent" color="item" :vStyle="pieStyle" />
-                  <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
-                </v-chart>
-              </div>
-
+          <a-card
+            style="margin-bottom: 24px"
+            v-if="refresh"
+            :loading="loading"
+            :bordered="false"
+            :body-style="{ padding: 0 }"
+            :title="$t('record.near.condition')"
+          >
+            <span style="margin-left: 5%">最近状态</span>
+            <a-tooltip :title="$t('record.level.explain')" style="margin-left: 80%">
+              <a-icon type="info-circle-o" />
+            </a-tooltip>
+            <div style="min-height: 400px;">
+              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
+              <radar :data="radarData" />
             </div>
           </a-card>
         </a-col>
@@ -161,36 +309,70 @@
 <script>
 import {
   Bar,
-  ChartCard,
-  MiniArea,
-  MiniBar,
-  MiniProgress,
-  MiniSmoothArea,
-  NumberInfo,
-  RankList,
-  Trend
+  Radar,
+  ChartCard
 } from '@/components'
-// eslint-disable-next-line no-unused-vars
-import { saveAssessRecord, userPageRecord, pageRecord, recordCount, getYears } from '@/api/asscess'
-import TagSelectOption from '@/components/TagSelect/TagSelectOption'
+import { userPageRecord, recordCount, getYears, getAnalysis } from '@/api/asscess'
+
+const radarData = [
+    {
+      item: '焦虑',
+      level: 0
+    },
+    {
+      item: '躯体化',
+      level: 0
+    },
+    {
+      item: '强迫症',
+      level: 0
+    },
+    {
+      item: '抑郁',
+      level: 0
+    },
+    {
+      item: '敌对',
+      level: 0
+    },
+    {
+      item: '恐怖',
+      level: 0
+    },
+    {
+      item: '偏执',
+      level: 0
+    },
+    {
+      item: '精神病性',
+      level: 0
+    },
+    {
+      item: '人际关系敏感',
+      level: 0
+    }
+  ]
 export default {
   components: {
-    TagSelectOption,
-    ChartCard,
-    MiniArea,
-    MiniBar,
-    MiniProgress,
-    RankList,
     Bar,
-    Trend,
-    NumberInfo,
-    MiniSmoothArea
+    Radar,
+    ChartCard
   },
   data () {
     return {
+      allTypeDetails: '',
+      nearAssessCount: 0,
       loading: true,
+      refresh: false,
+      radarLoading: true,
       rankList: [],
       userRecordData: [],
+      radarData,
+      nearAssess: [],
+      nearTerror: [],
+      nearExc: [],
+      terrorTime: [],
+      nearExcTIme: [],
       total: 0,
       pagination: {
         current: 1,
@@ -215,7 +397,8 @@ export default {
         {
           title: '情况',
           dataIndex: 'resultLevel',
-          key: 'resultLevel'
+          key: 'resultLevel',
+          scopedSlots: { customRender: 'resultLevel' }
         },
         {
           title: '测试时间',
@@ -242,7 +425,6 @@ export default {
       barData: [],
       barData2: [],
 
-      //
       pieScale: [],
       pieData: [],
       sourceData: [],
@@ -253,21 +435,48 @@ export default {
     }
   },
   methods: {
-    pageSizeChange (val, pageNum) {
+    callback () {
+
+    },
+    getAnalysis () {
+      this.$nextTick(() => {
+        getAnalysis().then(res => {
+          if (res.success) {
+            const analysisData = res.result.analysisDetails
+            this.nearAssess = res.result.allTypeDetails
+            this.nearExc = res.result.nearExc
+            this.nearTerror = res.result.nearTerror
+            this.terrorTime = res.result.terrorTime
+            this.nearExcTIme = res.result.nearExcTIme
+            for (const key in analysisData) {
+              for (let i = 0; i < this.radarData.length; i++) {
+                if (this.radarData[i].item === key) {
+                  this.radarData[i].level = analysisData[key]
+                }
+              }
+            }
+          }
+          this.$nextTick(() => {
+            this.refresh = true
+          })
+        })
+      })
+    },
+    pageSizeChange (pageNum) {
       this.loading = true
       this.pagination.pageSize = pageNum
-      this.pagination.current = val
-      this.getUserRecordList()
+      this.pagination.current = 1
+      this.getUserRecordList(1)
     },
-    pageChange (page, val) {
+    pageChange (page) {
       this.pagination.current = page
-      this.getUserRecordList()
+      this.getUserRecordList(page)
     },
     search () {
       this.getRecordCount()
     },
-    search1 () {
-      this.getUserRecordList()
+    search1 (val) {
+      this.getUserRecordList(val)
     },
     reset () {
       this.searchForm2.year = ''
@@ -312,7 +521,10 @@ export default {
         }
       })
     },
-    getUserRecordList () {
+    getRadarData () {
+      this.radarLoading = false
+    },
+    getUserRecordList (val) {
       const data = {
         assessType: this.searchForm2.type,
         year: this.searchForm2.year,
@@ -320,8 +532,13 @@ export default {
         page: this.pagination.current,
         pageSize: this.pagination.pageSize
       }
+      if (val === 0) {
+        this.pagination.current = 1
+        data.page = 1
+      } else {
+        this.pagination.current = val
+      }
       userPageRecord(data).then(res => {
-        this.customerData = []
         if (res.success) {
           this.userRecordData = res.result.records
           this.total = res.result.total
@@ -336,9 +553,11 @@ export default {
     }, 1000)
   },
   mounted () {
+    this.getAnalysis()
     this.getYears()
     this.getRecordCount()
     this.getUserRecordList()
+    this.getRadarData()
   }
 }
 </script>

@@ -114,7 +114,7 @@
         >
           <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
             <p>{{ item.pusherName }}</p>
-            <p>{{ item.message }}</p>
+            <p>{{ item.message | ellipsis}}</p>
             <p>{{ item.createTime }}</p>
           </a-timeline-item>
         </a-timeline>
@@ -172,6 +172,15 @@ export default {
   components: {
     Radar,
     [Timeline.Item.name]: Timeline.Item
+  },
+  filters: {
+    ellipsis (value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 10) + '...'
+      }
+      return value
+    }
   },
   data () {
     return {
@@ -363,8 +372,6 @@ export default {
           this.total = res.result.total
           this.pagination1.total = this.total
         }
-      }).catch(err => {
-        alert(err)
       })
     },
     getUserAssessRecord (val) {
