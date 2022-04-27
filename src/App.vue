@@ -27,6 +27,10 @@ export default {
       }, 10000)
     }
   },
+  created () {
+    this.$notification.config({ top: '90px' })
+    this.getMessage()
+    },
   computed: {
     locale () {
       // 只是为了切换语言时，更新标题
@@ -35,9 +39,6 @@ export default {
 
       return this.$i18n.getLocaleMessage(this.$store.getters.lang).antLocale
     }
-  },
-  created () {
-    this.getMessage()
   }
 }
 </script>

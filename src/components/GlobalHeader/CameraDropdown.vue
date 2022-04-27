@@ -27,31 +27,19 @@
     </template>
 
   </a-dropdown>
-
-  <!--<div-->
-  <!--  style="margin-right: 12px; align-items:center; display:flex;">-->
-  <!--  <video-->
-  <!--    :class="{'recognition-visualization':isNeedRecVis}"-->
-  <!--    @loadedmetadata="runFaceExpressions"-->
-  <!--    ref="video"-->
-  <!--    autoplay-->
-  <!--    muted-->
-  <!--    playsinline-->
-  <!--    :width="isNeedRecVis?-1:100"-->
-  <!--    :height="isNeedRecVis?-1:64"></video>-->
-  <!--  <canvas v-if="isNeedRecVis" class="recognition-visualization" ref="canvas" />-->
-  <!--</div>-->
 </template>
 
 <script>
 import * as faceapi from 'face-api.js'
 import { AnchorPosition } from 'face-api.js/build/commonjs/draw/DrawTextField'
+import events from '@/components/MultiTab/events'
 
 export default {
   name: 'CameraDropdown',
   props: {},
   data () {
     return {
+      caller: null,
       // 摄像头图标透明度
       cameraIconOpacity: 0,
       // 是否需要人脸检测可视化
@@ -106,8 +94,6 @@ export default {
     this.modelInit()
       .then(this.initFaceMatcher)
 
-    this.cameraStartup()
-
     document.onkeydown = (e) => {
       if (e.key === 'F9') {
         this.isNeedRecVis = !this.isNeedRecVis
@@ -127,6 +113,9 @@ export default {
     this.closeCamera()
   },
   methods: {
+    setCaller (caller) {
+          this.caller = caller
+    },
     // 模型加载
     async modelInit () {
       console.log('modelInit ' + Date.now())
@@ -195,9 +184,18 @@ export default {
           .withFaceDescriptor()
     },
     // 启动摄像头
-    async cameraStartup () {
+    async cameraStartup (isNeedAudio) {
       console.log('cameraStartup ' + Date.now())
-      this.cameraStream = await navigator.mediaDevices.getUserMedia(this.constraints)
+      if (isNeedAudio) {
+        this.constraints.audio = true
+      }
+      this.cameraStream = await navigator.mediaDevices
+                                .getUserMedia(this.constraints)
+                                .catch(() => {
+                                  // Permission denied
+                                  events.$emit('Permission denied' + this.caller)
+                                  events.$emit('closeCamera')
+                                })
       if (this.willBeDestroyed) {
         this.closeCamera()
       }
@@ -226,6 +224,7 @@ export default {
           if (this.videoEl) {
             this.videoEl.srcObject = this.cameraStream
             this.cameraIconOpacity = 1
+            events.$emit('CameraOpenSuccess' + this.caller)
           }
         }
       } else {
@@ -304,14 +303,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.recognition-visualization {
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  border-radius: 8px;
-}
-</style>

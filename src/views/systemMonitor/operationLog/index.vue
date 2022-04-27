@@ -5,13 +5,13 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="6" :sm="24">
-              <a-form-item label="用户 id">
-                <a-input placeholder="请输入用户 id" v-model="queryForm.userId" allowClear />
+              <a-form-item label="用户名">
+                <a-input placeholder="请输入用户名" v-model="queryForm.username" allowClear />
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
-              <a-form-item label="ip">
-                <a-input placeholder="请输入 ip" v-model="queryForm.ip" allowClear />
+              <a-form-item label="IP">
+                <a-input placeholder="请输入 IP" v-model="queryForm.ip" allowClear />
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
@@ -33,14 +33,17 @@
       >
         <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
           <a-descriptions title="日志信息" :column="{ xxl: 3, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-            <a-descriptions-item label="用户 id">
+            <a-descriptions-item label="用户 ID">
               {{ record.userId }}
+            </a-descriptions-item>
+            <a-descriptions-item label="用户名">
+              {{ record.username }}
             </a-descriptions-item>
             <a-descriptions-item label="用户操作">
               {{ record.operation }}
             </a-descriptions-item>
-            <a-descriptions-item label="执行耗时"> {{ record.execTime }}ms </a-descriptions-item>
-            <a-descriptions-item label="用户IP">
+            <a-descriptions-item label="执行耗时"> {{ record.execTime }} ms </a-descriptions-item>
+            <a-descriptions-item label="用户 IP">
               {{ record.ip }}
             </a-descriptions-item>
             <a-descriptions-item label="执行时间">
@@ -71,9 +74,10 @@ export default {
     return {
       queryForm: {},
       columns: [
-        { title: '用户 id', dataIndex: 'userId' },
+        { title: '用户 ID', dataIndex: 'userId' },
+        { title: '用户名', dataIndex: 'username' },
         { title: '用户操作', dataIndex: 'operation' },
-        { title: '执行耗时', dataIndex: 'execTime' },
+        { title: '执行耗时（ms）', dataIndex: 'execTime' },
         {
           title: '请求参数',
           dataIndex: 'params',
@@ -82,7 +86,7 @@ export default {
           scopedSlots: { customRender: 'status' }
         },
         {
-          title: '用户IP',
+          title: '用户 IP',
           dataIndex: 'ip',
           ellipsis: true,
           scopedSlots: { customRender: 'status' }
@@ -113,15 +117,17 @@ export default {
     },
     getLogList () {
       this.loading = true
+
       const params = {
         current: this.pagination.defaultCurrent,
         pageSize: this.pagination.defaultPageSize
       }
 
       const obj = {
-        userId: this.queryForm.userId,
+        username: this.queryForm.username,
         ip: this.queryForm.ip
       }
+
       operationLog(params, obj).then((res) => {
         this.data = res.result.records
         this.pagination.total = res.result.total

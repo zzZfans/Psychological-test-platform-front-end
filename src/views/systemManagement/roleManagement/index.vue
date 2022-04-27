@@ -154,13 +154,6 @@ export default {
     })
   },
   methods: {
-    notification (type, message, description, duration) {
-      this.$notification[type]({
-        message: message,
-        description: description,
-        duration: duration
-      })
-    },
     tableChange (e) {
       this.getRoleList()
     },
@@ -179,7 +172,7 @@ export default {
           console.log('treeData:' + JSON.stringify(this.treeData))
           this.loading = false
         } else {
-          this.notification('error', '错误', res.message, 3)
+          this.notification('error', '错误', res.message, 1)
         }
       })
     },
@@ -203,10 +196,10 @@ export default {
                 this.roleID = ''
                 this.checkedKeys = []
                 this.drawerVisible = false
-                this.notification('success', '提示', '操作成功！', 3)
+                this.notification('success', '提示', '操作成功！', 1)
                 this.getRoleList()
               } else {
-                this.notification('error', '错误', res.message, 3)
+                this.notification('error', '错误', res.message, 1)
               }
             })
             .finally(() => {
@@ -237,7 +230,7 @@ export default {
         if (res.success) {
           this.checkedKeys = res.result
         } else {
-          this.notification('error', '错误', res.message, 3)
+          this.notification('error', '错误', res.message, 1)
         }
       })
       this.$nextTick(() => {
@@ -256,10 +249,10 @@ export default {
         onOk: async () => {
           await roleDelete(id).then((res) => {
             if (res.success) {
-              this.notification('success', '提示', '删除成功！', 3)
+              this.notification('success', '提示', '删除成功！', 1)
               this.getRoleList()
             } else {
-              this.notification('error', '错误', res.message, 3)
+              this.notification('error', '错误', res.message, 1)
             }
           })
         }

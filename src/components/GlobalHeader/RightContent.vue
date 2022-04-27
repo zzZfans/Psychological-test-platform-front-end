@@ -1,7 +1,7 @@
 <template>
   <div :class="wrpCls">
     <!-- 摄像头 -->
-    <camera-dropdown v-if="cameraDropdownVisible" :class="prefixCls"></camera-dropdown>
+    <camera-dropdown ref="camera-dropdown" v-if="cameraDropdownVisible" :class="prefixCls"></camera-dropdown>
     <!-- 用户 -->
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
     <!-- 语言切换 -->
@@ -63,8 +63,12 @@ export default {
     }, 1500)
 
     // 监听打开摄像头消息
-    events.$on('openCamera', () => {
+    events.$on('openCamera', (caller, isNeedAudio) => {
       this.cameraDropdownVisible = true
+      this.$nextTick(() => {
+        this.$refs['camera-dropdown'].setCaller(caller)
+        this.$refs['camera-dropdown'].cameraStartup(isNeedAudio)
+      })
     })
 
     // 监听关闭摄像头消息

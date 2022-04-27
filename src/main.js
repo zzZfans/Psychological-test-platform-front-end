@@ -34,6 +34,14 @@ Vue.component('pro-layout', ProLayout)
 Vue.component('page-container', PageHeaderWrapper)
 Vue.component('page-header-wrapper', PageHeaderWrapper)
 
+Vue.prototype.notification = function (type, message, description, duration) {
+  this.$notification[type]({
+    message: message,
+    description: description,
+    duration: duration
+  })
+}
+
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
 
 new Vue({

@@ -119,13 +119,6 @@ export default {
     this.getPermissionList()
   },
   methods: {
-    notification (type, message, description, duration) {
-      this.$notification[type]({
-        message: message,
-        description: description,
-        duration: duration
-      })
-    },
     getPermissionList () {
       permissionList().then((res) => {
         console.log('permission:' + JSON.stringify(res))

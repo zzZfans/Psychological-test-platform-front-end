@@ -123,12 +123,11 @@
   </page-header-wrapper>
 </template>
 <script>
-import {
-  Radar
-} from '@/components'
-import { getUserAssessRecord, getUserHistoryList, getUserAnalysis } from '@/api/asscess'
+import { Radar } from '@/components'
+import { getUserAnalysis, getUserAssessRecord, getUserHistoryList } from '@/api/asscess'
 import { getPushHistory, savePushRecord } from '@/api/pushRecord'
 import { message, Timeline } from 'ant-design-vue'
+
 const key = 'updatable'
 const radarData = [
   {

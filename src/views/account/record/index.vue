@@ -307,12 +307,8 @@
 </template>
 
 <script>
-import {
-  Bar,
-  Radar,
-  ChartCard
-} from '@/components'
-import { userPageRecord, recordCount, getYears, getAnalysis } from '@/api/asscess'
+import { Bar, ChartCard, Radar } from '@/components'
+import { getAnalysis, getYears, recordCount, userPageRecord } from '@/api/assess'
 
 const radarData = [
     {

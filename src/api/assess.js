@@ -1,5 +1,9 @@
 import request from '@/utils/request'
 
+const assessApi = {
+  saveAudioAndAnalysis: '/file/upload'
+}
+
 // 添加测评记录
 export function saveAssessRecord (data) {
   return request({
@@ -41,6 +45,14 @@ export function getYears () {
   return request({
     url: '/assessResult/getYears',
     method: 'get'
+  })
+}
+
+export function saveAudioAndAnalysis (formData) {
+  return request({
+    url: assessApi.saveAudioAndAnalysis,
+    method: 'post',
+    data: formData
   })
 }
 
