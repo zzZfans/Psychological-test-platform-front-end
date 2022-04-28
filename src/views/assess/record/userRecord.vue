@@ -44,10 +44,25 @@
           </span>
         </a-table>
       </div>
-      <a-modal v-model="modalVisible" title="心理建议" @ok="handleOk">
+      <a-modal width="50%" v-model="modalVisible" title="心理建议" @ok="handleOk">
         <a-textarea :autosize="{ minRows: 1, maxRows: 1}" v-model="title" placeholder="请输入标题" allow-clear />
-        <br>
-        <a-textarea :autosize="{ minRows: 6, maxRows: 12}" v-model="proposal" placeholder="请输入心理建议" allow-clear />
+        <!--        <br>-->
+        <div style="border: 1px solid #ccc;">
+          <Toolbar
+            style="border-bottom: 1px solid #ccc"
+            :editor="editor"
+            :defaultConfig="toolbarConfig"
+            :mode="mode"
+          />
+          <Editor
+            style="height: 300px; overflow-y: hidden;"
+            v-model="html"
+            :defaultConfig="editorConfig"
+            :mode="mode"
+            @onCreated="onCreated"
+          />
+        </div>
+        <!--        <a-textarea :autosize="{ minRows: 6, maxRows: 12}" v-model="proposal" placeholder="请输入心理建议" allow-clear />-->
         <template #footer>
           <a-button key="back" @click="handleCancel">取消</a-button>
           <a-button key="submit" type="primary" :loading="loading" @click="handleOk">推送</a-button>
@@ -114,7 +129,12 @@
         >
           <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
             <p>{{ item.pusherName }}</p>
-            <p>{{ item.message | ellipsis}}</p>
+            <a-tooltip>
+              <template #title>
+                <div v-html="item.message"></div>
+              </template>
+              <p>{{ item.title | ellipsis }}</p>
+            </a-tooltip>
             <p>{{ item.createTime }}</p>
           </a-timeline-item>
         </a-timeline>
@@ -123,10 +143,12 @@
   </page-header-wrapper>
 </template>
 <script>
+import '@wangeditor/editor/dist/css/style.css'
 import { Radar } from '@/components'
 import { getUserAnalysis, getUserAssessRecord, getUserHistoryList } from '@/api/assess'
 import { getPushHistory, savePushRecord } from '@/api/pushRecord'
 import { message, Timeline } from 'ant-design-vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 const key = 'updatable'
 const radarData = [
@@ -170,7 +192,9 @@ const radarData = [
 export default {
   components: {
     Radar,
-    [Timeline.Item.name]: Timeline.Item
+    [Timeline.Item.name]: Timeline.Item,
+    Editor,
+    Toolbar
   },
   filters: {
     ellipsis (value) {
@@ -183,6 +207,11 @@ export default {
   },
   data () {
     return {
+      editor: null,
+      html: '<p>hello</p>',
+      toolbarConfig: { },
+      editorConfig: { placeholder: '请输入内容...' },
+      mode: 'default', // or 'simple'
       title: '',
       proposal: '',
       refresh: false,
@@ -268,11 +297,15 @@ export default {
     }
   },
   methods: {
+    onCreated (editor) {
+      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
+    },
     onDrawerClose () {
       this.userId = ''
       this.drawerVisible = false
     },
     savePushRecord (data) {
+      alert(JSON.stringify(this.html))
       message.loading({ content: 'Loading...', key })
       setTimeout(() => {
         savePushRecord(data).then(res => {
@@ -296,7 +329,7 @@ export default {
     },
     handleOk () {
       const data = {
-        message: this.proposal,
+        message: this.html,
         title: this.title,
         receiverId: this.userId
       }
@@ -304,6 +337,7 @@ export default {
     },
     openModal () {
       this.modalVisible = true
+      this.initEditor()
     },
     getUserAnalysis () {
       getUserAnalysis(this.userId).then(res => {
@@ -427,6 +461,11 @@ export default {
     setTimeout(() => {
       this.loading = !this.loading
     }, 1000)
+  },
+  beforeDestroy () {
+    const editor = this.editor
+    if (editor == null) return
+    editor.destroy() // 组件销毁时，及时销毁编辑器
   },
   mounted () {
     this.getUserAssessRecord()

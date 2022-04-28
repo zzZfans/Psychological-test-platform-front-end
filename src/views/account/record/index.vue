@@ -50,7 +50,7 @@
       </div>
     </a-card>
     <a-row :gutter="24" type="flex" :style="{ marginTop: '24px'}">
-      <a-col :sm="24" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+      <a-col :sm="24" :md="12" :xl="24" :style="{ marginBottom: '24px' }">
         <a-tabs default-active-key="1" style="background-color: white">
           <a-tab-pane key="1" tab="躯体化">
             <a-descriptions :column="4" :bordered="true">
@@ -189,31 +189,7 @@
           </a-tab-pane>
         </a-tabs>
       </a-col>
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <a-card :title="$t('record.near.count')">
-          {{ nearAssess }}
-        </a-card>
-      </a-col>
-      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" :title="$t('dashboard.analysis.operational-effect')" total="78%">
-          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
-            <a-icon type="info-circle-o" />
-          </a-tooltip>
-          <div>
-            <mini-progress color="rgb(19, 194, 194)" :target="80" :percentage="78" height="8px" />
-          </div>
-          <template slot="footer">
-            <trend flag="down" style="margin-right: 16px;">
-              <span slot="term">{{ $t('dashboard.analysis.week') }}</span>
-              12%
-            </trend>
-            <trend flag="up">
-              <span slot="term">{{ $t('dashboard.analysis.day') }}</span>
-              80%
-            </trend>
-          </template>
-        </chart-card>
-      </a-col>
+<!--     2-->
     </a-row>
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="!isMobile && 'desktop'">
       <a-row :gutter="24" type="flex" :style="{ marginTop: '24px' }">

@@ -4,7 +4,6 @@
       <template #renderItem="item">
         <a-list-item>
           <a-list-item-meta
-            :description="item.message | ellipsis"
           >
             <template #title>
               <a v-on:click="readMessage(item)">{{ item.title }}</a>
@@ -19,7 +18,7 @@
       </template>
     </a-list>
     <a-modal v-model="modalVisible" :title="modalTitle" @ok="handleOk">
-      <p>{{modalData}}</p>
+      <p v-html="modalData"></p>
     </a-modal>
   </div>
 </template>
