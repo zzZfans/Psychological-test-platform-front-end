@@ -12,3 +12,13 @@ export function userList (pagingParams, queryParams) {
     data: queryParams
   })
 }
+
+// 头像上传
+export function upload (formData) {
+  return request({
+    url: '/user/avatar/upload',
+    method: 'post',
+    data: formData,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}
