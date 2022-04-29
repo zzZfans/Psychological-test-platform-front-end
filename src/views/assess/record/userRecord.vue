@@ -305,7 +305,6 @@ export default {
       this.drawerVisible = false
     },
     savePushRecord (data) {
-      alert(JSON.stringify(this.html))
       message.loading({ content: 'Loading...', key })
       setTimeout(() => {
         savePushRecord(data).then(res => {
