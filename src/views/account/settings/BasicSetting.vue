@@ -5,25 +5,30 @@
 
         <a-form layout="vertical">
           <a-form-item
-            :label="$t('account.settings.basic.nickname')"
+            :label="$t('用户名称')"
           >
-            <a-input :placeholder="$t('account.settings.basic.nickname-message')" />
+            <a-input :placeholder="$t(userNickname)" v-model="userNickname"></a-input>
           </a-form-item>
           <a-form-item
-            :label="$t('account.settings.basic.profile')"
-          >
-            <a-textarea rows="4" :placeholder="$t('account.settings.basic.profile-message')"/>
-          </a-form-item>
-
-          <a-form-item
-            :label="$t('account.settings.basic.email')"
+            :label="$t('邮箱信息')"
             :required="false"
           >
-            <a-input placeholder="example@ant.design"/>
+            <a-input
+              size="large"
+              type="text"
+              :placeholder="$t(userEmail)"
+              v-model="userEmail"
+              v-decorator="['email',
+                            {rules: [{ required: true, type: 'email', message: $t('user.email.required') }],
+                             validateTrigger: 'change'}]"
+              @blur="email_blur"
+            >
+              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }" />
+            </a-input>
           </a-form-item>
 
           <a-form-item>
-            <a-button type="primary">{{ $t('account.settings.basic.update') }}</a-button>
+            <a-button type="primary" @click="updateBaseInfo">{{ $t('account.settings.basic.update') }}</a-button>
           </a-form-item>
         </a-form>
 
@@ -47,15 +52,21 @@
 
 <script>
 import AvatarModal from './AvatarModal'
-import { baseMixin } from '@/store/app-mixin'
+// import { baseMixin } from '@/store/app-mixin'
+import { updateBaseInfo, getUser } from '@/api/user'
 
 export default {
-  mixins: [baseMixin],
   components: {
     AvatarModal
   },
   data () {
     return {
+      // 获取个人信息
+      userId: 0,
+      user: '',
+      userNickname: '',
+      userEmail: '',
+      message: '',
       // cropper
       preview: {},
       option: {
@@ -76,9 +87,48 @@ export default {
     }
   },
   methods: {
+
+    updateBaseInfo () {
+      const data = {
+        updateUserName: this.userNickname,
+        updateUserAddress: this.userEmail
+      }
+      // this.data.updateImg = this.img // 待处理
+      // this.data.updateId = this.userId
+      updateBaseInfo(data).then(res => {
+        if (res.success) {
+          alert('修改成功')
+        } else {
+          alert(this.$error)
+        }
+      })
+    },
     setavatar (url) {
       this.option.img = url
+    },
+    getUser () {
+      getUser().then(res => {
+        console.log(res)
+        alert(JSON.stringify(res))
+        this.userNickname = res.result.username
+        this.userEmail = res.result.emailAddress
+        this.userId = res.result.id
+        // alert(this.userEmail)
+      }).catch(err => {
+        alert(err)
+      })
+    },
+    email_blur () {
+      var verify = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/
+      if (!verify.test(this.userEmail)) {
+        this.message = '邮箱格式错误, 请重新输入'
+      } else {
+        this.message = '可以请求接口了'
+      }
     }
+  },
+  mounted () {
+    this.getUser()
   }
 }
 </script>

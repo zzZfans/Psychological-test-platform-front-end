@@ -312,7 +312,7 @@ export const asyncRouterMap = [
             path: '/account/center',
             name: 'center',
             component: () => import('@/views/account/center'),
-            meta: { title: 'menu.account.center', keepAlive: true, permission: ['user'] }
+            meta: { title: '用户中心', keepAlive: true, permission: ['user'] }
           },
           {
             path: '/account/record',
@@ -324,7 +324,7 @@ export const asyncRouterMap = [
             path: '/account/settings',
             name: 'settings',
             component: () => import('@/views/account/settings/Index'),
-            meta: { title: 'menu.account.settings', hideHeader: true, permission: ['user'] },
+            meta: { title: '用户设置', hideHeader: true, permission: ['user'] },
             redirect: '/account/settings/basic',
             hideChildrenInMenu: true,
             children: [
@@ -332,7 +332,7 @@ export const asyncRouterMap = [
                 path: '/account/settings/basic',
                 name: 'BasicSettings',
                 component: () => import('@/views/account/settings/BasicSetting'),
-                meta: { title: 'account.settings.menuMap.basic', hidden: true, permission: ['user'] }
+                meta: { title: '基础设置', hidden: true, permission: ['user'] }
               },
               {
                 path: '/account/settings/basic',
@@ -345,7 +345,7 @@ export const asyncRouterMap = [
                 name: 'SecuritySettings',
                 component: () => import('@/views/account/settings/Security'),
                 meta: {
-                  title: 'account.settings.menuMap.security',
+                  title: '安全设置',
                   hidden: true,
                   keepAlive: true,
                   permission: ['user']

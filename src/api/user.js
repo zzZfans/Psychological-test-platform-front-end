@@ -1,14 +1,27 @@
 import request from '@/utils/request'
 
-const userApi = {
-  userList: '/user/list'
+// 获取用户信息
+export function getUser () {
+  return request({
+    url: '/user/info',
+    method: 'get'
+  })
 }
 
-export function userList (pagingParams, queryParams) {
+// 修改用户基本信息
+export function updateBaseInfo (data) {
   return request({
-    url: userApi.userList,
+    url: '/user/updateBaseInfo',
     method: 'post',
-    params: pagingParams,
-    data: queryParams
+    data: data
+  })
+}
+
+// 修改用户密码信息
+export function updatePasswordInfo (data) {
+  return request({
+    url: '/user/updatePasswordInfo',
+    method: 'post',
+    data: data
   })
 }

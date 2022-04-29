@@ -2,7 +2,7 @@ export default {
   'account.settings.menuMap.basic': '基本设置',
   'account.settings.menuMap.security': '安全设置',
   'account.settings.menuMap.custom': '个性化',
-  'account.settings.menuMap.binding': '账号绑定',
+  'account.settings.menuMap.binding': '人脸采集',
   'account.settings.menuMap.notification': '新消息通知',
   'account.settings.basic.avatar': '头像',
   'account.settings.basic.change-avatar': '更换头像',

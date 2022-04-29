@@ -1328,7 +1328,7 @@ const userNav = options => {
       parentId: 10030,
       id: 10034,
       meta: {
-        title: '账户绑定'
+        title: '人脸采集'
       },
       component: 'BindingSettings'
     },

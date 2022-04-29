@@ -118,11 +118,14 @@ export default {
       const formData = new FormData()
       // 输出
       if (type === 'blob') {
+        alert('到这里')
         this.$refs.cropper.getCropBlob((data) => {
           const img = window.URL.createObjectURL(data)
+          alert(img)
           this.model = true
           this.modelSrc = img
           formData.append('file', data, this.fileName)
+          alert(JSON.stringify(formData))
           this.$http.post('https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, { contentType: false, processData: false, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
             .then((response) => {
               console.log('upload response:', response)
