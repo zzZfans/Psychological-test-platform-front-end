@@ -22,15 +22,8 @@ function plugin (Vue) {
   !Vue.prototype.$auth && Object.defineProperties(Vue.prototype, {
     $auth: {
       get () {
-        const _this = this
-        return (permissions) => {
-          const [permission, action] = permissions.split('.')
-          const permissionList = _this.$store.getters.roles.permissions
-          return permissionList.find((val) => {
-            return val.permissionId === permission
-          }).actionList.findIndex((val) => {
-            return val === action
-          }) > -1
+        return (permission) => {
+          return this.$store.getters.permissions.includes(permission)
         }
       }
     }

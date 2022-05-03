@@ -3,6 +3,7 @@
     <a-card :bordered="true">
       <div class="table-operator">
         <a-button
+          v-if="$auth('permission.add')"
           style="margin-bottom: 12px"
           type="primary"
           icon="plus"
@@ -32,11 +33,13 @@
 
           <span slot="action" slot-scope="text, record">
             <a-button
+              v-if="$auth('permission.edit')"
               style="margin: 0"
               type="primary"
               size="small"
               @click="$refs.permissionEdit.edit(record)"
-            >编辑</a-button>
+            >编辑
+            </a-button>
             <a-divider type="vertical" />
             <a-popconfirm placement="right" title="确认删除？" @confirm="() => onDelete(record)">
               <a-button type="primary" size="small">删除</a-button>
@@ -121,8 +124,8 @@ export default {
   methods: {
     getPermissionList () {
       permissionList().then((res) => {
-        console.log('permission:' + JSON.stringify(res))
-        console.log('res.success:' + res.success)
+        // console.log('permission:' + JSON.stringify(res))
+        // console.log('res.success:' + res.success)
         if (!res.success) {
           this.notification('error', '错误', '权限列表获取失败！', 3)
           return

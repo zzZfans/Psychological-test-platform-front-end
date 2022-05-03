@@ -33,7 +33,6 @@
 import * as faceapi from 'face-api.js'
 import { AnchorPosition } from 'face-api.js/build/commonjs/draw/DrawTextField'
 import events from '@/components/MultiTab/events'
-import user from '@/store/modules/user'
 
 export default {
   name: 'CameraDropdown',
@@ -169,8 +168,8 @@ export default {
         return
       }
 
-      const username = user.state.name
-      const imageUri = user.state.avatar
+      const username = this.$store.getters.nickname
+      const imageUri = this.$store.getters.avatar
 
       const imageEl = await faceapi.fetchImage(imageUri)
       const result = await this.detectSingleFaceAndLandmarksAndDescriptor(imageEl)
