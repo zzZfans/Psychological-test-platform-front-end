@@ -1,15 +1,18 @@
 <template>
   <page-header-wrapper>
     <a-spin
-      tip="若有权限提示，请点击允许！摄像头加载中，请稍等片刻 ~"
+      :tip="spinTip"
       size="large"
-      :spinning="isCameraLoading">
+      :spinning="isCameraLoading || isInSubmit">
       <div class="spin-content">
         <a-card >
           <!-- 进度条 -->
           <a-row type="flex" justify="center">
             <a-col :span="20">
-              <a-progress style="font-size: 16px;font-weight: 600" :strokeWidth="12" :percent="curQueNum*10"/>
+              <a-progress
+                style="font-size: 16px;font-weight: 600"
+                :strokeWidth="12"
+                :percent="Math.round((curQueNum-1)/questionNum*100)"/>
             </a-col>
           </a-row>
           <!-- 题目 监控 -->
@@ -103,8 +106,8 @@
     <declaration ref="DA" @requirePermissionSuccess="requirePermissionSuccess">
       <template slot="content">
         <p>一个简单的小评测。</p>
-        <p>我要你的视频权限。</p>
-        <p>我要你的录音权限。</p>
+        <p>需要您授予摄像头权限。</p>
+        <p>需要您授予录音权限。</p>
         <p>点击已知悉即代表同意以上要求。</p>
         <p>最终解释权归本小组所有。</p>
       </template>
@@ -124,13 +127,16 @@ export default {
   },
   data () {
     return {
+      spinTip: '若有权限提示，请点击允许！摄像头加载中，请稍等片刻 ~',
+      isInSubmit: false,
       isCameraLoading: false,
       hasVideoAndAudioPermission: false,
       confirmDeclaration: false,
       preQuestionCnt: 0,
       curQueNum: 1,
-      questionNum: 10,
+      questionNum: 3,
       questions: [],
+      expressionsListList: [],
       recordObjs: [],
       // 正在录音
       isRecording: false,
@@ -146,6 +152,9 @@ export default {
     }
   },
   created () {
+    events.$on('curQueExpressionsList' + this.$options.name, (curQueNum, expressionsList) => {
+            this.expressionsListList[curQueNum] = expressionsList
+    })
     events.$on('ConfirmDeclaration' + this.$options.name, () => {
       this.$refs.DA.visible = false
       this.$refs.DA.loading = false
@@ -173,6 +182,7 @@ export default {
         // 录音时长
         duration: 0
       })
+      this.expressionsListList.push(null)
     }
     this.questions.push('')
     this.questions.push('当前--------------------------------------------------------------------------------------' +
@@ -181,25 +191,28 @@ export default {
       '--------------------------------------------------------------------------------------问题2')
     this.questions.push('当前--------------------------------------------------------------------------------------' +
       '--------------------------------------------------------------------------------------问题3')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题4')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题5')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题6')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题7')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题8')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题9')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题10')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题4')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题5')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题6')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题7')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题8')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题9')
+    // this.questions.push('当前--------------------------------------------------------------------------------------' +
+    //   '--------------------------------------------------------------------------------------问题10')
   },
   mounted () {
     this.$refs.DA.showModal(this.$options.name)
     this.canvas = document.getElementById('canvas')
     this.ctx = this.canvas.getContext('2d')
+  },
+  beforeDestroy () {
+    events.$emit('closeCamera')
   },
   methods: {
     requirePermissionSuccess () {
@@ -209,6 +222,21 @@ export default {
       this.preQuestionCnt++
         this.curQueNum--
     },
+    notificationOfNoVideoAndAudioPermission () {
+      this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
+    },
+    checkForRecording () {
+      if (this.recordObjs[this.curQueNum].duration <= 0 || this.isRecording) {
+        this.notification('warning', '提示', '请先完成回答哦！', 3)
+        return false
+      }
+
+      if (this.isRecordingPlaying) {
+        this.audioStopPlay()
+      }
+
+      return true
+    },
     nextQuestion () {
       if (!this.confirmDeclaration) {
         this.$refs.DA.showModal(this.$options.name)
@@ -216,22 +244,15 @@ export default {
       }
 
       if (!this.hasVideoAndAudioPermission) {
-        this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
+        this.notificationOfNoVideoAndAudioPermission()
         return
       }
 
-      if (this.recordObjs[this.curQueNum].duration <= 0) {
-        this.notification('warning', '提示', '请先回答问题哦！', 1)
+      if (!this.checkForRecording()) {
         return
       }
 
-      if (this.isRecording) {
-        this.stopRecording()
-      }
-
-      if (this.isRecordingPlaying) {
-        this.audioStopPlay()
-      }
+      events.$emit('curQueDone', this.curQueNum)
 
       if (this.preQuestionCnt > 0) {
         this.preQuestionCnt--
@@ -242,10 +263,25 @@ export default {
         console.log('提交第（this.curQueNum - 2）号题')
       }
 
+      while (this.expressionsListList[this.curQueNum] == null) {
+
+      }
+
+      console.log('this.expressionsListList[this.curQueNum]: ' + JSON.stringify(this.expressionsListList[this.curQueNum]))
+
         this.curQueNum++
     },
     submit () { // 发送语音的方法
       console.log('submit')
+
+      if (!this.checkForRecording()) {
+        return
+      }
+
+      this.questionNum--
+      this.spinTip = '数据提交中，请耐心等待测试报告哦 ~'
+      this.isInSubmit = true
+
       this.recordObjs[this.curQueNum].recorder.pause() // 暂停录音
       this.recordObjs[this.curQueNum].formData = new FormData()
       const blob = this.recordObjs[this.curQueNum].recorder.getWAVBlob()// 获取 wav 格式音频数据
@@ -269,7 +305,7 @@ export default {
         return
       }
       if (!this.hasVideoAndAudioPermission) {
-        this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
+        this.notificationOfNoVideoAndAudioPermission()
         return
       }
       if (this.recordObjs[this.curQueNum].recorder) {

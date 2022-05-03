@@ -8,23 +8,11 @@ const userApi = {
   twoStepCode: '/auth/2step-code',
   SendCaptcha: '/captcha',
   SendSmsErr: '/account/sms_err',
-  // get my info
   UserInfo: '/user/info',
   UserMenu: '/user/nav',
   tokenTest: '/user/test'
 }
 
-/**
- * login func
- * parameter: {
- *     username: '',
- *     password: '',
- *     remember_me: true,
- *     captcha: '12345'
- * }
- * @param parameter
- * @returns {*}
- */
 export function login (parameter) {
   return request({
     url: userApi.Login,
@@ -80,17 +68,5 @@ export function logout () {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }
-  })
-}
-
-/**
- * get user 2step code open?
- * @param parameter {*}
- */
-export function get2step (parameter) {
-  return request({
-    url: userApi.twoStepCode,
-    method: 'post',
-    data: parameter
   })
 }

@@ -33,12 +33,19 @@
 import * as faceapi from 'face-api.js'
 import { AnchorPosition } from 'face-api.js/build/commonjs/draw/DrawTextField'
 import events from '@/components/MultiTab/events'
+import user from '@/store/modules/user'
 
 export default {
   name: 'CameraDropdown',
   props: {},
   data () {
     return {
+      isStopWorking: false,
+      warningCnt: 0,
+      maxWarningCnt: 3,
+      faceNotMatchCnt: 0,
+      maxFaceNotMatchCnt: 3,
+      expressionsList: [],
       caller: null,
       // 摄像头图标透明度
       cameraIconOpacity: 0,
@@ -90,7 +97,13 @@ export default {
   },
   // data 数据已经初始化，可以访问，但此时的 dom 没有挂载，可以在这里进行请求服务器数据等操作。
   created () {
-    console.log('created ' + Date.now())
+    // console.log('created ' + Date.now())
+
+    events.$on('curQueDone', (curQueNum) => {
+      events.$emit('curQueExpressionsList' + this.caller, curQueNum, this.expressionsList)
+      this.expressionsList = []
+    })
+
     this.modelInit()
       .then(this.initFaceMatcher)
 
@@ -102,23 +115,23 @@ export default {
   },
   // 此时组件渲染完毕，占位符也都被替换。
   mounted () {
-    console.log('mounted ' + Date.now())
-      this.simulateDropdown()
+    // console.log('mounted ' + Date.now())
+    this.simulateDropdown()
   },
   // 组件在销毁前会调用 beforeDestroy 钩子，可以在这里进行一些定时器或者销毁操作。destroyed 钩子函数会在 Vue 实例销毁后调用。
   beforeDestroy () {
-    console.log('beforeDestroy ' + Date.now())
+    // console.log('beforeDestroy ' + Date.now())
     this.willBeDestroyed = true
 
     this.closeCamera()
   },
   methods: {
     setCaller (caller) {
-          this.caller = caller
+      this.caller = caller
     },
     // 模型加载
     async modelInit () {
-      console.log('modelInit ' + Date.now())
+      // console.log('modelInit ' + Date.now())
       // 人脸检测模型
       await faceapi.nets[this.faceDetectionModelName].loadFromUri('/models')
       // 表情识别模型
@@ -150,14 +163,14 @@ export default {
     },
     // 生成人脸匹配矩阵数组对象，样本图片同步转码
     async initFaceMatcher () {
-      console.log('initFaceMatcher ' + Date.now())
+      // console.log('initFaceMatcher ' + Date.now())
 
       if (this.willBeDestroyed) {
         return
       }
 
-      const username = 'zfans'
-      const imageUri = 'avatar2.jpg'
+      const username = user.state.name
+      const imageUri = user.state.avatar
 
       const imageEl = await faceapi.fetchImage(imageUri)
       const result = await this.detectSingleFaceAndLandmarksAndDescriptor(imageEl)
@@ -170,39 +183,39 @@ export default {
       // descriptors.push(result2.descriptor)
 
       // 返回图片用户和图片转码数组
-      console.log('pre const labeledFaceDescriptors = new faceapi.LabeledFaceDescriptors(username, descriptors)')
+      // console.log('pre const labeledFaceDescriptors = new faceapi.LabeledFaceDescriptors(username, descriptors)')
       const labeledFaceDescriptors = new faceapi.LabeledFaceDescriptors(username, descriptors)
       // 人脸匹配矩阵数组对象转码结果
-      console.log('pre this.faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors)')
+      // console.log('pre this.faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors)')
       this.faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors)
     },
     detectSingleFaceAndLandmarksAndDescriptor (imageEl) {
-      console.log('detectSingleFaceAndLandmarksAndDescriptor ' + Date.now())
-        return faceapi
-          .detectSingleFace(imageEl, this.options)
-          .withFaceLandmarks()
-          .withFaceDescriptor()
+      // console.log('detectSingleFaceAndLandmarksAndDescriptor ' + Date.now())
+      return faceapi
+        .detectSingleFace(imageEl, this.options)
+        .withFaceLandmarks()
+        .withFaceDescriptor()
     },
     // 启动摄像头
     async cameraStartup (isNeedAudio) {
-      console.log('cameraStartup ' + Date.now())
+      // console.log('cameraStartup ' + Date.now())
       if (isNeedAudio) {
         this.constraints.audio = true
       }
       this.cameraStream = await navigator.mediaDevices
-                                .getUserMedia(this.constraints)
-                                .catch(() => {
-                                  // Permission denied
-                                  events.$emit('Permission denied' + this.caller)
-                                  events.$emit('closeCamera')
-                                })
+        .getUserMedia(this.constraints)
+        .catch(() => {
+          // Permission denied
+          events.$emit('Permission denied' + this.caller)
+          events.$emit('closeCamera')
+        })
       if (this.willBeDestroyed) {
         this.closeCamera()
       }
     },
     // 模拟 hover 让 cameraDropdown 的 overlay 先渲染出来
     simulateDropdown () {
-      console.log('simulateDropdown ' + Date.now())
+      // console.log('simulateDropdown ' + Date.now())
       document.getElementById('cameraDropdown').dispatchEvent(new Event('mouseenter'))
       setTimeout(() => {
         if (this.willBeDestroyed) {
@@ -214,7 +227,7 @@ export default {
     },
     // 将摄像头视频流绑定到 Video 上
     bindVideoAndCameraStream () {
-      console.log('bindVideoAndCameraStream ' + Date.now())
+      // console.log('bindVideoAndCameraStream ' + Date.now())
       if (this.willBeDestroyed) {
         return
       }
@@ -233,14 +246,17 @@ export default {
     },
     // 关闭摄像头
     closeCamera () {
-      console.log('closeCamera ' + Date.now())
+      // console.log('closeCamera ' + Date.now())
       if (this.cameraStream) {
         this.cameraStream.getTracks().forEach((track) => track.stop())
       }
     },
     // 人脸检测识别
     async runFaceExpressions () {
-      console.log('runFaceExpressions ' + Date.now())
+      if (this.isStopWorking) {
+        return
+      }
+      // console.log('runFaceExpressions ' + Date.now())
 
       if (this.willBeDestroyed) {
         return
@@ -255,43 +271,105 @@ export default {
       const result = await this.detectSingleFaceAndLandmarksAndDescriptor(this.videoEl)
         .withFaceExpressions()
 
-      console.log('result:' + JSON.stringify(result))
+      // console.log('result:' + JSON.stringify(result))
 
-      if (result) {
-        // 拿到情绪
-        const { expressions } = result
+      if (result === undefined) {
+        this.isStopWorking = true
+        this.$warning({
+          title: '警告',
+          content: (
+            <div>
+              <p>未检测到人脸，请将人脸放在摄像头的可视范围内或不要剧烈晃动！</p>
+            </div>
+          ),
+          okText: '确定',
+          width: 530,
+          onOk: () => {
+            this.isStopWorking = false
+            this.runFaceExpressions()
+          }
+        })
+        return
+      }
+      // 拿到情绪
+      const { expressions, descriptor } = result
 
-        console.log('expressions:' + JSON.stringify(expressions))
+      // console.log('expressions:' + JSON.stringify(expressions))
+      this.expressionsList.push(expressions)
 
-        if (this.isNeedRecVis) {
-          this.canvasEl = this.$refs.canvas
-          console.log('get dims')
-          if (!(this.canvasEl && this.videoEl)) {
+      const label = this.faceMatcher.findBestMatch(descriptor).toString()
+
+      if (label.indexOf('unknown') !== -1) {
+        if (++this.faceNotMatchCnt > this.maxFaceNotMatchCnt) {
+          this.warningCnt++
+          this.isStopWorking = true
+          if (this.warningCnt > this.maxWarningCnt) {
+            this.$warning({
+              title: '警告',
+              content: (
+                <div>
+                  <p>警告已超过 {this.maxWarningCnt} 次，本次测试无效！</p>
+                  <p>即将回到首页。</p>
+                </div>
+              ),
+              okText: '确定',
+              width: 530,
+              onOk: () => {
+                this.$router.push({ name: 'info' })
+              }
+            })
             return
           }
-          const dims = faceapi.matchDimensions(this.canvasEl, this.videoEl, true)
-          console.log('dims.width:' + dims.width + ' dims.height:' + dims.height)
-          const resizedResult = faceapi.resizeResults(result, dims)
-
-          console.log('resizedResult:' + JSON.stringify(resizedResult))
-          const minConfidence = 0.05
-
-          const { descriptor, detection } = resizedResult
-
-          const label = this.faceMatcher.findBestMatch(descriptor).toString()
-          const options = { label: label, drawLabelOptions: { anchorPosition: AnchorPosition.TOP_LEFT } }
-          new faceapi.draw.DrawBox(detection.box, options).draw(this.canvasEl)
-
-          faceapi.draw.drawDetections(this.canvasEl, resizedResult)
-          console.log('drawDetections')
-          faceapi.draw.drawFaceExpressions(this.canvasEl, resizedResult, minConfidence)
-          console.log('drawFaceExpressions-----------------------------------------------------')
-        } else if (this.canvasEl != null) {
-          console.log('清空画布 canvas')
-          this.canvasEl.getContext('2d').clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
-          this.canvasEl = null
+          this.$warning({
+            title: '警告',
+            content: (
+              <div>
+                <p>系统监测发现非本人测试，请对自己的心理测试负责！</p>
+                <p>本次是第 {this.warningCnt} 次警告，超过 {this.maxWarningCnt} 次将取消本次测试。</p>
+                <p>若是本人测试，请更新清晰可辨别的源图后再进行测试。</p>
+              </div>
+            ),
+            okText: '确定',
+            width: 530,
+            onOk: () => {
+              this.isStopWorking = false
+              this.runFaceExpressions()
+            }
+          })
+          return
         }
+      } else {
+        this.faceNotMatchCnt = 0
       }
+
+      if (this.isNeedRecVis) {
+        this.canvasEl = this.$refs.canvas
+        // console.log('get dims')
+        if (!(this.canvasEl && this.videoEl)) {
+          return
+        }
+        const dims = faceapi.matchDimensions(this.canvasEl, this.videoEl, true)
+        // console.log('dims.width:' + dims.width + ' dims.height:' + dims.height)
+        const resizedResult = faceapi.resizeResults(result, dims)
+
+        console.log('resizedResult:' + JSON.stringify(resizedResult))
+        const minConfidence = 0.05
+
+        const { detection } = resizedResult
+
+        const options = { label: label, drawLabelOptions: { anchorPosition: AnchorPosition.TOP_LEFT } }
+        new faceapi.draw.DrawBox(detection.box, options).draw(this.canvasEl)
+
+        faceapi.draw.drawDetections(this.canvasEl, resizedResult)
+        // console.log('drawDetections')
+        faceapi.draw.drawFaceExpressions(this.canvasEl, resizedResult, minConfidence)
+        // console.log('drawFaceExpressions-----------------------------------------------------')
+      } else if (this.canvasEl != null) {
+        // console.log('清空画布 canvas')
+        this.canvasEl.getContext('2d').clearRect(0, 0, this.canvasEl.width, this.canvasEl.height)
+        this.canvasEl = null
+      }
+
       // 不断执行
       setTimeout(() => {
         if (this.willBeDestroyed) {
