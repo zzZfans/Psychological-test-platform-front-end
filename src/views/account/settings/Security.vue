@@ -7,22 +7,22 @@
         <div style="width: 800px">
           <span class="security-list-description">账户密码管理</span>
           <div style="float: right;right: 80px;">
-            <a-button @click="showModal2" type="primary" shape="round"    >修改</a-button>
+            <a-button @click="showModal2" type="primary" shape="round" >修改</a-button>
             <a-modal v-model="visible2" title="密码修改" @ok="updatePasswordInfo">
               <span>原密码:</span>
               <a-form-item>
-          <a-input-password
-            size="large"
-            :placeholder="$t('user.register.password.placeholder')"
-            v-decorator="['Password',
-                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
-                           validateTrigger: 'change'}]"
-            v-model="Password"
-          ></a-input-password>
-                <a-button @click="showModal3" style="float: right;" type="dashed" shape="round"    >{{ $t('user.login.forgot-password') }}</a-button>
-<!--                忘记密码-->
+                <a-input-password
+                  size="large"
+                  :placeholder="$t('user.register.password.placeholder')"
+                  v-decorator="['Password',
+                                {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                                 validateTrigger: 'change'}]"
+                  v-model="Password"
+                ></a-input-password>
+                <a-button @click="showModal3" style="float: right;" type="dashed" shape="round" >{{ $t('user.login.forgot-password') }}</a-button>
+                <!--                忘记密码-->
                 <a-modal v-model="visible3" title="忘记密码" @ok="updateForgetPasswordInfo">
-<!--               隔开-->
+                  <!--               隔开-->
                   <!-- 手机号 -->
                   <a-form-item>
                     <a-input
@@ -43,51 +43,51 @@
                     size="large"
                     :placeholder="$t('user.register.password.placeholder')"
                     v-decorator="['forgetPassword',
-                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
-                           validateTrigger: 'change'}]"
+                                  {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                                   validateTrigger: 'change'}]"
                     v-model="forgetPassword"
                   ></a-input-password>
                   <!-- 验证码 -->
                   <br>
                   <br>
                   <a-row :gutter="16">
-            <a-col class="gutter-row" :span="16">
-              <a-form-item>
-                <a-input
-                  size="large"
-                  type="text"
-                  v-model="mobileCaptcha"
-                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
-                  v-decorator="['mobileCaptcha',
-                                {rules: [{ required: true, message: '请输入验证码' }],
-                                 validateTrigger: 'change'}]">
-                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-                </a-input>
+                    <a-col class="gutter-row" :span="16">
+                      <a-form-item>
+                        <a-input
+                          size="large"
+                          type="text"
+                          v-model="mobileCaptcha"
+                          :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                          v-decorator="['mobileCaptcha',
+                                        {rules: [{ required: true, message: '请输入验证码' }],
+                                         validateTrigger: 'change'}]">
+                          <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                        </a-input>
+                      </a-form-item>
+                    </a-col>
+                    <a-col class="gutter-row" :span="8">
+                      <a-button
+                        class="getCaptcha"
+                        size="large"
+                        :disabled="state.captchaSendBtn"
+                        @click.stop.prevent="getCaptcha('update_password', 0)"
+                        v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+                    </a-col>
+                  </a-row>
+                </a-modal>
+                <!--                忘记密码-->
               </a-form-item>
-            </a-col>
-            <a-col class="gutter-row" :span="8">
-              <a-button
-                class="getCaptcha"
-                size="large"
-                :disabled="state.captchaSendBtn"
-                @click.stop.prevent="getCaptcha"
-                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
-            </a-col>
-          </a-row>
-            </a-modal>
-<!--                忘记密码-->
-        </a-form-item>
               <span>新密码:</span>
               <a-form-item>
-          <a-input-password
-            size="large"
-            :placeholder="$t('user.register.password.placeholder')"
-            v-decorator="['newPassword',
-                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
-                           validateTrigger: 'change'}]"
-            v-model="newPassword"
-          ></a-input-password>
-        </a-form-item>
+                <a-input-password
+                  size="large"
+                  :placeholder="$t('user.register.password.placeholder')"
+                  v-decorator="['newPassword',
+                                {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                                 validateTrigger: 'change'}]"
+                  v-model="newPassword"
+                ></a-input-password>
+              </a-form-item>
             </a-modal>
           </div>
         </div>
@@ -101,47 +101,93 @@
           <span style="color:#ccc"> 已绑定手机: </span>
           <span style="color:#ccc" class="security-list-value">{{ geTel(this.Phone) }}</span>
           <div style="float: right;right: 80px;">
-            <a-button @click="showModal1" type="primary" shape="round"   >修改</a-button>
-            <a-modal v-model="visible" title="修改手机号码" @ok="handleOk">
-<!--               隔开-->
+            <a-button @click="showModal1" type="primary" shape="round" >修改</a-button>
+            <a-modal v-model="visible" title="原手机号码" @ok="handleOk">
+              <!--               隔开-->
               <!-- 手机号 -->
-          <a-form-item>
-            <a-input
-              size="large"
-              :placeholder="$t('user.login.mobile.placeholders')"
-              v-decorator="['mobile',
-                            {rules: [{ required: true, message: $t('user.phone-number.required')},
-                                     { validator: this.handlePhoneCheck } ],
-                             validateTrigger: 'change' }]">
-              <a-select slot="addonBefore" size="large" defaultValue="+86">
-                <a-select-option value="+86">+86</a-select-option>
-              </a-select>
-            </a-input>
-          </a-form-item>
-              <!-- 验证码 -->
-          <a-row :gutter="16">
-            <a-col class="gutter-row" :span="16">
               <a-form-item>
                 <a-input
                   size="large"
-                  type="text"
-                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
-                  v-decorator="['mobileCaptcha',
-                                {rules: [{ required: true, message: '请输入验证码' }],
-                                 validateTrigger: 'change'}]">
-                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                  :placeholder="$t('user.old.mobile.placeholders')"
+                  v-model="Phone"
+                  disabled="true"
+                  v-decorator="['mobile',
+                                {rules: [{ required: true, message: $t('user.phone-number.required')},
+                                         { validator: this.handlePhoneCheck } ],
+                                 validateTrigger: 'change' }]">
+                  <a-select slot="addonBefore" size="large" defaultValue="+86">
+                    <a-select-option value="+86">+86</a-select-option>
+                  </a-select>
                 </a-input>
               </a-form-item>
-            </a-col>
-            <a-col class="gutter-row" :span="8">
-              <a-button
-                class="getCaptcha"
-                size="large"
-                :disabled="state.captchaSendBtn"
-                @click.stop.prevent="getCaptcha"
-                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
-            </a-col>
-          </a-row>
+              <!-- 验证码 -->
+              <a-row :gutter="16">
+                <a-col class="gutter-row" :span="16">
+                  <a-form-item>
+                    <a-input
+                      size="large"
+                      type="text"
+                      v-model="oldPhoneCaptcha"
+                      :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                      v-decorator="['mobileCaptcha',
+                                    {rules: [{ required: true, message: '请输入验证码' }],
+                                     validateTrigger: 'change'}]">
+                      <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                    </a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col class="gutter-row" :span="8">
+                  <a-button
+                    class="getCaptcha"
+                    size="large"
+                    :disabled="state.captchaSendBtn"
+                    @click.stop.prevent="getCaptcha('confirm_mobile_phone_number', 0)"
+                    v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+                </a-col>
+              </a-row>
+            </a-modal>
+            <a-modal v-model="newVisible" title="新手机号码" @ok="newHandleOk">
+              <!--               隔开-->
+              <!-- 手机号 -->
+              <a-form-item>
+                <a-input
+                  size="large"
+                  v-model="newPhone"
+                  :placeholder="$t('user.login.mobile.placeholders')"
+                  v-decorator="['mobile',
+                                {rules: [{ required: true, message: $t('user.phone-number.required')},
+                                         { validator: this.handlePhoneCheck } ],
+                                 validateTrigger: 'change' }]">
+                  <a-select slot="addonBefore" size="large" defaultValue="+86">
+                    <a-select-option value="+86">+86</a-select-option>
+                  </a-select>
+                </a-input>
+              </a-form-item>
+              <!-- 验证码 -->
+              <a-row :gutter="16">
+                <a-col class="gutter-row" :span="16">
+                  <a-form-item>
+                    <a-input
+                      size="large"
+                      type="text"
+                      v-model="newPhoneCaptcha"
+                      :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                      v-decorator="['mobileCaptcha',
+                                    {rules: [{ required: true, message: '请输入验证码' }],
+                                     validateTrigger: 'change'}]">
+                      <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                    </a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col class="gutter-row" :span="8">
+                  <a-button
+                    class="getCaptcha"
+                    size="large"
+                    :disabled="state.captchaSendBtn"
+                    @click="getCaptcha('update_mobile_phone_number', 1)"
+                    v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+                </a-col>
+              </a-row>
             </a-modal>
           </div>
         </div>
@@ -151,7 +197,8 @@
 </template>
 
 <script>
-import { updatePasswordInfo, updateForgetPasswordInfo, getUser } from '@/api/user'
+import { updatePasswordInfo, updateForgetPasswordInfo, getUser, updatePhoneByCaptcha } from '@/api/user'
+import { confirmCaptcha } from '@/api/captcha'
 import md5 from 'md5'
 import { getCaptcha, register } from '@/api/login'
 // import { deviceMixin } from '@/store/device-mixin'
@@ -197,6 +244,7 @@ export default {
       visible: false,
       visible2: false,
       visible3: false,
+      newVisible: false,
       PasswordStrength: '', // 密码强度
       Password: '', // 原密码
       newPassword: '', // 新密码
@@ -204,6 +252,9 @@ export default {
       mobileCaptcha: '', // 验证码
       PasswordValue: 0,
       Phone: 0,
+      newPhone: '',
+      newPhoneCaptcha: '',
+      oldPhoneCaptcha: '',
       sizeForm: {
         name: '',
         region: '',
@@ -229,6 +280,36 @@ export default {
     this.registrationType = this.registrationTypeEnum.MOBILE
   },
   methods: {
+    newHandleOk () {
+      const data = {
+        phoneNumber: this.newPhone,
+        captcha: this.newPhoneCaptcha
+      }
+      updatePhoneByCaptcha(data).then(res => {
+        if (res.success) {
+          this.$message.success('手机修改成功！')
+          this.newVisible = false
+          this.Phone = this.newPhone
+          this.newPhone = ''
+        } else {
+          this.$message.error('验证码错误！')
+        }
+      })
+    },
+    handleOk () {
+      const data = {
+        mobile: this.Phone,
+        code: this.oldPhoneCaptcha
+      }
+      confirmCaptcha(data).then(res => {
+        if (res.success) {
+          this.visible = false
+          this.newVisible = true
+        } else {
+          this.$message.error('验证码错误！')
+        }
+      })
+    },
     shows () {
       alert(7)
     },
@@ -280,9 +361,11 @@ export default {
     updateForgetPasswordInfo () {
       alert(this.Phone + this.mobileCaptcha + this.forgetPassword)
       const data = {
-        newPassword: md5(this.newPassword),
-        mobileCaptcha: this.mobileCaptcha
+        newPassword: md5(this.forgetPassword),
+        mobileCaptcha: this.mobileCaptcha,
+        mobile: this.Phone
       }
+      alert(JSON.stringify(data))
       updateForgetPasswordInfo(data).then(res => {
         if (res.success) {
           alert('重新密码设置成功')
@@ -409,8 +492,7 @@ export default {
       })
     },
 
-    getCaptcha (e) {
-      e.preventDefault()
+    getCaptcha (type, lb) {
       const { form: { validateFields }, state, $message, $notification } = this
 
       let validateFieldsKey
@@ -442,18 +524,19 @@ export default {
             let parameter
             let registrationType
 
-            switch (this.registrationType) {
-              case this.registrationTypeEnum.MOBILE:
-                parameter = { captchaType: 'mobile', value: values.mobile }
+            switch (lb) {
+              case 0: // 旧手机号
+                parameter = { captchaType: 'mobile', value: this.Phone }
                 registrationType = '短信信息！'
                 break
-              case this.registrationTypeEnum.EMAIL:
-                parameter = { captchaType: 'email', value: values.email }
-                registrationType = '邮箱信息！'
+              case 1: // 新手机号
+                parameter = { captchaType: 'mobile', value: this.newPhone }
+                registrationType = '短信信息！'
             }
 
-            parameter.scene = 'register'
+            parameter.scene = type
 
+            alert(JSON.stringify(parameter))
             getCaptcha(parameter).then(res => {
               console.log('res:' + JSON.stringify(res))
               setTimeout(hide)

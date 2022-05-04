@@ -10,6 +10,7 @@ export default {
   'user.login.tab-login-mobile': '手机号登录',
   'user.login.mobile.placeholder': '手机号',
   'user.login.mobile.placeholders': '新手机号',
+  'user.old.mobile.placeholders': '旧手机号',
   'user.login.mobile.verification-code.placeholder': '验证码',
 
   'user.login.tab-login-email': '邮箱登录',

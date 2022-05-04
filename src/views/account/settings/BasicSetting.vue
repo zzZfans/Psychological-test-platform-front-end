@@ -70,7 +70,7 @@ export default {
       // cropper
       preview: {},
       option: {
-        img: '/avatar2.jpg',
+        img: this.getImg(),
         info: true,
         size: 1,
         outputType: 'jpeg',
@@ -87,7 +87,13 @@ export default {
     }
   },
   methods: {
-
+    getImg () {
+      getUser().then(res => {
+        if (res.success) {
+          return res.result.avatar
+        }
+      })
+    },
     updateBaseInfo () {
       const data = {
         updateUserName: this.userNickname,
@@ -106,14 +112,13 @@ export default {
     },
     getUser () {
       getUser().then(res => {
-        console.log(res)
-        alert(JSON.stringify(res))
-        this.userNickname = res.result.username
-        this.userEmail = res.result.emailAddress
-        this.userId = res.result.id
+        if (res.success) {
+          this.userNickname = res.result.username
+          this.userEmail = res.result.emailAddress
+          this.userId = res.result.id
+          this.option.img = res.result.avatar
+        }
         // alert(this.userEmail)
-      }).catch(err => {
-        alert(err)
       })
     },
     email_blur () {

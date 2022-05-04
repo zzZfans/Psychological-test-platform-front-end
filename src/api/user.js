@@ -42,7 +42,7 @@ export function updatePasswordInfo (data) {
 // 设置（忘记密码）信息
 export function updateForgetPasswordInfo (data) {
   return request({
-    url: '/user/updateForgetPasswordInfo',
+    url: '/user/updatePasswordByMobileCaptcha',
     method: 'post',
     data: data
   })
@@ -55,5 +55,13 @@ export function upload (formData) {
     method: 'post',
     data: formData,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}
+// 修改用户绑定的手机号
+export function updatePhoneByCaptcha (data) {
+  return request({
+    url: '/user/updatePhonenumberByMobileCaptcha',
+    method: 'post',
+    data: data
   })
 }
