@@ -17,7 +17,7 @@ export default {
   'user.login.email.verification-code.placeholder': '验证码',
 
   'user.login.remember-me': '自动登录',
-  'user.login.forgot-password': '忘记密码',
+  'user.login.forgot-password': '忘记密码?',
   'user.login.sign-in-with': '其他登录方式',
   'user.login.signup': '注册账户',
   'user.login.login': '登录',

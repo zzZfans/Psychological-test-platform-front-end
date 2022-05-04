@@ -39,6 +39,15 @@ export function updatePasswordInfo (data) {
   })
 }
 
+// 设置（忘记密码）信息
+export function updateForgetPasswordInfo (data) {
+  return request({
+    url: '/user/updateForgetPasswordInfo',
+    method: 'post',
+    data: data
+  })
+}
+
 // 头像上传
 export function upload (formData) {
   return request({

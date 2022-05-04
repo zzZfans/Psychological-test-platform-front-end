@@ -93,8 +93,6 @@ export default {
         updateUserName: this.userNickname,
         updateUserAddress: this.userEmail
       }
-      // this.data.updateImg = this.img // 待处理
-      // this.data.updateId = this.userId
       updateBaseInfo(data).then(res => {
         if (res.success) {
           alert('修改成功')

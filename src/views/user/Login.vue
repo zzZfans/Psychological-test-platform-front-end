@@ -378,7 +378,7 @@ export default {
       // check res.homePage define, set $router.push name res.homePage
       // Why not enter onComplete
       /*
-      this.$router.push({ name: 'analysis' }, () => {
+      this.$rout.puersh({ name: 'analysis' }, () => {
         console.log('onComplete')
         this.$notification.success({
           message: '欢迎',

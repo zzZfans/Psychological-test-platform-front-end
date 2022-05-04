@@ -5,14 +5,89 @@
     <a-list-item>
       <span>
         <div style="width: 800px">
-          <span class="security-list-description">账户密码</span>
-          <br>
-          <span style="color:#ccc"> 当前密码强度: </span>
-          <span style="color:#ccc" class="security-list-value">{{ PasswordStrength }}</span>
+          <span class="security-list-description">账户密码管理</span>
           <div style="float: right;right: 80px;">
-            <a-button @click="showModal1" type="primary" shape="round" disabled="true"   >修改</a-button>
-            <a-modal v-model="visible" title="Basic Modal" @ok="handleOk">
-              <a-input></a-input>
+            <a-button @click="showModal2" type="primary" shape="round"    >修改</a-button>
+            <a-modal v-model="visible2" title="密码修改" @ok="updatePasswordInfo">
+              <span>原密码:</span>
+              <a-form-item>
+          <a-input-password
+            size="large"
+            :placeholder="$t('user.register.password.placeholder')"
+            v-decorator="['Password',
+                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                           validateTrigger: 'change'}]"
+            v-model="Password"
+          ></a-input-password>
+                <a-button @click="showModal3" style="float: right;" type="dashed" shape="round"    >{{ $t('user.login.forgot-password') }}</a-button>
+<!--                忘记密码-->
+                <a-modal v-model="visible3" title="忘记密码" @ok="updateForgetPasswordInfo">
+<!--               隔开-->
+                  <!-- 手机号 -->
+                  <a-form-item>
+                    <a-input
+                      size="large"
+                      :placeholder="$t('user.login.mobile.placeholder')"
+                      disabled="true"
+                      v-model="Phone"
+                      v-decorator="['Phone',
+                                    {rules: [{ required: true, message: $t('user.phone-number.required')},
+                                             { validator: this.handlePhoneCheck } ],
+                                     validateTrigger: 'change' }]">
+                      <a-select slot="addonBefore" size="large" defaultValue="+86">
+                        <a-select-option value="+86">+86</a-select-option>
+                      </a-select>
+                    </a-input>
+                  </a-form-item>
+                  <a-input-password
+                    size="large"
+                    :placeholder="$t('user.register.password.placeholder')"
+                    v-decorator="['forgetPassword',
+                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                           validateTrigger: 'change'}]"
+                    v-model="forgetPassword"
+                  ></a-input-password>
+                  <!-- 验证码 -->
+                  <br>
+                  <br>
+                  <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input
+                  size="large"
+                  type="text"
+                  v-model="mobileCaptcha"
+                  :placeholder="$t('user.login.mobile.verification-code.placeholder')"
+                  v-decorator="['mobileCaptcha',
+                                {rules: [{ required: true, message: '请输入验证码' }],
+                                 validateTrigger: 'change'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <a-button
+                class="getCaptcha"
+                size="large"
+                :disabled="state.captchaSendBtn"
+                @click.stop.prevent="getCaptcha"
+                v-text="!state.captchaSendBtn && $t('user.register.get-verification-code')||(state.time+' s')"></a-button>
+            </a-col>
+          </a-row>
+            </a-modal>
+<!--                忘记密码-->
+        </a-form-item>
+              <span>新密码:</span>
+              <a-form-item>
+          <a-input-password
+            size="large"
+            :placeholder="$t('user.register.password.placeholder')"
+            v-decorator="['newPassword',
+                          {rules: [{ required: true, message: $t('user.password.required') }, { validator: this.handlePasswordLevel }],
+                           validateTrigger: 'change'}]"
+            v-model="newPassword"
+          ></a-input-password>
+        </a-form-item>
             </a-modal>
           </div>
         </div>
@@ -72,24 +147,15 @@
         </div>
       </span>
     </a-list-item>
-    <a-list-item>
-      <span>
-        <span class="security-list-description">密保问题</span>
-        <br>
-        <span style="color:#ccc" > 密保问题可有效保护账户安全: </span>
-        <span style="color:#ccc" class="security-list-value">123</span>
-      </span>
-    </a-list-item>
   </a-list>
 </template>
 
 <script>
-import { getUser, updatePasswordInfo } from '@/api/user'
+import { updatePasswordInfo, updateForgetPasswordInfo, getUser } from '@/api/user'
 import md5 from 'md5'
 import { getCaptcha, register } from '@/api/login'
 // import { deviceMixin } from '@/store/device-mixin'
 import { scorePassword } from '@/utils/util'
-
 const levelNames = {
   0: 'user.password.strength.short',
   1: 'user.password.strength.low',
@@ -129,8 +195,13 @@ export default {
       registrationType: null,
       form: this.$form.createForm(this),
       visible: false,
+      visible2: false,
+      visible3: false,
       PasswordStrength: '', // 密码强度
-      Password: '',
+      Password: '', // 原密码
+      newPassword: '', // 新密码
+      forgetPassword: '', // 忘记密码
+      mobileCaptcha: '', // 验证码
       PasswordValue: 0,
       Phone: 0,
       sizeForm: {
@@ -163,13 +234,14 @@ export default {
     },
     getUser () {
       getUser().then(res => {
-        console.log(res)
-        alert(JSON.stringify(res))
+        // console.log(res)
+        // alert(JSON.stringify(res))
         this.userNickname = res.result.username
         this.userEmail = res.result.emailAddress
         // this.Password = res.result.
+        // this.Password = res.result.
         this.Phone = res.result.phoneNumber
-        alert(this.Phone)
+        // alert(this.Phone)
         // alert(this.userEmail)
       }).catch(err => {
         alert(err)
@@ -178,16 +250,48 @@ export default {
     showModal1 () {
       this.visible = true
     },
-    handleOk (e) { // 待理解
-      console.log(e)
-      updatePasswordInfo().then(res => {
+    showModal2 () {
+      this.visible2 = true
+    },
+    showModal3 () {
+      this.visible2 = false
+      this.visible3 = true
+    },
+    // 修改密码
+    updatePasswordInfo () { // 待理解
+      // alert(this.Password + this.newPassword)
+      // alert('新密码对应的md5值' + md5(this.Password) + md5(this.newPassword))
+      const data = { // 待数据即可
+        password: md5(this.Password),
+        newPassword: md5(this.newPassword)
+      }
+      updatePasswordInfo(data).then(res => {
         if (res.success) {
           alert('修改成功')
+          this.visible2 = false
         } else {
           alert(this.$error)
+          this.visible2 = false
         }
       })
-      this.visible = false
+      // this.visible = false
+    },
+    // 忘记密码设置
+    updateForgetPasswordInfo () {
+      alert(this.Phone + this.mobileCaptcha + this.forgetPassword)
+      const data = {
+        newPassword: md5(this.newPassword),
+        mobileCaptcha: this.mobileCaptcha
+      }
+      updateForgetPasswordInfo(data).then(res => {
+        if (res.success) {
+          alert('重新密码设置成功')
+          this.visible3 = false
+        } else {
+          alert(this.$error)
+          this.visible3 = false
+        }
+      })
     },
     // 手机号码测试
     geTel (Phone) {
@@ -384,7 +488,7 @@ export default {
     }
   },
   mounted () {
-  this.getUser()
+    this.getUser()
   }
 }
 </script>

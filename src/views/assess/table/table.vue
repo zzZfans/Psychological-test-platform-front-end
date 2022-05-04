@@ -318,9 +318,28 @@ export default {
     computefunction () {
       if (this.types === 'sas') {
           this.resultplus = this.result * 1.25
+        if (this.resultplus < 50) {
+          this.access_results = '正常状态，不存在焦虑'
+        } else if (this.resultplus >= 50 && this.resultplus <= 59) {
+          this.access_results = '轻度焦虑'
+        } else if (this.resultplus >= 60 && this.resultplus < 69) {
+          this.access_results = '中度焦虑'
+        } else {
+          this.access_results = '重度焦虑'
+        }
       }
-      if (this.types === 'sas') {
-        this.resultplus = this.result * 1.25
+      if (this.types === 'sds') {
+        // this.resultplus = this.result * 1.25 // 标准分计算
+        this.resultplus = this.result / 80
+        if (this.resultplus < 0.5) {
+          this.access_results = '无抑郁'
+        } else if (this.resultplus >= 0.5 && this.resultplus <= 0.59) {
+          this.access_results = '轻微至轻度抑郁'
+        } else if (this.resultplus >= 0.6 && this.resultplus < 0.69) {
+          this.access_results = '中至重度抑郁'
+        } else {
+          this.access_results = '重度抑郁'
+        }
       }
       if (this.types === 'mdq') {
         this.resultplus = this.result
