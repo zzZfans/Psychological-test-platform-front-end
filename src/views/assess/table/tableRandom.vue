@@ -91,7 +91,7 @@ export default {
         const randomYinzi = this.random_access(9)
         this.yinzitype = randomYinzi
         const temps = this.yinzi[randomYinzi] // 因子类型
-        // alert('因子类型' + temps)
+        alert('因子类型' + randomYinzi)
         for (let i = 0; i < temps.length; i++) { // 遍历因子的各道题
           const tempss = temps[i]
           // alert('表单数' + tempss)
@@ -751,7 +751,7 @@ export default {
       this.result = this.result + val
       if (this.number === (this.nums - 1)) {
         // todo 将结果传入后端
-          this.computefunction()
+        this.computefunction()
         // 作假判断
         this.modal2Visible = true
         if (this.getCode() >= this.wt_randomqus.length * 10) {

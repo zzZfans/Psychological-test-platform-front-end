@@ -52,6 +52,7 @@
 
 <script>
 // import { putFileAttach } from '@/api/customer/animalinfo'
+import { faceUpload } from '@/api/user'
 export default {
   props: { // 拍摄所需属性
     tackPhoto: {// 父组件传过来的状态
@@ -67,6 +68,7 @@ export default {
       os: false, // 控制摄像头开关
       thisCancas: null,
       thisContext: null,
+      imgSrc: '',
       thisVideo: null,
       loadingbut: false, // 拍摄所需
       preViewVisible: false,
@@ -146,6 +148,32 @@ export default {
     this.canvas = document.getElementById('canvas')
   },
   methods: {
+    base64toFile (data, fileName) {
+      const dataArr = data.split(',')
+      const byteString = atob(dataArr[1])
+      const options = {
+        type: 'image/jpeg',
+        endings: 'native'
+      }
+      const u8Arr = new Uint8Array(byteString.length)
+      for (let i = 0; i < byteString.length; i++) {
+        u8Arr[i] = byteString.charCodeAt(i)
+      }
+      return new File([u8Arr], fileName + '.jpg', options)
+    },
+    faceUpload (data) {
+      const str = this.base64toFile(data, 'file')
+      const formData = new FormData()
+      formData.append('file', str)
+      faceUpload(formData).then(res => {
+        alert(JSON.stringify(res))
+        if (res.success) {
+          this.$message.success('人脸采集成功！')
+        } else {
+          this.$message.error('采集失败！')
+        }
+      })
+    },
     /* 完成拍照并对其照片进行上传 */
     onCancel () {
       this.$router.replace({ path: '@/views/account/settings/Binding' })
@@ -176,7 +204,20 @@ export default {
       // this.imgSrc = "";
       this.clearCanvas('canvasCamera')
     },
-
+    base64ImgtoFile (dataurl, filename = 'file') {
+      const arr = dataurl.split(',')
+      const mime = arr[0].match(/:(.*?);/)[1]
+      const suffix = mime.split('/')[1]
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new File([u8arr], `${filename}.${suffix}`, {
+        type: mime
+      })
+    },
     // 调用摄像头 --- 进行绘制图片
     drawImage () {
       // 点击，canvas画图
@@ -188,6 +229,7 @@ export default {
         this.videoHeight
       )
       // 获取图片base64链接
+      // 这里的dataurl就是base64类型
       this.imgSrc = this.thisCancas.toDataURL('image/png')
 
       /* const imgSrc=this.imgSrc; */
@@ -255,6 +297,8 @@ export default {
             }
             // 监听关闭按钮
             document.getElementById('stop').addEventListener('click', function () {
+              _this.imgSrc = _this.thisCancas.toDataURL('image/png')
+              _this.faceUpload(_this.imgSrc)
               _this.thisVideo.srcObject.getVideoTracks().forEach(function (track) {
                 track.stop()
               })

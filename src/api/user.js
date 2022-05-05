@@ -57,6 +57,16 @@ export function upload (formData) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
+
+// 人源图上传
+export function faceUpload (formData) {
+  return request({
+    url: '/user/face/upload',
+    method: 'post',
+    data: formData,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}
 // 修改用户绑定的手机号
 export function updatePhoneByCaptcha (data) {
   return request({
