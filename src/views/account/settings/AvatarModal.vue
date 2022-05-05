@@ -55,7 +55,7 @@
 
 </template>
 <script>
-import { upload } from '@/api/user'
+import { upload, getUser } from '@/api/user'
 
 export default {
   data () {
@@ -81,6 +81,14 @@ export default {
       this.visible = true
       this.id = id
       /* 获取原始头像 */
+      this.getImg()
+    },
+    getImg () {
+      getUser().then(res => {
+        if (res.success) {
+          this.options.img = res.result.avatar
+        }
+      })
     },
     close () {
       this.id = null
