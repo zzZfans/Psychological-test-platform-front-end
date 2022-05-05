@@ -33,7 +33,7 @@ export function updateBaseInfo (data) {
 // 修改用户密码信息
 export function updatePasswordInfo (data) {
   return request({
-    url: '/user/updatePasswordInfo',
+    url: '/user/updatePasswordInfoByOldPassword',
     method: 'post',
     data: data
   })
