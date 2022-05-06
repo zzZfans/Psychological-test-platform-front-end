@@ -75,4 +75,3 @@ export function updatePhoneByCaptcha (data) {
     data: data
   })
 }
-
