@@ -8,74 +8,77 @@
               <img :src="avatar">
             </div>
             <div class="username">{{ nickname }}</div>
+            <div class="username">{{ this.userEmail }}</div>
+            <div class="username">{{ this.Phone }}</div>
+            <div class="username">{{ this.dateOfBirth }}</div>
             <div class="bio">海纳百川，有容乃大</div>
           </div>
-          <div class="account-center-detail">
-            <p>
-              <i class="title"></i>交互专家
-            </p>
-            <p>
-              <i class="group"></i>蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED
-            </p>
-            <p>
-              <i class="address"></i>
-              <span>浙江省</span>
-              <span>杭州市</span>
-            </p>
-          </div>
+<!--          <div class="account-center-detail">-->
+<!--            <p>-->
+<!--              <i class="title"></i>交互专家-->
+<!--            </p>-->
+<!--            <p>-->
+<!--              <i class="group"></i>蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED-->
+<!--            </p>-->
+<!--            <p>-->
+<!--              <i class="address"></i>-->
+<!--              <span>浙江省</span>-->
+<!--              <span>杭州市</span>-->
+<!--            </p>-->
+<!--          </div>-->
           <a-divider/>
 
-          <div class="account-center-tags">
-            <div class="tagsTitle">标签</div>
-            <div>
-              <template v-for="(tag, index) in tags">
-                <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
-                  <a-tag
-                    :key="tag"
-                    :closable="index !== 0"
-                    :close="() => handleTagClose(tag)"
-                  >{{ `${tag.slice(0, 20)}...` }}</a-tag>
-                </a-tooltip>
-                <a-tag
-                  v-else
-                  :key="tag"
-                  :closable="index !== 0"
-                  :close="() => handleTagClose(tag)"
-                >{{ tag }}</a-tag>
-              </template>
-              <a-input
-                v-if="tagInputVisible"
-                ref="tagInput"
-                type="text"
-                size="small"
-                :style="{ width: '78px' }"
-                :value="tagInputValue"
-                @change="handleInputChange"
-                @blur="handleTagInputConfirm"
-                @keyup.enter="handleTagInputConfirm"
-              />
-              <a-tag v-else @click="showTagInput" style="background: #fff; borderStyle: dashed;">
-                <a-icon type="plus"/>New Tag
-              </a-tag>
-            </div>
-          </div>
+<!--          <div class="account-center-tags">-->
+<!--            <div class="tagsTitle">标签</div>-->
+<!--            <div>-->
+<!--              <template v-for="(tag, index) in tags">-->
+<!--                <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">-->
+<!--                  <a-tag-->
+<!--                    :key="tag"-->
+<!--                    :closable="index !== 0"-->
+<!--                    :close="() => handleTagClose(tag)"-->
+<!--                  >{{ `${tag.slice(0, 20)}...` }}</a-tag>-->
+<!--                </a-tooltip>-->
+<!--                <a-tag-->
+<!--                  v-else-->
+<!--                  :key="tag"-->
+<!--                  :closable="index !== 0"-->
+<!--                  :close="() => handleTagClose(tag)"-->
+<!--                >{{ tag }}</a-tag>-->
+<!--              </template>-->
+<!--              <a-input-->
+<!--                v-if="tagInputVisible"-->
+<!--                ref="tagInput"-->
+<!--                type="text"-->
+<!--                size="small"-->
+<!--                :style="{ width: '78px' }"-->
+<!--                :value="tagInputValue"-->
+<!--                @change="handleInputChange"-->
+<!--                @blur="handleTagInputConfirm"-->
+<!--                @keyup.enter="handleTagInputConfirm"-->
+<!--              />-->
+<!--              <a-tag v-else @click="showTagInput" style="background: #fff; borderStyle: dashed;">-->
+<!--                <a-icon type="plus"/>New Tag-->
+<!--              </a-tag>-->
+<!--            </div>-->
+<!--          </div>-->
           <a-divider :dashed="true"/>
 
-          <div class="account-center-team">
-            <div class="teamTitle">团队</div>
-            <a-spin :spinning="teamSpinning">
-              <div class="members">
-                <a-row>
-                  <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                    <a>
-                      <a-avatar size="small" :src="item.avatar"/>
-                      <span class="member">{{ item.name }}</span>
-                    </a>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-spin>
-          </div>
+<!--          <div class="account-center-team">-->
+<!--            <div class="teamTitle">团队</div>-->
+<!--            <a-spin :spinning="teamSpinning">-->
+<!--              <div class="members">-->
+<!--                <a-row>-->
+<!--                  <a-col :span="12" v-for="(item, index) in teams" :key="index">-->
+<!--                    <a>-->
+<!--                      <a-avatar size="small" :src="item.avatar"/>-->
+<!--                      <span class="member">{{ item.name }}</span>-->
+<!--                    </a>-->
+<!--                  </a-col>-->
+<!--                </a-row>-->
+<!--              </div>-->
+<!--            </a-spin>-->
+<!--          </div>-->
         </a-card>
       </a-col>
       <a-col :md="24" :lg="17">
@@ -86,9 +89,59 @@
           :activeTabKey="noTitleKey"
           @tabChange="key => handleTabChange(key, 'noTitleKey')"
         >
-          <article-page v-if="noTitleKey === 'article'"></article-page>
-          <app-page v-else-if="noTitleKey === 'app'"></app-page>
-          <project-page v-else-if="noTitleKey === 'project'"></project-page>
+          <a-timeline mode="alternate">
+            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
+            <a-timeline-item color="green">Solve initial network problems 2015-09-01</a-timeline-item>
+            <a-timeline-item>
+              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
+              beatae vitae dicta sunt explicabo.
+            </a-timeline-item>
+            <a-timeline-item color="red">Network problems being solved 2015-09-01</a-timeline-item>
+            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
+            <a-timeline-item>
+              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>
+              Technical testing 2015-09-01
+            </a-timeline-item>
+          </a-timeline>
+          <a-timeline
+            style="width: 90%; margin: auto"
+            v-for="(item,index) in history"
+            :key="index"
+          >
+            <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
+              <p>{{ item.pusherName }}</p>
+              <a-tooltip>
+                <template #title>
+                  <div v-html="item.message"></div>
+                </template>
+                <p>{{ item.title | ellipsis }}</p>
+              </a-tooltip>
+              <p>{{ item.createTime }}</p>
+            </a-timeline-item>
+          </a-timeline>
+          <a-drawer title="推送记录" width="20%" :visible="drawerVisible" @close="onDrawerClose">
+            <a-timeline
+              style="width: 90%; margin: auto"
+              v-for="(item,index) in history"
+              :key="index"
+            >
+              <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
+                <p>{{ item.pusherName }}</p>
+                <a-tooltip>
+                  <template #title>
+                    <div v-html="item.message"></div>
+                  </template>
+                  <p>{{ item.title | ellipsis }}</p>
+                </a-tooltip>
+                <p>{{ item.createTime }}</p>
+              </a-timeline-item>
+            </a-timeline>
+          </a-drawer>
+<!--          <article-page v-if="noTitleKey === 'article'"></article-page>-->
+<!--          <app-page v-else-if="noTitleKey === 'app'"></app-page>-->
+<!--          <project-page v-else-if="noTitleKey === 'project'"></project-page>-->
         </a-card>
       </a-col>
     </a-row>
@@ -100,6 +153,11 @@ import { PageView, RouteView } from '@/layouts'
 import { AppPage, ArticlePage, ProjectPage } from './page'
 
 import { mapGetters } from 'vuex'
+import {getUser } from "@/api/user";
+import { ClockCircleOutlined } from '@ant-design/icons-vue';
+import { defineComponent } from 'vue';
+import {  Timeline } from 'ant-design-vue'
+import {getUserHistoryList} from '@/api/assess'
 
 export default {
   components: {
@@ -107,10 +165,24 @@ export default {
     PageView,
     AppPage,
     ArticlePage,
-    ProjectPage
+    ProjectPage,
+    ClockCircleOutlined,
+    [Timeline.Item.name]: Timeline.Item,
   },
   data () {
     return {
+      userId: '',
+      assessType: '',
+      resultLevel: '',
+      createTime: '',
+      pagination: {
+        current: 1,
+        pageSize: 3000,
+      },
+      userNickname: '',
+      userEmail: '',
+      Phone:0,
+      dateOfBirth:'',
       tags: ['很有想法的', '专注设计', '辣~', '大长腿', '川妹子', '海纳百川'],
 
       tagInputVisible: false,
@@ -122,16 +194,16 @@ export default {
       tabListNoTitle: [
         {
           key: 'article',
-          tab: '文章(8)'
+          tab: '我的测试'
         },
-        {
-          key: 'app',
-          tab: '应用(8)'
-        },
-        {
-          key: 'project',
-          tab: '项目(8)'
-        }
+        // {
+        //   key: 'app',
+        //   tab: '应用(8)'
+        // },
+        // {
+        //   key: 'project',
+        //   tab: '项目(8)'
+        // }
       ],
       noTitleKey: 'app'
     }
@@ -141,8 +213,37 @@ export default {
   },
   mounted () {
     this.getTeams()
+    this.getUser()
   },
   methods: {
+    getUserHistoryList(){
+      const data = {
+        userId: this.userId,
+        page: this.pagination.current,
+        pageSize: this.pagination.pageSize
+      }
+      getUserHistoryList(data).then(res=>{
+        if (res.success){
+          alert(JSON.stringify(res))
+        }
+      })
+    },
+    getUser () {
+      getUser().then(res => {
+        // alert(JSON.stringify(res))
+        if (res.success) {
+          this.userNickname = res.result.username
+          // alert(this.userNickname)
+          this.userEmail = res.result.emailAddress
+          this.Phone = res.result.phoneNumber
+          this.dateOfBirth = res.result.dateOfBirth
+          this.userId = res.result.id
+          this.getUserHistoryList()
+          // alert(res.result.dateOfBirth)
+          // alert(this.dateOfBirth)
+        }
+      })
+    },
     getTeams () {
       this.$http.get('/workplace/teams').then(res => {
         this.teams = res.result

@@ -71,6 +71,8 @@
 
 <script>
 
+import {getUser} from "@/api/user";
+
 export default {
   props: {
     types: String
@@ -95,6 +97,10 @@ export default {
   data () {
     return {
       // 测试结果
+      usetId:0,
+      username:'',
+      accessType:'',
+      resultLevel:0,
       visible: false,
       modal1Visible: false,
       modal2Visible: false,
@@ -302,6 +308,7 @@ export default {
           // 作假判断
           this.computefunction()
           this.modal2Visible = true
+          saveAssessRecord()
           if (this.getCode() >= this.wt.length * 10) {
             // alert(this.result)
               this.reset()
@@ -318,45 +325,88 @@ export default {
     computefunction () {
       if (this.types === 'sas') {
           this.resultplus = this.result * 1.25
+        this.accessType = '焦虑'
         if (this.resultplus < 50) {
-          this.access_results = '正常状态，不存在焦虑'
+          this.access_results = '个体存在明显的焦虑症状，建议多看书、多运动、多社交'
+          this.resultLevel = 0
         } else if (this.resultplus >= 50 && this.resultplus <= 59) {
-          this.access_results = '轻度焦虑'
+          this.access_results = '个体焦虑症状比较明显，平时注意心态培养'
+          this.resultLevel = 1
         } else if (this.resultplus >= 60 && this.resultplus < 69) {
-          this.access_results = '中度焦虑'
+          this.access_results = '个体存在焦虑症状，但不必过度担心，正常生活即可'
+          this.resultLevel = 2
         } else {
-          this.access_results = '重度焦虑'
+          this.access_results = '个体不存在焦虑'
+          this.resultLevel = 3
         }
       }
       if (this.types === 'sds') {
         // this.resultplus = this.result * 1.25 // 标准分计算
         this.resultplus = this.result / 80
+        this.accessType = '抑郁'
         if (this.resultplus < 0.5) {
-          this.access_results = '无抑郁'
+          this.access_results = '个体存在明显的抑郁症状，建议到相关医院求助'
+          this.resultLevel = 0
         } else if (this.resultplus >= 0.5 && this.resultplus <= 0.59) {
-          this.access_results = '轻微至轻度抑郁'
+          this.access_results = '个体有比较明显的抑郁症状，建议通过社交、运动改变现状'
+          this.resultLevel = 1
         } else if (this.resultplus >= 0.6 && this.resultplus < 0.69) {
-          this.access_results = '中至重度抑郁'
+          this.access_results = '个体存在抑郁症状但不明显，不必过度紧张'
+          this.resultLevel = 2
         } else {
-          this.access_results = '重度抑郁'
+          this.access_results = '个体不存在抑郁问题'
+          this.resultLevel = 3
         }
       }
       if (this.types === 'mdq') {
         this.resultplus = this.result
-        if (this.result >= 7) {
-          this.access_results = '7分以上（含），属于阳性（异常）；这种情况建议及时就医，咨询专业医生。'
+        this.accessType = '强迫症'
+        if (this.resultplus < 3) {
+          this.access_results = '个体严重存在双相情感障碍，建议及时向专业心理专家寻求帮助'
+          this.resultLevel = 0
+        } else if (this.resultplus >= 3 && this.resultplus <= 6) {
+          this.access_results = '个体存在比较明显的双相情感障碍问题，建议通过阅读相关书籍和社交来消除现状'
+          this.resultLevel = 1
+        } else if (this.resultplus >= 6 && this.resultplus < 9) {
+          this.access_results = '个体存在双相情感障碍问题但不明显，正常生活即可'
+          this.resultLevel = 2
         } else {
-          this.access_results = '7分以下，属于阴性（正常）；7分以下建议适度关注自己的情绪和状态变化。'
+          this.access_results = '个体在双相情感障碍方面正常'
+          this.resultLevel = 3
         }
       }
       if (this.types === 'HCL-32') {
         this.resultplus = this.result
-        if (this.result >= 14) {
-          this.access_results = '阳性'
+        this.accessType = '精神病'
+        if (this.resultplus < 9) {
+          this.access_results = '个体存在明显的轻躁狂症，建议及时向专业心理院所寻求帮助'
+          this.resultLevel = 0
+        } else if (this.resultplus >= 9 && this.resultplus < 17) {
+          this.access_results = '个体存在比较明显的轻躁狂症，建议养小动物改变习惯'
+          this.resultLevel = 1
+        } else if (this.resultplus >= 17 && this.resultplus < 23) {
+          this.access_results = '个体存在轻躁狂症，但不明显，正常生活即可，积极向上'
+          this.resultLevel = 2
         } else {
-          this.access_results = '阴性'
+          this.access_results = '个体在轻躁狂症方面正常'
+          this.resultLevel = 3
         }
       }
+    },
+    saveAssessRecord(){
+      const data={
+        assessType: this.accessType,
+        resultLevel: this.resultLevel,
+        userId: this.usetId,
+        username: this.username
+      }
+      saveAssessRecord(data).then(res =>{
+        if (res.success) {
+          alert('传输成功')
+        } else {
+          alert(this.$error)
+        }
+      })
     },
     rollbackone (val) {
       this.val = val
@@ -394,6 +444,14 @@ export default {
       } else {
         return num
       }
+    },
+    getUser () {
+      getUser().then(res => {
+        if (res.success) {
+          this.username = res.result.username
+          this.userId = res.result.id
+        }
+      })
     }
   },
   mounted () {
@@ -404,6 +462,7 @@ export default {
     this.timer = setInterval(() => {
       _this.date = new Date() // 修改数据date
     }, 1000)
+      this.getUser()
   },
   beforeDestroy () {
     if (this.timer) {
