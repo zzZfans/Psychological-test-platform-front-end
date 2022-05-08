@@ -89,56 +89,66 @@
           :activeTabKey="noTitleKey"
           @tabChange="key => handleTabChange(key, 'noTitleKey')"
         >
-          <a-timeline mode="alternate">
-            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
-            <a-timeline-item color="green">Solve initial network problems 2015-09-01</a-timeline-item>
-            <a-timeline-item>
-              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
-              beatae vitae dicta sunt explicabo.
-            </a-timeline-item>
-            <a-timeline-item color="red">Network problems being solved 2015-09-01</a-timeline-item>
-            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
-            <a-timeline-item>
-              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>
-              Technical testing 2015-09-01
-            </a-timeline-item>
-          </a-timeline>
           <a-timeline
-            style="width: 90%; margin: auto"
-            v-for="(item,index) in history"
+            mode="alternate"
+            v-for="(item,index) in userHistory"
             :key="index"
           >
-            <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
-              <p>{{ item.pusherName }}</p>
-              <a-tooltip>
-                <template #title>
-                  <div v-html="item.message"></div>
-                </template>
-                <p>{{ item.title | ellipsis }}</p>
-              </a-tooltip>
+            <a-timeline-item>
+              <p>{{ item.assessType }}    {{ item.resultLevel === 3 ? '重度' : (item.resultLevel === 2 ? '中度' : (item.resultLevel === 1 ? '轻度' : '正常'))}}</p>
               <p>{{ item.createTime }}</p>
             </a-timeline-item>
           </a-timeline>
-          <a-drawer title="推送记录" width="20%" :visible="drawerVisible" @close="onDrawerClose">
-            <a-timeline
-              style="width: 90%; margin: auto"
-              v-for="(item,index) in history"
-              :key="index"
-            >
-              <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">
-                <p>{{ item.pusherName }}</p>
-                <a-tooltip>
-                  <template #title>
-                    <div v-html="item.message"></div>
-                  </template>
-                  <p>{{ item.title | ellipsis }}</p>
-                </a-tooltip>
-                <p>{{ item.createTime }}</p>
-              </a-timeline-item>
-            </a-timeline>
-          </a-drawer>
+<!--          <a-timeline mode="alternate">-->
+<!--            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>-->
+<!--            <a-timeline-item color="green">Solve initial network problems 2015-09-01</a-timeline-item>-->
+<!--            <a-timeline-item>-->
+<!--              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>-->
+<!--              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque-->
+<!--              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto-->
+<!--              beatae vitae dicta sunt explicabo.-->
+<!--            </a-timeline-item>-->
+<!--            <a-timeline-item color="red">Network problems being solved 2015-09-01</a-timeline-item>-->
+<!--            <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>-->
+<!--            <a-timeline-item>-->
+<!--              <template #dot><ClockCircleOutlined style="font-size: 16px" /></template>-->
+<!--              Technical testing 2015-09-01-->
+<!--            </a-timeline-item>-->
+<!--          </a-timeline>-->
+<!--          <a-timeline-->
+<!--            style="width: 90%; margin: auto"-->
+<!--            v-for="(item,index) in history"-->
+<!--            :key="index"-->
+<!--          >-->
+<!--            <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">-->
+<!--              <p>{{ item.pusherName }}</p>-->
+<!--              <a-tooltip>-->
+<!--                <template #title>-->
+<!--                  <div v-html="item.message"></div>-->
+<!--                </template>-->
+<!--                <p>{{ item.title | ellipsis }}</p>-->
+<!--              </a-tooltip>-->
+<!--              <p>{{ item.createTime }}</p>-->
+<!--            </a-timeline-item>-->
+<!--          </a-timeline>-->
+<!--          <a-drawer title="推送记录" width="20%" :visible="drawerVisible" @close="onDrawerClose">-->
+<!--            <a-timeline-->
+<!--              style="width: 90%; margin: auto"-->
+<!--              v-for="(item,index) in history"-->
+<!--              :key="index"-->
+<!--            >-->
+<!--              <a-timeline-item :color="item.status > 0 ? 'green' : 'red'">-->
+<!--                <p>{{ item.pusherName }}</p>-->
+<!--                <a-tooltip>-->
+<!--                  <template #title>-->
+<!--                    <div v-html="item.message"></div>-->
+<!--                  </template>-->
+<!--                  <p>{{ item.title | ellipsis }}</p>-->
+<!--                </a-tooltip>-->
+<!--                <p>{{ item.createTime }}</p>-->
+<!--              </a-timeline-item>-->
+<!--            </a-timeline>-->
+<!--          </a-drawer>-->
           <!--          <article-page v-if="noTitleKey === 'article'"></article-page>-->
           <!--          <app-page v-else-if="noTitleKey === 'app'"></app-page>-->
           <!--          <project-page v-else-if="noTitleKey === 'project'"></project-page>-->
@@ -174,6 +184,7 @@ export default {
       assessType: '',
       resultLevel: '',
       createTime: '',
+      userHistory: '',
       pagination: {
         current: 1,
         pageSize: 3000
@@ -223,7 +234,7 @@ export default {
       }
       getUserHistoryList(data).then(res => {
         if (res.success) {
-          alert(JSON.stringify(res))
+          this.userHistory = res.result.records
         }
       })
     },
