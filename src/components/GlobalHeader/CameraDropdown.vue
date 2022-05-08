@@ -169,7 +169,7 @@ export default {
       }
 
       const username = this.$store.getters.nickname
-      const imageUri = this.$store.getters.avatar
+      const imageUri = this.$store.getters.faceRecognitionSource
 
       const imageEl = await faceapi.fetchImage(imageUri)
       const result = await this.detectSingleFaceAndLandmarksAndDescriptor(imageEl)

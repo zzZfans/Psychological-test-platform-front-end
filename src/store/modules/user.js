@@ -9,6 +9,7 @@ const user = {
     name: '',
     welcome: '',
     avatar: '',
+    faceRecognitionSource: '',
     roles: [],
     permissions: [],
     info: {}
@@ -24,6 +25,9 @@ const user = {
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
+    },
+    SET_faceRecognitionSource: (state, faceRecognitionSource) => {
+      state.faceRecognitionSource = faceRecognitionSource
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
@@ -70,6 +74,7 @@ const user = {
 
           commit('SET_NAME', { name: result.username, welcome: welcome() })
           commit('SET_AVATAR', result.avatar)
+          commit('SET_faceRecognitionSource', result.faceRecognitionSource)
 
           resolve(response)
         }).catch(error => {
