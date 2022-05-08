@@ -4,26 +4,17 @@
     :dataSource="data"
   >
     <div>
-      <a-upload
-        v-model="fileList"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        list-type="picture"
-      >
-        <a-button>
-          <upload-outlined></upload-outlined>
-          从相册上传
-        </a-button>
-        <span>-------</span>
-        <a-button>
-          拍摄
-        </a-button>
+      <a-upload name="file" :beforeUpload="beforeUpload" :showUploadList="false">
+        <a-button icon="upload">选择图片</a-button>
       </a-upload>
+      <a-button @click="uploadPic">上传</a-button>
     </div>
     <div class="camera-box" style="width: 900px;">
       <el-row :gutter="20">
         <el-col :span="12">
           <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>
           <!-- 这里就是摄像头显示的画面 -->
+          <img :src="img" />
           <video id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight" autoPlay></video>
           <canvas id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
           <!--          <video id="video" width="400" height="300"></video>-->
@@ -52,8 +43,12 @@
 
 <script>
 // import { putFileAttach } from '@/api/customer/animalinfo'
+import { UploadOutlined } from '@ant-design/icons-vue'
 import { faceUpload } from '@/api/user'
 export default {
+  components: {
+    UploadOutlined
+  },
   props: { // 拍摄所需属性
     tackPhoto: {// 父组件传过来的状态
       type: Boolean,
@@ -69,6 +64,7 @@ export default {
       thisCancas: null,
       thisContext: null,
       imgSrc: '',
+      img: '',
       thisVideo: null,
       loadingbut: false, // 拍摄所需
       preViewVisible: false,
@@ -76,6 +72,14 @@ export default {
       canvas: null,
       video: null,
       mediaStreamTrack: '',
+      options: {
+        // img: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        img: '',
+        autoCrop: true,
+        autoCropWidth: 200,
+        autoCropHeight: 200,
+        fixedBox: true
+      },
       data: [],
       fileList: {
         uid: '-1',
@@ -83,7 +87,8 @@ export default {
         status: 'done',
         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
         thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-      }
+      },
+      uploading: false
     }
   },
   watch: {
@@ -148,6 +153,41 @@ export default {
     this.canvas = document.getElementById('canvas')
   },
   methods: {
+    preView () {
+      const mycanvas = document.querySelector('#canvasCamera')
+      const ctx = mycanvas.getContext('2d')
+      var imgs = new Image()
+      imgs.src = this.img
+      imgs.onload = function () {
+        //   console.log(111)
+        ctx.drawImage(imgs, 0, 0, 500, 400)
+      }
+    },
+    uploadPic () {
+      const str = this.base64toFile(this.img, 'file')
+      const formData = new FormData()
+      formData.append('file', str)
+      faceUpload(formData).then(res => {
+        alert(JSON.stringify(res))
+        if (res.success) {
+          this.$message.success('人脸采集成功！')
+        } else {
+          this.$message.error('采集失败！')
+        }
+      })
+    },
+    async beforeUpload (file) {
+      const reader = new FileReader()
+      // 把Array Buffer转化为blob 如果是base64不需要
+      // 转化为base64
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        this.img = reader.result
+      }
+      // 转化为blob
+      // reader.readAsArrayBuffer(file)
+      return false
+    },
     base64toFile (data, fileName) {
       const dataArr = data.split(',')
       const byteString = atob(dataArr[1])

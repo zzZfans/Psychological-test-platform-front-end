@@ -71,7 +71,8 @@
 
 <script>
 
-import {getUser} from "@/api/user";
+import { getUser } from '@/api/user'
+import { saveAssessRecord } from '@/api/assess'
 
 export default {
   props: {
@@ -97,10 +98,10 @@ export default {
   data () {
     return {
       // 测试结果
-      usetId:0,
-      username:'',
-      accessType:'',
-      resultLevel:0,
+      usetId: 0,
+      username: '',
+      accessType: '',
+      resultLevel: 0,
       visible: false,
       modal1Visible: false,
       modal2Visible: false,
@@ -308,7 +309,6 @@ export default {
           // 作假判断
           this.computefunction()
           this.modal2Visible = true
-          saveAssessRecord()
           if (this.getCode() >= this.wt.length * 10) {
             // alert(this.result)
               this.reset()
@@ -393,14 +393,14 @@ export default {
         }
       }
     },
-    saveAssessRecord(){
-      const data={
+    saveAssessRecord () {
+      const data = {
         assessType: this.accessType,
         resultLevel: this.resultLevel,
         userId: this.usetId,
         username: this.username
       }
-      saveAssessRecord(data).then(res =>{
+      saveAssessRecord(data).then(res => {
         if (res.success) {
           alert('传输成功')
         } else {

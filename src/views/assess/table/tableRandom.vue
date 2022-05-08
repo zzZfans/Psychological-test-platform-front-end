@@ -66,8 +66,6 @@ v-model="modal2Visible"
 
 <script>
 
-import {getUser} from "@/api/user";
-
 export default {
   props: {
     types: String
@@ -128,10 +126,6 @@ export default {
   },
   data () {
     return {
-      usetId:0,
-      username:'',
-      accessType:'',
-      resultLevel:0,
       // 测试结果
       visible: false,
       modal1Visible: false,
@@ -696,21 +690,6 @@ export default {
     }
   },
   methods: {
-    saveAssessRecord(){
-      const data={
-        assessType: this.accessType,
-        resultLevel: this.resultLevel,
-        userId: this.usetId,
-        username: this.username
-      }
-      saveAssessRecord(data).then(res =>{
-        if (res.success) {
-          alert('传输成功')
-        } else {
-          alert(this.$error)
-        }
-      })
-    },
     // created () { // 显示当前时间
     //   this.gettimes()
     // },
@@ -796,160 +775,100 @@ export default {
         this.resultplus = this.result
         if (this.resultplus > 36) {
           this.access_results = '个体在身体上有较明显的不适感，并常伴有头痛、肌肉酸痛等症状'
-          this.resultLevel = 3
         } else if (this.resultplus <= 36 && this.resultplus >= 24) {
           this.access_results = '个体在身体上存在不适感，偶尔伴有头痛、肌肉酸痛等症状'
-          this.resultLevel = 2
-        } else if (this.resultplus < 24 && this.resultplus >=12) {
-          this.resultLevel = 1
-          this.access_results = '个体在身体上的不适感不明显'
-        }else {
-          this.access_results = '个体在躯体化方面正常'
-          this.resultLevel = 0
+        } else if (this.resultplus < 24) {
+          this.access_results = '躯体症状表现不明显'
         }
       }
       if (this.yinzitype === 1) {
         this.resultplus = this.result
         if (this.resultplus > 30) {
-          this.access_results = '强迫症状明显，个体无法摆脱无意义的思想、冲动、行为'
-          this.resultLevel = 3
+          this.access_results = '强迫症状较明显'
         } else if (this.resultplus <= 30 && this.resultplus >= 20) {
-          this.access_results = '强迫症较明显，个人存在无意义的思想、冲动、行为'
-          this.resultLevel = 2
-        } else if (this.resultplus < 20 && this.resultplus >= 10) {
           this.access_results = '存在强迫症的现象'
-          this.resultLevel = 1
-        }else {
-          this.access_results = '强迫症状方面正常'
-          this.resultLevel = 0
+        } else if (this.resultplus < 20) {
+          this.access_results = '强迫症状不明显'
         }
       }
       if (this.yinzitype === 2) {
         this.resultplus = this.result
         if (this.resultplus > 27) {
-          this.access_results = '个体人际关系敏感，人际交往中自卑感较强，并伴有行为症状（如坐立不安，退缩等）'
-          this.resultLevel = 3
+          this.access_results = '个体人际关系较为敏感，人际交往中自卑感较强，并伴有行为症状（如坐立不安，退缩等）'
         } else if (this.resultplus <= 27 && this.resultplus >= 18) {
-          this.access_results = '个体人际关系比较敏感，人际交往中自卑感较强，并伴有行为症状（如坐立不安，退缩等）'
-          this.resultLevel = 2
-        } else if (this.resultplus < 18 && this.resultplus >= 9) {
           this.access_results = '个体在人际关系上存在问题'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 18) {
           this.access_results = '个体在人际关系上较为正常'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 3) {
         this.resultplus = this.result
         if (this.resultplus > 39) {
-          this.access_results = '个体的抑郁程度强，生活缺乏足够的兴趣，缺乏运动活力，极端情况下，可能会有想死亡的思想和自杀的观念'
-          this.resultLevel = 3
-        } else if (this.resultplus <= 39 && this.resultplus >= 26) {
           this.access_results = '个体的抑郁程度较强，生活缺乏足够的兴趣，缺乏运动活力，极端情况下，可能会有想死亡的思想和自杀的观念'
-          this.resultLevel = 2
-        } else if (this.resultplus < 26 && this.resultplus >= 13) {
+        } else if (this.resultplus <= 39 && this.resultplus >= 26) {
           this.access_results = '个体抑郁程度适中,生活偶尔乐观偶尔悲观'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 26) {
           this.access_results = '个体抑郁程度较弱，生活态度乐观积极，充满活力，心境愉快'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 4) {
         this.resultplus = this.result
         if (this.resultplus > 30) {
-          this.access_results = '个体较容易焦虑，易表现出烦躁、不安静和神经过敏，极端时可能导致惊恐发作'
-          this.resultLevel = 3
+          this.access_results = '个体较易焦虑，易表现出烦躁、不安静和神经过敏，极端时可能导致惊恐发作'
         } else if (this.resultplus <= 30 && this.resultplus >= 20) {
-          this.access_results = '个体较存在焦虑，易表现出烦躁、不安静和神经过敏，极端时可能导致惊恐发作'
-          this.resultLevel = 2
-        } else if (this.resultplus < 20 && this.resultplus >= 10) {
           this.access_results = '个体存在焦虑,偶尔出现烦躁、不安静和神经过敏'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 20) {
           this.access_results = '个体不易焦虑，易表现出安定的状态'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 5) {
         this.resultplus = this.result
         if (this.resultplus > 18) {
-          this.access_results = '个体存在明显表现出敌对的思想、情感和行为'
-          this.resultLevel = 3
-        } else if (this.resultplus <= 18 && this.resultplus >= 12) {
           this.access_results = '个体易表现出敌对的思想、情感和行为'
-          this.resultLevel = 2
-        } else if (this.resultplus < 12 && this.resultplus >= 6) {
+        } else if (this.resultplus <= 18 && this.resultplus >= 12) {
           this.access_results = '个体有时表现为敌对思想、情感和行为，有时表现为友好的思想、情感和行为'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 12) {
           this.access_results = '个体容易表现出友好的思想、情感和行为'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 6) {
         this.resultplus = this.result
         if (this.resultplus > 21) {
-          this.access_results = '个体恐怖症状存在明显，常表现出社交、广场和人群恐惧'
-          this.resultLevel = 3
-        } else if (this.resultplus <= 21 && this.resultplus >= 14) {
           this.access_results = '个体恐怖症状较为明显，常表现出社交、广场和人群恐惧'
-          this.resultLevel = 2
-        } else if (this.resultplus < 14 && this.resultplus >= 7) {
+        } else if (this.resultplus <= 21 && this.resultplus >= 14) {
           this.access_results = '个体存在轻微的恐怖症状'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 14) {
           this.access_results = '个体的恐怖症状不明显'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 7) {
         this.resultplus = this.result
         if (this.resultplus > 18) {
           this.access_results = '个体的偏执症状明显，较易猜疑和敌对'
-          this.resultLevel = 3
         } else if (this.resultplus <= 18 && this.resultplus >= 12) {
-          this.access_results = '个体的偏执症状较明显，较易猜疑和敌对'
-          this.resultLevel = 2
-        } else if (this.resultplus < 12 && this.resultplus >= 6) {
           this.access_results = '个体存在偏执症状'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 12) {
           this.access_results = '个体的偏执症状不明显'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 8) {
         this.resultplus = this.result
         if (this.resultplus > 30) {
-          this.access_results = '个体的精神病性症状明显'
-          this.resultLevel = 3
-        } else if (this.resultplus <= 30 && this.resultplus >= 20) {
           this.access_results = '个体的精神病性症状较为明显'
-          this.resultLevel = 2
-        } else if (this.resultplus < 20 && this.resultplus >= 10) {
+        } else if (this.resultplus <= 30 && this.resultplus >= 20) {
           this.access_results = '个体存在精神病性症状'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 20) {
           this.access_results = '个体的精神病性症状不明显'
-          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 9) {
         this.resultplus = this.result
         if (this.resultplus > 36) {
           this.access_results = '个体有明显的睡眠障碍、饮食困扰'
-          this.resultLevel = 3
         } else if (this.resultplus <= 36 && this.resultplus >= 24) {
-          this.access_results = '个体比较明显的睡眠障碍、饮食困扰'
-          this.resultLevel = 2
-        } else if (this.resultplus < 24 && this.resultplus >= 12) {
           this.access_results = '个体存在轻微的睡眠障碍、饮食困扰'
-          this.resultLevel = 1
-        }else {
+        } else if (this.resultplus < 24) {
           this.access_results = '个体在睡眠、饮食方面问题不明显'
-          this.resultLevel = 0
         }
       }
     },
@@ -1006,14 +925,6 @@ export default {
       if (this.yinzitype === 7) { return '偏执' }
       if (this.yinzitype === 8) { return '精神病性' }
       if (this.yinzitype === 9) { return '其它项目 (睡眠、饮食等)' }
-    },
-    getUser () {
-      getUser().then(res => {
-        if (res.success) {
-          this.username = res.result.username
-          this.userId = res.result.id
-        }
-      })
     }
   },
   mounted () {
@@ -1024,7 +935,6 @@ export default {
     this.timer = setInterval(() => {
       _this.date = new Date() // 修改数据date
     }, 1000)
-    this.getUser()
   },
   beforeDestroy () {
     if (this.timer) {
