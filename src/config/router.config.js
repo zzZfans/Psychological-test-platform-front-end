@@ -332,7 +332,7 @@ export const asyncRouterMap = [
                 path: '/account/settings/basic',
                 name: 'BasicSettings',
                 component: () => import('@/views/account/settings/BasicSetting'),
-                meta: { title: '基础设置', hidden: true, permission: ['user'] }
+                meta: { title: 'account.settings.menuMap.basic', hidden: true, permission: ['user'] }
               },
               {
                 path: '/account/settings/basic',
@@ -345,7 +345,7 @@ export const asyncRouterMap = [
                 name: 'SecuritySettings',
                 component: () => import('@/views/account/settings/Security'),
                 meta: {
-                  title: '安全设置',
+                  title: 'account.settings.menuMap.security',
                   hidden: true,
                   keepAlive: true,
                   permission: ['user']

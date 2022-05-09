@@ -66,17 +66,31 @@
         </div>
       </div>
     </a-card>
+    <declaration ref="DA" @requirePermissionSuccess="requirePermissionSuccess">
+      <template slot="content">
+        <p>一个简单的小评测。</p>
+        <p>需要您授予摄像头权限。</p>
+        <p>需要您授予录音权限。</p>
+        <p>点击已知悉即代表同意以上要求。</p>
+        <p>最终解释权归本小组所有。</p>
+      </template>
+    </declaration>
   </page-header-wrapper>
 </template>
 
 <script>
-
+import Declaration from '@/components/Declaration'
+import events from '@/components/MultiTab/events'
 import { getUser } from '@/api/user'
 import { saveAssessRecord } from '@/api/assess'
 
 export default {
+  name: 'TableRandom',
   props: {
     types: String
+  },
+  components: {
+    Declaration
   },
   watch: {
     types: {
@@ -97,6 +111,10 @@ export default {
   },
   data () {
     return {
+      isInSubmit: false,
+      isCameraLoading: false,
+      hasVideoAndAudioPermission: false,
+      confirmDeclaration: false,
       // 测试结果
       usetId: 0,
       username: '',
@@ -263,6 +281,57 @@ export default {
     }
   },
   methods: {
+    drawAudio () {
+      console.log('drawAudio')
+      // 用 requestAnimationFrame 稳定 60 fps 绘制
+      this.drawRecordId = requestAnimationFrame(this.drawAudio)
+
+      // 实时获取音频大小数据
+      const dataArray = this.isRecording ? this.recordObjs[this.curQueNum].recorder.getRecordAnalyseData()
+        : this.recordObjs[this.curQueNum].recorder.getPlayAnalyseData()
+      const bufferLength = dataArray.length
+
+      // 填充背景色
+      this.ctx.fillStyle = 'rgb(255, 255, 255)'
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+
+      // 设定波形绘制颜色
+      this.ctx.lineWidth = 2
+      this.ctx.strokeStyle = 'rgb(225,14,14)'
+
+      this.ctx.beginPath()
+
+      var sliceWidth = this.canvas.width * 1.0 / bufferLength // 一个点占多少位置，共有 bufferLength 个点要绘制
+      var x = 0 // 绘制点的 x 轴位置
+
+      for (var i = 0; i < bufferLength; i++) {
+        var v = dataArray[i] / 128.0
+        var y = v * this.canvas.height / 2
+
+        if (i === 0) {
+          // 第一个点
+          this.ctx.moveTo(x, y)
+        } else {
+          // 剩余的点
+          this.ctx.lineTo(x, y)
+        }
+        // 依次平移，绘制所有点
+        x += sliceWidth
+      }
+
+      this.ctx.lineTo(this.canvas.width, this.canvas.height / 2)
+      this.ctx.stroke()
+    },
+    // 停止绘图
+    stopDrawAudio () {
+      console.log('stopDrawAudio')
+      // 让波形图复平
+      this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
+      this.canvas.getContext('2d').clearRect(0, 0, this.canvas.width, this.canvas.height)
+    },
+    requirePermissionSuccess () {
+      console.log('requirePermissionSuccess')
+    },
     // created () { // 显示当前时间
     //   this.gettimes()
     // },
@@ -454,7 +523,29 @@ export default {
       })
     }
   },
+  created () {
+    events.$on('ConfirmDeclaration' + this.$options.name, () => {
+      this.$refs.DA.visible = false
+      this.$refs.DA.loading = false
+      this.isCameraLoading = true
+      this.confirmDeclaration = true
+      events.$emit('openCamera', this.$options.name, true)
+    })
+    events.$on('CancelDeclaration' + this.$options.name, () => {
+      this.notification('warning', '提示', '您未知悉 “测前须知”，若仍需测试，请点击 “下一题” 或 “录音” 按钮，重新知悉 “测前须知”。', 10)
+    })
+    events.$on('CameraOpenSuccess' + this.$options.name, () => {
+      this.hasVideoAndAudioPermission = true
+      this.isCameraLoading = false
+    })
+    events.$on('Permission denied' + this.$options.name, () => {
+      this.isCameraLoading = false
+      this.hasVideoAndAudioPermission = false
+      this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 10)
+    })
+  },
   mounted () {
+    this.$refs.DA.showModal(this.$options.name)
     // 1. 获取题目
     // this.getTables()
     // 显示当前日期时间
@@ -465,6 +556,7 @@ export default {
       this.getUser()
   },
   beforeDestroy () {
+    events.$emit('closeCamera')
     if (this.timer) {
       clearInterval(this.timer) // 在Vue实例销毁前，清除我们的定时器
     }

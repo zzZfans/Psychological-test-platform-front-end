@@ -114,6 +114,7 @@ export default {
       getUser().then(res => {
         if (res.success) {
           this.userNickname = res.result.username
+          // alert(this.userNickname)
           this.userEmail = res.result.emailAddress
           this.userId = res.result.id
           this.option.img = res.result.avatar
