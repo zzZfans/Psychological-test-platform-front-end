@@ -77,6 +77,7 @@
 
 import Declaration from '@/components/Declaration'
 import events from '@/components/MultiTab/events'
+import { saveAssessRecord } from '@/api/assess'
 export default {
   name: 'TableRandom',
   props: {
@@ -708,78 +709,22 @@ export default {
     }
   },
   methods: {
-    drawAudio () {
-      console.log('drawAudio')
-      // 用 requestAnimationFrame 稳定 60 fps 绘制
-      this.drawRecordId = requestAnimationFrame(this.drawAudio)
-
-      // 实时获取音频大小数据
-      const dataArray = this.isRecording ? this.recordObjs[this.curQueNum].recorder.getRecordAnalyseData()
-        : this.recordObjs[this.curQueNum].recorder.getPlayAnalyseData()
-      const bufferLength = dataArray.length
-
-      // 填充背景色
-      this.ctx.fillStyle = 'rgb(255, 255, 255)'
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-      // 设定波形绘制颜色
-      this.ctx.lineWidth = 2
-      this.ctx.strokeStyle = 'rgb(225,14,14)'
-
-      this.ctx.beginPath()
-
-      var sliceWidth = this.canvas.width * 1.0 / bufferLength // 一个点占多少位置，共有 bufferLength 个点要绘制
-      var x = 0 // 绘制点的 x 轴位置
-
-      for (var i = 0; i < bufferLength; i++) {
-        var v = dataArray[i] / 128.0
-        var y = v * this.canvas.height / 2
-
-        if (i === 0) {
-          // 第一个点
-          this.ctx.moveTo(x, y)
-        } else {
-          // 剩余的点
-          this.ctx.lineTo(x, y)
-        }
-        // 依次平移，绘制所有点
-        x += sliceWidth
+    saveAssessRecord () {
+      const data = {
+        assessType: this.accessType,
+        resultLevel: this.resultLevel,
+        userId: this.userId,
+        username: this.username
       }
-
-      this.ctx.lineTo(this.canvas.width, this.canvas.height / 2)
-      this.ctx.stroke()
+      alert(JSON.stringify(data))
+      saveAssessRecord(data).then(res => {
+        if (res.success) {
+          alert('传输成功')
+        } else {
+          alert(this.$error)
+        }
+      })
     },
-    // 停止绘图
-    stopDrawAudio () {
-      console.log('stopDrawAudio')
-      // 让波形图复平
-      this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
-      this.canvas.getContext('2d').clearRect(0, 0, this.canvas.width, this.canvas.height)
-    },
-    requirePermissionSuccess () {
-      console.log('requirePermissionSuccess')
-    },
-    // created () { // 显示当前时间
-    //   this.gettimes()
-    // },
-    // 结果展示
-    // showModal () {
-    //   this.visible = true
-    // },
-    // handleCancel () {
-    //   this.visible = false
-    // },
-    // handleOk () {
-    //   this.loading = true
-    //   setTimeout(() => {
-    //     this.loading = false
-    //     this.visible = false
-    //   }, 2000)
-    // },
-    // setModal1Visible () {
-    //   this.modal1Visible = this.visible
-    // },
-    // 时间格式化
     dateFormat (time) {
       var date = new Date(time)
       var year = date.getFullYear()
@@ -826,10 +771,12 @@ export default {
         if (this.getCode() >= this.wt_randomqus.length * 10) {
           // if (this.result > 40) {
             // alert('焦虑！！！！！')
+          this.saveAssessRecord()
             this.reset()
             this.$emit('change', 'table-index', val)
           // }
         } else {
+          this.saveAssessRecord()
           alert('存在作假测试！')
         }
       } else {

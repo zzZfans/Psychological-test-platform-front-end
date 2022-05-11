@@ -25,13 +25,13 @@
         </a-select>
       </div>
       <div style="display: inline-block;margin: 0 20px;">
-        <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search">查询</a-button>
-        <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="countReset">重置</a-button>
+        <a-button style="margin-right: 10px;" type="primary" icon="el-icon-search" @click="search">查询</a-button>
+        <a-button style="margin-right: 10px;" icon="el-icon-refresh-right" @click="countReset">重置</a-button>
       </div>
     </a-card>
-    <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
+    <a-card :loading="loading" :bordered="false" :body-style="{padding: 0}">
       <div class="salesCard">
-        <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+        <a-tabs default-active-key="1" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
           <a-tab-pane loading="true" :tab="$t('record.total.count')" key="1">
             <a-row>
               <a-col :xl="22" :lg="12" :md="12" :sm="24" :xs="24">
@@ -63,7 +63,7 @@
             <a-descriptions :column="2" :bordered="true">
               <a-descriptions-item label="最近最严重异常">{{ nearTerror.躯体化> 0 ? (nearTerror.躯体化 > 1 ? (nearTerror.躯体化 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
               <a-descriptions-item label="测试时间">{{ terrorTime.躯体化 }}</a-descriptions-item>
-              <a-descriptions-item label="最近异常">{{ nearExc.躯体化> 0 ? (nearExc.躯体化 > 1 ? (nearExc.躯体化 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearExc.躯体化> 0 ? (nearExc.躯体化 > 1 ? (nearExc.躯体化 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
               <a-descriptions-item label="测试时间">{{ nearExcTIme.躯体化 }}</a-descriptions-item>
             </a-descriptions>
           </a-tab-pane>
@@ -76,9 +76,9 @@
             </a-descriptions>
             <br>
             <a-descriptions :column="2" :bordered="true">
-              <a-descriptions-item label="最近最严重异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="最近最严重异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
               <a-descriptions-item label="测试时间">{{ terrorTime.强迫症 }}</a-descriptions-item>
-              <a-descriptions-item label="最近异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常'  }}</a-descriptions-item>
+              <a-descriptions-item label="最近异常">{{ nearTerror.强迫症> 0 ? (nearTerror.强迫症 > 1 ? (nearTerror.强迫症 > 2 ? '重度' : '中度') : '轻度') : '正常' }}</a-descriptions-item>
               <a-descriptions-item label="测试时间">{{ nearExcTIme.强迫症 }}</a-descriptions-item>
             </a-descriptions>
           </a-tab-pane>
@@ -189,9 +189,9 @@
           </a-tab-pane>
         </a-tabs>
       </a-col>
-<!--     2-->
+
     </a-row>
-    <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="!isMobile && 'desktop'">
+    <div class="antd-pro-pages-dashboard-analysis-twoColLayout">
       <a-row :gutter="24" type="flex" :style="{ marginTop: '24px' }">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card :loading="loading" :bordered="false" :title="$t('record.total.list')" :style="{ height: '100%' }">
@@ -237,12 +237,13 @@
                 </a-select>
               </div>
               <div style="display: inline-block;margin: 0 10px;">
-                <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search1(0)">查询</a-button>
-                <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="reset">重置</a-button>
+                <a-button style="margin-right: 10px;" type="primary" icon="el-icon-search" @click="search1(0)">查询</a-button>
+                <a-button style="margin-right: 10px;" icon="el-icon-refresh-right" @click="reset">重置</a-button>
               </div>
             </a-card>
             <div class="ant-table-wrapper">
               <a-table
+                rowKey="id"
                 :dataSource="userRecordData"
                 :pagination="pagination"
                 :columns="userRecordColumns"
@@ -340,7 +341,17 @@ export default {
       rankList: [],
       userRecordData: [],
       radarData,
-      nearAssess: [],
+      nearAssess: {
+        '躯体化': [0, 0, 0, 0],
+        '焦虑': [0, 0, 0, 0],
+        '强迫症': [0, 0, 0, 0],
+        '抑郁': [0, 0, 0, 0],
+        '敌对': [0, 0, 0, 0],
+        '偏执': [0, 0, 0, 0],
+        '恐怖': [0, 0, 0, 0],
+        '精神病性': [0, 0, 0, 0],
+        '人际关系敏感': [0, 0, 0, 0]
+      },
       nearTerror: [],
       nearExc: [],
       terrorTime: [],
@@ -514,7 +525,7 @@ export default {
         if (res.success) {
           this.userRecordData = res.result.records
           this.total = res.result.total
-          this.pagination.total = this.total
+          this.pagination.total = res.result.total
         }
       })
     }
@@ -528,7 +539,7 @@ export default {
     this.getAnalysis()
     this.getYears()
     this.getRecordCount()
-    this.getUserRecordList()
+    this.getUserRecordList(0)
     this.getRadarData()
   }
 }

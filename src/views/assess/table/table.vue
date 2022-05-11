@@ -16,13 +16,7 @@
         </div>
         <div style="font-size: 25px;white-space: nowrap">
           <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
-          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt(wt.length*10 / 60) % 60) }}:{{ shownum(wt.length % 60) }}s！</span>
-          <!--          <div>-->
-          <!--            <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>-->
-          <!--          </div>-->
-          <!--          <div style="float: right">-->
-          <!--            <span v-show="!show" class="count">建议时间:{{ wt.length * 10 }}s！</span>-->
-          <!--          </div>-->
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt(wt.length*5 / 60) % 60) }}:{{ shownum(wt.length % 60) }}s！</span>
         </div>s
         <a-progress
           :strokeWidth="17"
@@ -281,6 +275,23 @@ export default {
     }
   },
   methods: {
+    saveAssessRecord () {
+      alert(777)
+      const data = {
+        assessType: this.accessType,
+        resultLevel: this.resultLevel,
+        userId: this.userId,
+        username: this.username
+      }
+      alert(JSON.stringify(data))
+      saveAssessRecord(data).then(res => {
+        if (res.success) {
+          alert('传输成功')
+        } else {
+          alert(this.$error)
+        }
+      })
+    },
     drawAudio () {
       console.log('drawAudio')
       // 用 requestAnimationFrame 稳定 60 fps 绘制
@@ -374,14 +385,14 @@ export default {
         this.isAble = false
         this.result = this.result + val
         if (this.number === (this.nums - 1)) {
-          // todo 将结果传入后端
           // 作假判断
           this.computefunction()
           this.modal2Visible = true
           if (this.getCode() >= this.wt.length * 10) {
             // alert(this.result)
-              this.reset()
-              this.$emit('change', 'table-index', val)
+            this.saveAssessRecord()
+            this.reset()
+            this.$emit('change', 'table-index', val)
           } else {
             alert('存在作假测试！')
           }
@@ -461,21 +472,6 @@ export default {
           this.resultLevel = 3
         }
       }
-    },
-    saveAssessRecord () {
-      const data = {
-        assessType: this.accessType,
-        resultLevel: this.resultLevel,
-        userId: this.usetId,
-        username: this.username
-      }
-      saveAssessRecord(data).then(res => {
-        if (res.success) {
-          alert('传输成功')
-        } else {
-          alert(this.$error)
-        }
-      })
     },
     rollbackone (val) {
       this.val = val
