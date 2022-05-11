@@ -42,8 +42,10 @@ export default {
       isStopWorking: false,
       warningCnt: 0,
       maxWarningCnt: 3,
+      faceNotFoundCnt: 0,
       faceNotMatchCnt: 0,
       maxFaceNotMatchCnt: 3,
+      maxFaceNotFoundCnt: 3,
       expressionsList: [],
       caller: null,
       // 摄像头图标透明度
@@ -273,23 +275,29 @@ export default {
       // console.log('result:' + JSON.stringify(result))
 
       if (result === undefined) {
-        this.isStopWorking = true
-        this.$warning({
-          title: '警告',
-          content: (
-            <div>
-              <p>未检测到人脸，请将人脸放在摄像头的可视范围内或不要剧烈晃动！</p>
-            </div>
-          ),
-          okText: '确定',
-          width: 530,
-          onOk: () => {
-            this.isStopWorking = false
-            this.runFaceExpressions()
-          }
-        })
+        if (++this.faceNotFoundCnt > this.maxFaceNotFoundCnt) {
+          this.isStopWorking = true
+          this.$warning({
+            title: '警告',
+            content: (
+              <div>
+                <p>未检测到人脸，请将人脸放在摄像头的可视范围内或不要剧烈晃动！</p>
+              </div>
+            ),
+            okText: '确定',
+            width: 530,
+            onOk: () => {
+              this.isStopWorking = false
+              this.runFaceExpressions()
+            }
+          })
+        }
+        this.runFaceExpressions()
         return
+      } else {
+        this.faceNotFoundCnt = 0
       }
+
       // 拿到情绪
       const { expressions, descriptor } = result
 
