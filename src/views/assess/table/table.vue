@@ -16,7 +16,7 @@
         </div>
         <div style="font-size: 25px;white-space: nowrap">
           <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
-          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt(wt.length*5 / 60) % 60) }}:{{ shownum(wt.length % 60) }}s！</span>
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt.length*5) / 60) % 60) }}:{{ shownum(wt.length*5 % 60) }}s！</span>
         </div>s
         <a-progress
           :strokeWidth="17"
