@@ -17,7 +17,7 @@
         <span style="right:600px; ">随机测试模块：{{ randomtype() }}</span>样
         <div style="font-size: 25px;white-space: nowrap">
           <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
-          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt(wt_randomqus.length*10 / 60) % 60) }}:{{ shownum(wt.length % 60) }}s！</span>
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt_randomqus.length*5) / 60) % 60) }}:{{ shownum(wt_randomqus.length*5 % 60) }}s！</span>
         </div>
         <a-progress
           :strokeWidth="17"
@@ -77,6 +77,8 @@
 
 import Declaration from '@/components/Declaration'
 import events from '@/components/MultiTab/events'
+import { saveAssessRecord } from '@/api/assess'
+import { getUser } from '@/api/user'
 export default {
   name: 'TableRandom',
   props: {
@@ -140,6 +142,8 @@ export default {
   },
   data () {
     return {
+      userId: '',
+      username: '',
       isInSubmit: false,
       isCameraLoading: false,
       hasVideoAndAudioPermission: false,
@@ -708,78 +712,31 @@ export default {
     }
   },
   methods: {
-    drawAudio () {
-      console.log('drawAudio')
-      // 用 requestAnimationFrame 稳定 60 fps 绘制
-      this.drawRecordId = requestAnimationFrame(this.drawAudio)
-
-      // 实时获取音频大小数据
-      const dataArray = this.isRecording ? this.recordObjs[this.curQueNum].recorder.getRecordAnalyseData()
-        : this.recordObjs[this.curQueNum].recorder.getPlayAnalyseData()
-      const bufferLength = dataArray.length
-
-      // 填充背景色
-      this.ctx.fillStyle = 'rgb(255, 255, 255)'
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-      // 设定波形绘制颜色
-      this.ctx.lineWidth = 2
-      this.ctx.strokeStyle = 'rgb(225,14,14)'
-
-      this.ctx.beginPath()
-
-      var sliceWidth = this.canvas.width * 1.0 / bufferLength // 一个点占多少位置，共有 bufferLength 个点要绘制
-      var x = 0 // 绘制点的 x 轴位置
-
-      for (var i = 0; i < bufferLength; i++) {
-        var v = dataArray[i] / 128.0
-        var y = v * this.canvas.height / 2
-
-        if (i === 0) {
-          // 第一个点
-          this.ctx.moveTo(x, y)
-        } else {
-          // 剩余的点
-          this.ctx.lineTo(x, y)
+    getUser () {
+      getUser().then(res => {
+        if (res.success) {
+          this.username = res.result.username
+          this.userId = res.result.id
         }
-        // 依次平移，绘制所有点
-        x += sliceWidth
+      })
+    },
+    saveAssessRecord () {
+      const data = {
+        assessType: this.accessType,
+        resultLevel: this.resultLevel,
+        userId: this.userId,
+        username: this.username
       }
-
-      this.ctx.lineTo(this.canvas.width, this.canvas.height / 2)
-      this.ctx.stroke()
+      alert(JSON.stringify(data))
+      saveAssessRecord(data).then(res => {
+        alert(JSON.stringify(res))
+        if (res.success) {
+          alert('传输成功')
+        } else {
+          alert(this.$error)
+        }
+      })
     },
-    // 停止绘图
-    stopDrawAudio () {
-      console.log('stopDrawAudio')
-      // 让波形图复平
-      this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
-      this.canvas.getContext('2d').clearRect(0, 0, this.canvas.width, this.canvas.height)
-    },
-    requirePermissionSuccess () {
-      console.log('requirePermissionSuccess')
-    },
-    // created () { // 显示当前时间
-    //   this.gettimes()
-    // },
-    // 结果展示
-    // showModal () {
-    //   this.visible = true
-    // },
-    // handleCancel () {
-    //   this.visible = false
-    // },
-    // handleOk () {
-    //   this.loading = true
-    //   setTimeout(() => {
-    //     this.loading = false
-    //     this.visible = false
-    //   }, 2000)
-    // },
-    // setModal1Visible () {
-    //   this.modal1Visible = this.visible
-    // },
-    // 时间格式化
     dateFormat (time) {
       var date = new Date(time)
       var year = date.getFullYear()
@@ -826,10 +783,12 @@ export default {
         if (this.getCode() >= this.wt_randomqus.length * 10) {
           // if (this.result > 40) {
             // alert('焦虑！！！！！')
+          this.saveAssessRecord()
             this.reset()
             this.$emit('change', 'table-index', val)
           // }
         } else {
+          this.saveAssessRecord()
           alert('存在作假测试！')
         }
       } else {
@@ -841,104 +800,168 @@ export default {
     computefunction () {
       if (this.yinzitype === 0) {
         this.resultplus = this.result
+        this.accessType = '躯体化'
         if (this.resultplus > 36) {
           this.access_results = '个体在身体上有较明显的不适感，并常伴有头痛、肌肉酸痛等症状'
+          this.resultLevel = 3
         } else if (this.resultplus <= 36 && this.resultplus >= 24) {
           this.access_results = '个体在身体上存在不适感，偶尔伴有头痛、肌肉酸痛等症状'
-        } else if (this.resultplus < 24) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 24 && this.resultplus >= 12) {
           this.access_results = '躯体症状表现不明显'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '躯体症状表现正常'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 1) {
         this.resultplus = this.result
+        this.accessType = '强迫症状'
         if (this.resultplus > 30) {
           this.access_results = '强迫症状较明显'
+          this.resultLevel = 3
         } else if (this.resultplus <= 30 && this.resultplus >= 20) {
           this.access_results = '存在强迫症的现象'
-        } else if (this.resultplus < 20) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 20 && this.resultplus >= 10) {
           this.access_results = '强迫症状不明显'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '强迫症状表现正常'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 2) {
         this.resultplus = this.result
+        this.accessType = '人际关系敏感'
         if (this.resultplus > 27) {
           this.access_results = '个体人际关系较为敏感，人际交往中自卑感较强，并伴有行为症状（如坐立不安，退缩等）'
+          this.resultLevel = 3
         } else if (this.resultplus <= 27 && this.resultplus >= 18) {
           this.access_results = '个体在人际关系上存在问题'
-        } else if (this.resultplus < 18) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 18 && this.resultplus >= 9) {
           this.access_results = '个体在人际关系上较为正常'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体在人际关系上表现正常'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 3) {
         this.resultplus = this.result
+        this.accessType = '抑郁'
         if (this.resultplus > 39) {
           this.access_results = '个体的抑郁程度较强，生活缺乏足够的兴趣，缺乏运动活力，极端情况下，可能会有想死亡的思想和自杀的观念'
+          this.resultLevel = 3
         } else if (this.resultplus <= 39 && this.resultplus >= 26) {
           this.access_results = '个体抑郁程度适中,生活偶尔乐观偶尔悲观'
-        } else if (this.resultplus < 26) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 26 && this.resultplus >= 13) {
           this.access_results = '个体抑郁程度较弱，生活态度乐观积极，充满活力，心境愉快'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体抑郁程度正常'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 4) {
         this.resultplus = this.result
+        this.accessType = '焦虑'
         if (this.resultplus > 30) {
           this.access_results = '个体较易焦虑，易表现出烦躁、不安静和神经过敏，极端时可能导致惊恐发作'
+          this.resultLevel = 3
         } else if (this.resultplus <= 30 && this.resultplus >= 20) {
           this.access_results = '个体存在焦虑,偶尔出现烦躁、不安静和神经过敏'
-        } else if (this.resultplus < 20) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 20 && this.resultplus >= 10) {
           this.access_results = '个体不易焦虑，易表现出安定的状态'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体不存在焦虑'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 5) {
         this.resultplus = this.result
+        this.accessType = '敌对'
         if (this.resultplus > 18) {
           this.access_results = '个体易表现出敌对的思想、情感和行为'
+          this.resultLevel = 3
         } else if (this.resultplus <= 18 && this.resultplus >= 12) {
           this.access_results = '个体有时表现为敌对思想、情感和行为，有时表现为友好的思想、情感和行为'
-        } else if (this.resultplus < 12) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 12 && this.resultplus >= 6) {
           this.access_results = '个体容易表现出友好的思想、情感和行为'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体存在敌对思维'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 6) {
         this.resultplus = this.result
+        this.accessType = '恐怖'
         if (this.resultplus > 21) {
           this.access_results = '个体恐怖症状较为明显，常表现出社交、广场和人群恐惧'
+          this.resultLevel = 3
         } else if (this.resultplus <= 21 && this.resultplus >= 14) {
           this.access_results = '个体存在轻微的恐怖症状'
-        } else if (this.resultplus < 14) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 14 && this.resultplus >= 7) {
           this.access_results = '个体的恐怖症状不明显'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体的恐怖症状表现明显'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 7) {
         this.resultplus = this.result
+        this.accessType = '偏执'
         if (this.resultplus > 18) {
           this.access_results = '个体的偏执症状明显，较易猜疑和敌对'
+          this.resultLevel = 3
         } else if (this.resultplus <= 18 && this.resultplus >= 12) {
           this.access_results = '个体存在偏执症状'
-        } else if (this.resultplus < 12) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 12 && this.resultplus >= 6) {
           this.access_results = '个体的偏执症状不明显'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体的偏执症状表现明显'
+          this.resultLevel = 0
         }
       }
       if (this.yinzitype === 8) {
         this.resultplus = this.result
+        this.accessType = '精神病性'
         if (this.resultplus > 30) {
           this.access_results = '个体的精神病性症状较为明显'
+          this.resultLevel = 3
         } else if (this.resultplus <= 30 && this.resultplus >= 20) {
           this.access_results = '个体存在精神病性症状'
-        } else if (this.resultplus < 20) {
+          this.resultLevel = 2
+        } else if (this.resultplus < 20 && this.resultplus >= 10) {
           this.access_results = '个体的精神病性症状不明显'
+          this.resultLevel = 1
+        } else {
+          this.access_results = '个体的精神病性症状表现明显'
+          this.resultLevel = 0
         }
       }
-      if (this.yinzitype === 9) {
-        this.resultplus = this.result
-        if (this.resultplus > 36) {
-          this.access_results = '个体有明显的睡眠障碍、饮食困扰'
-        } else if (this.resultplus <= 36 && this.resultplus >= 24) {
-          this.access_results = '个体存在轻微的睡眠障碍、饮食困扰'
-        } else if (this.resultplus < 24) {
-          this.access_results = '个体在睡眠、饮食方面问题不明显'
-        }
-      }
+      // if (this.yinzitype === 9) {
+      //   this.resultplus = this.result
+      //   this.accessType = '躯体化'
+      //   if (this.resultplus > 36) {
+      //     this.access_results = '个体有明显的睡眠障碍、饮食困扰'
+      //   } else if (this.resultplus <= 36 && this.resultplus >= 24) {
+      //     this.access_results = '个体存在轻微的睡眠障碍、饮食困扰'
+      //   } else if (this.resultplus < 24) {
+      //     this.access_results = '个体在睡眠、饮食方面问题不明显'
+      //   }
+      // }
     },
     rollbackone (val) {
       this.val = val
@@ -1017,6 +1040,7 @@ export default {
     })
   },
   mounted () {
+    this.getUser()
     this.$refs.DA.showModal(this.$options.name)
     // 1. 获取题目
     // this.getTables()

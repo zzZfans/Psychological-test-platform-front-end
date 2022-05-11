@@ -17,8 +17,8 @@
         <a-input v-model="searchForm.username" placeholder="请输入用户名" style="width: auto"></a-input>
       </div>
       <div style="display: inline-block;margin: 0 10px;">
-        <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search(0)">查询</a-button>
-        <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="reset">重置</a-button>
+        <a-button style="margin-right: 10px;" type="primary" icon="el-icon-search" @click="search(0)">查询</a-button>
+        <a-button style="margin-right: 10px;" icon="el-icon-refresh-right" @click="reset">重置</a-button>
       </div>
     </a-card>
     <a-card :loading="loading" :bordered="true">
@@ -46,7 +46,6 @@
       </div>
       <a-modal width="50%" v-model="modalVisible" title="心理建议" @ok="handleOk">
         <a-textarea :autosize="{ minRows: 1, maxRows: 1}" v-model="title" placeholder="请输入标题" allow-clear />
-        <!--        <br>-->
         <div style="border: 1px solid #ccc;">
           <Toolbar
             style="border-bottom: 1px solid #ccc"
@@ -62,7 +61,6 @@
             @onCreated="onCreated"
           />
         </div>
-        <!--        <a-textarea :autosize="{ minRows: 6, maxRows: 12}" v-model="proposal" placeholder="请输入心理建议" allow-clear />-->
         <template #footer>
           <a-button key="back" @click="handleCancel">取消</a-button>
           <a-button key="submit" type="primary" :loading="loading" @click="handleOk">推送</a-button>
@@ -85,7 +83,7 @@
             <radar :data="radarData" />
           </div>
         </a-card>
-        <a-card size="small">
+        <a-card>
           <div style="display: inline-block;margin: 0 10px;">
             <span>选择类型</span>
             <a-select v-model="assessType" style="width: 120px">
@@ -102,12 +100,11 @@
             </a-select>
           </div>
           <div style="display: inline-block;margin: 0 0px;">
-            <a-button style="margin-right: 10px;" type="primary" size="medium" icon="el-icon-search" @click="search1(0)">查询</a-button>
-            <a-button style="margin-right: 10px;" size="medium" icon="el-icon-refresh-right" @click="reset1">重置</a-button>
+            <a-button style="margin-right: 10px;" type="primary" icon="el-icon-search" @click="search1(0)">查询</a-button>
+            <a-button style="margin-right: 10px;" icon="el-icon-refresh-right" @click="reset1">重置</a-button>
           </div>
         </a-card>
         <a-table
-          size="small"
           :dataSource="userHistory"
           :pagination="pagination1"
           :columns="userHistoryColumns"
@@ -311,6 +308,8 @@ export default {
           if (res.success) {
             message.success({ content: '推送成功', key, duration: 2 })
             this.handleCancel()
+          } else {
+            message.error(res.message)
           }
         })
       }, 1000)
@@ -325,6 +324,11 @@ export default {
     handleCancel () {
       this.proposal = ''
       this.modalVisible = false
+      if (this.editor && Object.keys(this.editor).length > 0) {
+        // 销毁编辑器
+        this.editor.destroy()
+        this.editor = null
+      }
     },
     handleOk () {
       const data = {
@@ -467,7 +471,7 @@ export default {
     editor.destroy() // 组件销毁时，及时销毁编辑器
   },
   mounted () {
-    this.getUserAssessRecord()
+    this.getUserAssessRecord(0)
   }
 }
 </script>

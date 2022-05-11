@@ -40,126 +40,23 @@
           >
             <a slot="extra">心理知识区</a>
             <div>
-<!--              轮播-->
-<!--              <el-carousel :interval="5000" arrow="always">-->
-<!--                <el-carousel-item v-for="item in 4" :key="item">-->
-<!--                  <h3>{{ item }}</h3>-->
-<!--                </el-carousel-item>-->
-<!--              </el-carousel>-->
-<!--              轮播-->
-<!--              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">-->
-<!--                <a-card :bordered="false" :body-style="{ padding: 0 }">-->
-<!--                  <a-card-meta>-->
-<!--                    <div slot="title" class="card-title">-->
-<!--                      <a-avatar size="small" :src="item.cover" />-->
-<!--                      <a>{{ item.title }}</a>-->
-<!--                    </div>-->
-<!--                    <div slot="description" class="card-description">-->
-<!--                      {{ item.description }}-->
-<!--                    </div>-->
-<!--                  </a-card-meta>-->
-<!--                  <div class="project-item">-->
-<!--                    <a href="/#/">科学搬砖组</a>-->
-<!--                    <span class="datetime">9小时前</span>-->
-<!--                  </div>-->
-<!--                </a-card>-->
-<!--              </a-card-grid>-->
             </div>
           </a-card>
 
         </a-col>
-<!--        <a-col-->
-<!--          style="padding: 0 12px"-->
-<!--          :xl="8"-->
-<!--          :lg="24"-->
-<!--          :md="24"-->
-<!--          :sm="24"-->
-<!--          :xs="24">-->
-<!--          <a-card-->
-<!--            title="快速开始 / 便捷导航"-->
-<!--            style="margin-bottom: 24px"-->
-<!--            :bordered="false"-->
-<!--            :body-style="{ padding: 0 }"-->
-<!--          >-->
-<!--            <div class="item-group">-->
-<!--              <a>操作一</a>-->
-<!--              <a>操作二</a>-->
-<!--              <a>操作三</a>-->
-<!--              <a>操作四</a>-->
-<!--              <a>操作五</a>-->
-<!--              <a>操作六</a>-->
-<!--              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>-->
-<!--            </div>-->
-<!--          </a-card>-->
-<!--          <a-card-->
-<!--            title="XX 指数"-->
-<!--            style="margin-bottom: 24px"-->
-<!--            :loading="radarLoading"-->
-<!--            :bordered="false"-->
-<!--            :body-style="{ padding: 0 }"-->
-<!--          >-->
-<!--            <div style="min-height: 400px;">-->
-<!--              &lt;!&ndash; :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  &ndash;&gt;-->
-<!--              <radar :data="radarData" />-->
-<!--            </div>-->
-<!--          </a-card>-->
-<!--          <a-card :loading="loading" title="团队" :bordered="false">-->
-<!--            <div class="members">-->
-<!--              <a-row>-->
-<!--                <a-col :span="12" v-for="(item, index) in teams" :key="index">-->
-<!--                  <a>-->
-<!--                    <a-avatar size="small" :src="item.avatar" />-->
-<!--                    <span class="member">{{ item.name }}</span>-->
-<!--                  </a>-->
-<!--                </a-col>-->
-<!--              </a-row>-->
-<!--            </div>-->
-<!--          </a-card>-->
-<!--        </a-col>-->
       </a-row>
       <a-row >
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
-<!--          <a-card-->
-<!--            class="project-list"-->
-<!--            :loading="loading"-->
-<!--            style="margin-bottom: 24px;"-->
-<!--            :bordered="false"-->
-<!--            title="小功能大服务"-->
-<!--            :body-style="{ padding: 0 }"-->
-<!--          >-->
-<!--            <a slot="extra">测试动态</a>-->
-            <div>
-              <!--              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">-->
-              <!--                <a-card :bordered="false" :body-style="{ padding: 0 }">-->
-              <!--                  <a-card-meta>-->
-              <!--                    <div slot="title" class="card-title">-->
-              <!--                      <a-avatar size="small" :src="item.cover" />-->
-              <!--                      <a>{{ item.title }}</a>-->
-              <!--                    </div>-->
-              <!--                    <div slot="description" class="card-description">-->
-              <!--                      {{ item.description }}-->
-              <!--                    </div>-->
-              <!--                  </a-card-meta>-->
-              <!--                  <div class="project-item">-->
-              <!--                    <a href="/#/">科学搬砖组</a>-->
-              <!--                    <span class="datetime">9小时前</span>-->
-              <!--                  </div>-->
-              <!--                </a-card>-->
-              <!--              </a-card-grid>-->
-            </div>
-<!--          </a-card>-->
-
           <div :span="12">
-            <a-card  :loading="loading" title="动态" :bordered="false">
+            <a-card :loading="loading" title="动态" :bordered="false">
               <a-list>
                 <a-list-item :key="index" v-for="(item, index) in activities">
                   <a-list-item-meta>
                     <a-avatar slot="avatar" size="small" :src="item.user.avatar" />
                     <div slot="title">
-                    <span>{{ item.user.nickname }}</span
-                    >&nbsp; 在&nbsp;<a href="#">{{ item.project.name }}</a
-                    >&nbsp; <span>{{ item.project.action }}</span
-                    >&nbsp;
+                      <span>{{ item.user.nickname }}</span>&nbsp; 在&nbsp;<a href="#">{{ item.project.name }}</a
+                      >&nbsp; <span>{{ item.project.action }}</span
+                      >&nbsp;
                       <a href="#">{{ item.project.event }}</a>
                     </div>
                     <div slot="description">{{ item.time }}</div>
@@ -171,56 +68,27 @@
           <div :span="12">
           </div>
         </a-col>
-                <a-col
-                  style="padding: 0 12px"
-                  :xl="8"
-                  :lg="24"
-                  :md="24"
-                  :sm="24"
-                  :xs="24">
-<!--                  <a-card-->
-<!--                    title="快速开始 / 便捷导航"-->
-<!--                    style="margin-bottom: 24px"-->
-<!--                    :bordered="false"-->
-<!--                    :body-style="{ padding: 0 }"-->
-<!--                  >-->
-<!--                    <div class="item-group">-->
-<!--                      <a>操作一</a>-->
-<!--                      <a>操作二</a>-->
-<!--                      <a>操作三</a>-->
-<!--                      <a>操作四</a>-->
-<!--                      <a>操作五</a>-->
-<!--                      <a>操作六</a>-->
-<!--                      <a-button size="small" type="primary" ghost icon="plus">添加</a-button>-->
-<!--                    </div>-->
-<!--                  </a-card>-->
-                  <a-card
-                    title="体验交谈区"
-                    style="margin-bottom: 24px"
-                    :loading="radarLoading"
-                    :bordered="false"
-                    :body-style="{ padding: 0 }"
-                  >
-<!--                    评论区-->
-<!--                    评论区-->
-                    <div style="min-height: 400px;">
-                      <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-                      <radar :data="radarData" />
-                    </div>
-                  </a-card>
-<!--                  <a-card :loading="loading" title="团队" :bordered="false">-->
-<!--                    <div class="members">-->
-<!--                      <a-row>-->
-<!--                        <a-col :span="12" v-for="(item, index) in teams" :key="index">-->
-<!--                          <a>-->
-<!--                            <a-avatar size="small" :src="item.avatar" />-->
-<!--                            <span class="member">{{ item.name }}</span>-->
-<!--                          </a>-->
-<!--                        </a-col>-->
-<!--                      </a-row>-->
-<!--                    </div>-->
-<!--                  </a-card>-->
-                </a-col>
+        <a-col
+          style="padding: 0 12px"
+          :xl="8"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24">
+          <a-card
+            title="体验交谈区"
+            style="margin-bottom: 24px"
+            :loading="radarLoading"
+            :bordered="false"
+            :body-style="{ padding: 0 }"
+          >
+            <!--                    评论区-->
+            <!--                    评论区-->
+            <div style="min-height: 400px;">
+              <radar :data="radarData" />
+            </div>
+          </a-card>
+        </a-col>
       </a-row>
     </div>
   </page-header-wrapper>
@@ -231,7 +99,6 @@ import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
-import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons-vue'
 import { getRoleList, getServiceList } from '@/api/manage'
 
 const DataSet = require('@antv/data-set')
@@ -240,9 +107,7 @@ export default {
   name: 'Workplace',
   components: {
     PageHeaderWrapper,
-    Radar,
-    LeftCircleOutlined,
-    RightCircleOutlined
+    Radar
   },
   data () {
     return {

@@ -6,7 +6,7 @@
           <a-list-item-meta
           >
             <template #title>
-              <a v-on:click="readMessage(item)">{{ item.title }}</a>
+              <a @click="readMessage(item)">{{ item.title }}</a>
             </template>
             <template #avatar>
               <a-badge :dot="item.status === 0 ? 1 : 0">
