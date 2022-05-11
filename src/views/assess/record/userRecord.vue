@@ -308,6 +308,8 @@ export default {
           if (res.success) {
             message.success({ content: '推送成功', key, duration: 2 })
             this.handleCancel()
+          } else {
+            message.error(res.message)
           }
         })
       }, 1000)
@@ -322,6 +324,11 @@ export default {
     handleCancel () {
       this.proposal = ''
       this.modalVisible = false
+      if (this.editor && Object.keys(this.editor).length > 0) {
+        // 销毁编辑器
+        this.editor.destroy()
+        this.editor = null
+      }
     },
     handleOk () {
       const data = {
