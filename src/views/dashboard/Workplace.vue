@@ -41,11 +41,11 @@
             <a slot="extra">心理知识区</a>
             <div>
 <!--              轮播-->
-              <el-carousel :interval="5000" arrow="always">
-                <el-carousel-item v-for="item in 4" :key="item">
-                  <h3>{{ item }}</h3>
-                </el-carousel-item>
-              </el-carousel>
+<!--              <el-carousel :interval="5000" arrow="always">-->
+<!--                <el-carousel-item v-for="item in 4" :key="item">-->
+<!--                  <h3>{{ item }}</h3>-->
+<!--                </el-carousel-item>-->
+<!--              </el-carousel>-->
 <!--              轮播-->
 <!--              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">-->
 <!--                <a-card :bordered="false" :body-style="{ padding: 0 }">-->
