@@ -166,7 +166,6 @@ export default {
       const formData = new FormData()
       formData.append('file', str)
       faceUpload(formData).then(res => {
-        alert(JSON.stringify(res))
         if (res.success) {
           this.$message.success('人脸采集成功！')
         } else {

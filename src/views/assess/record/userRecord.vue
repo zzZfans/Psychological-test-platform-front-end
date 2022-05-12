@@ -29,7 +29,7 @@
           :columns="userRecordColumns"
           :defaultExpandAllRows="true"
           :rowSelection="rowSelection"
-          rowKey="key"
+          rowKey="userId"
         >
           <span slot="sex" slot-scope="a, record">
             <a-tag :color="record.sex === 1 ? 'blue' : 'pink'">{{ record.sex === 1 ? '男' : '女' }}
@@ -377,7 +377,6 @@ export default {
     },
     openModal () {
       this.modalVisible = true
-      this.initEditor()
     },
     getUserAnalysis () {
       getUserAnalysis(this.userId).then(res => {
@@ -421,7 +420,7 @@ export default {
       this.visible = true
       this.userId = val.userId
       this.getUserAnalysis()
-      this.getUserHistoryList()
+      this.getUserHistoryList(0)
     },
     showHistory (val) {
       this.drawerVisible = true
@@ -484,11 +483,11 @@ export default {
     reset () {
       this.searchForm.sex = ''
       this.searchForm.username = ''
-      this.search()
+      this.search(0)
     },
     reset1 () {
       this.assessType = ''
-      this.search1()
+      this.search1(0)
     }
   },
   computed: {
