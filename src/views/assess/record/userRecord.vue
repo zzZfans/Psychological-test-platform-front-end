@@ -66,7 +66,7 @@
           <a-button key="submit" type="primary" :loading="loading" @click="handleOk">推送</a-button>
         </template>
       </a-modal>
-      <a-drawer title="Basic Drawer" width="30%" :visible="visible" @close="onClose">
+      <a-drawer title="测试详情" width="30%" :visible="visible" @close="onClose">
         <a-card
           style="margin-bottom: 0;height: 360px"
           v-if="refresh"
@@ -86,7 +86,7 @@
         <a-card>
           <div style="display: inline-block;margin: 0 10px;">
             <span>选择类型</span>
-            <a-select v-model="assessType" style="width: 120px">
+            <a-select v-model="assessType" style="width: 110px">
               <a-select-option value="">全部</a-select-option>
               <a-select-option value="躯体化">躯体化</a-select-option>
               <a-select-option value="强迫症">强迫症</a-select-option>
@@ -99,7 +99,7 @@
               <a-select-option value="人际关系敏感">人际关系敏感</a-select-option>
             </a-select>
           </div>
-          <div style="display: inline-block;margin: 0 0px;">
+          <div style="display: inline-block;margin: 0 0;">
             <a-button style="margin-right: 10px;" type="primary" icon="el-icon-search" @click="search1(0)">查询</a-button>
             <a-button style="margin-right: 10px;" icon="el-icon-refresh-right" @click="reset1">重置</a-button>
           </div>
@@ -294,6 +294,46 @@ export default {
     }
   },
   methods: {
+    initRar () {
+      this.radarData = [
+        {
+          item: '焦虑',
+          level: 0
+        },
+        {
+          item: '躯体化',
+          level: 0
+        },
+        {
+          item: '强迫症',
+          level: 0
+        },
+        {
+          item: '抑郁',
+          level: 0
+        },
+        {
+          item: '敌对',
+          level: 0
+        },
+        {
+          item: '恐怖',
+          level: 0
+        },
+        {
+          item: '偏执',
+          level: 0
+        },
+        {
+          item: '精神病性',
+          level: 0
+        },
+        {
+          item: '人际关系敏感',
+          level: 0
+        }
+        ]
+    },
     onCreated (editor) {
       this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
     },
@@ -324,11 +364,8 @@ export default {
     handleCancel () {
       this.proposal = ''
       this.modalVisible = false
-      if (this.editor && Object.keys(this.editor).length > 0) {
-        // 销毁编辑器
-        this.editor.destroy()
-        this.editor = null
-      }
+      this.title = ''
+      this.html = ''
     },
     handleOk () {
       const data = {
@@ -364,6 +401,8 @@ export default {
       this.visible = false
       this.assessType = ''
       this.userId = ''
+      this.refresh = false
+      this.initRar()
     },
     afterVisibleChange () {
       this.visible = false
