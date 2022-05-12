@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 const userApi = {
   Login: '/user/login',
-  Logout: '/auth/logout',
+  Logout: '/user/logout',
   ForgePassword: '/auth/forge-password',
   Register: '/user/register',
   twoStepCode: '/auth/2step-code',
@@ -64,9 +64,6 @@ export function tokenTest () {
 export function logout () {
   return request({
     url: userApi.Logout,
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+    method: 'get'
   })
 }
