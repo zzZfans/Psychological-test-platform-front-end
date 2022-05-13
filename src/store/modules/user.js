@@ -5,6 +5,7 @@ import { welcome } from '@/utils/util'
 
 const user = {
   state: {
+    id: '',
     token: '',
     name: '',
     welcome: '',
@@ -16,6 +17,9 @@ const user = {
   },
 
   mutations: {
+    SET_ID: (state, id) => {
+      state.id = id
+    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -72,6 +76,7 @@ const user = {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
 
+          commit('SET_ID', result.id)
           commit('SET_NAME', { name: result.username, welcome: welcome() })
           commit('SET_AVATAR', result.avatar)
           commit('SET_faceRecognitionSource', result.faceRecognitionSource)

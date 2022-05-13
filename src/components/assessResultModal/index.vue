@@ -1,8 +1,14 @@
 <template>
   <div>
-    <a-modal v-model="visible" :maskClosable="false" @cancel="handleCancel">
-      <template slot="title">测前须知
-        <a-icon type="sound" theme="twoTone" />
+    <a-modal
+      v-model="visible"
+      :maskClosable="false"
+      :closable="false"
+      :width="1000"
+      :keyboard="false"
+      @cancel="handleCancel">
+      <template slot="title">测试结果
+        <a-icon type="file-text" theme="twoTone" />
       </template>
       <slot name="content"></slot>
       <template slot="footer">
@@ -33,9 +39,9 @@ export default {
       this.visible = true
       this.caller = caller
     },
-     handleOk (e) {
-       this.visible = false
-       events.$emit('ConfirmDeclaration' + this.caller)
+    handleOk (e) {
+      this.visible = false
+      events.$emit('ConfirmDeclaration' + this.caller)
     },
     handleCancel (e) {
       console.log('handleCancel')

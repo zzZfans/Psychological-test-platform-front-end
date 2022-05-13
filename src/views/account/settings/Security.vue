@@ -311,7 +311,6 @@ export default {
       })
     },
     shows () {
-      alert(7)
     },
     getUser () {
       getUser().then(res => {

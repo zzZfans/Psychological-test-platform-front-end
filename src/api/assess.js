@@ -1,7 +1,8 @@
 import request from '@/utils/request'
 
 const assessApi = {
-  saveAudioAndAnalysis: '/file/upload'
+  saveAudioAndAnalysis: '/file/upload',
+  audioAnalysis: '/audio/analysis'
 }
 
 // 添加测评记录
@@ -51,6 +52,14 @@ export function getYears () {
 export function saveAudioAndAnalysis (formData) {
   return request({
     url: assessApi.saveAudioAndAnalysis,
+    method: 'post',
+    data: formData
+  })
+}
+
+export function audioAnalysis (formData) {
+  return request({
+    url: assessApi.audioAnalysis,
     method: 'post',
     data: formData
   })

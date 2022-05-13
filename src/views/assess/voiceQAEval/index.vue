@@ -18,8 +18,8 @@
           <!-- 题目 监控 -->
 
           <a-row type="flex" justify="center">
-            <a-col :span="20">
-              <div style="height: 150px;vertical-align:middle;display:table-cell;font-size: 16px;font-weight: 600" >
+            <a-col :span="18">
+              <div style="height: 150px;vertical-align:middle;display:table-cell;font-size: 20px;font-weight: 600" >
                 {{ curQueNum }}. {{ questions[curQueNum] }}
               </div>
             </a-col>
@@ -103,7 +103,7 @@
         </a-card>
       </div>
     </a-spin>
-    <declaration ref="DA" @requirePermissionSuccess="requirePermissionSuccess">
+    <declaration ref="DA">
       <template slot="content">
         <p>一个简单的小评测。</p>
         <p>需要您授予摄像头权限。</p>
@@ -112,21 +112,30 @@
         <p>最终解释权归本小组所有。</p>
       </template>
     </declaration>
+    <assess-result-modal ref="ARM">
+      <template slot="content">
+        <div>{{ expressionsListList }}</div>
+        <div>{{ audioAnalysisResultList }}</div>
+      </template>
+    </assess-result-modal>
   </page-header-wrapper>
 </template>
 <script>
 import Recorder from 'js-audio-recorder'
-// import { saveAudioAndAnalysis } from '@/api/assess'
+import { audioAnalysis } from '@/api/assess'
 import Declaration from '@/components/Declaration'
+import assessResultModal from '@/components/assessResultModal'
 import events from '@/components/MultiTab/events'
 
 export default {
   name: 'VoiceQAEval',
   components: {
-    Declaration
+    Declaration,
+    assessResultModal
   },
   data () {
     return {
+      audioAnalysisResultCheckInterval: null,
       spinTip: '若有权限提示，请点击允许！摄像头加载中，请稍等片刻 ~',
       isInSubmit: false,
       isCameraLoading: false,
@@ -134,9 +143,20 @@ export default {
       confirmDeclaration: false,
       preQuestionCnt: 0,
       curQueNum: 1,
-      questionNum: 3,
-      questions: [],
+      questions: [ '',
+        '此时此刻，你正在想什么？',
+        '你的梦想是什么？',
+        '最近有觉得很压抑吗？',
+        '最近和朋友们相处得怎么样？',
+        '你觉得最近的饭菜怎么样？',
+        '最近三个月让你最开心的一件事？',
+        '最近三个月让你最生气的一件事？',
+        '最近睡眠情况怎么样？',
+        '你对自己身体的那个地方不太满意？',
+        '你在什么时候感到真正的快乐？'],
+      questionNum: 0,
       expressionsListList: [],
+      audioAnalysisResultList: [],
       recordObjs: [],
       // 正在录音
       isRecording: false,
@@ -156,8 +176,6 @@ export default {
             this.expressionsListList[curQueNum] = expressionsList
     })
     events.$on('ConfirmDeclaration' + this.$options.name, () => {
-      this.$refs.DA.visible = false
-      this.$refs.DA.loading = false
       this.isCameraLoading = true
       this.confirmDeclaration = true
       events.$emit('openCamera', this.$options.name, true)
@@ -174,6 +192,7 @@ export default {
       this.hasVideoAndAudioPermission = false
       this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 10)
     })
+    this.questionNum = this.questions.length - 1
     for (let i = 0; i <= this.questionNum; i++) {
       this.recordObjs.push({
         // 用于存储创建的语音对象
@@ -183,28 +202,9 @@ export default {
         duration: 0
       })
       this.expressionsListList.push(null)
+      this.audioAnalysisResultList.push(null)
     }
-    this.questions.push('')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题1')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题2')
-    this.questions.push('当前--------------------------------------------------------------------------------------' +
-      '--------------------------------------------------------------------------------------问题3')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题4')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题5')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题6')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题7')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题8')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题9')
-    // this.questions.push('当前--------------------------------------------------------------------------------------' +
-    //   '--------------------------------------------------------------------------------------问题10')
+    this.audioAnalysisResultList[0] = ''
   },
   mounted () {
     this.$refs.DA.showModal(this.$options.name)
@@ -215,9 +215,6 @@ export default {
     events.$emit('closeCamera')
   },
   methods: {
-    requirePermissionSuccess () {
-      console.log('requirePermissionSuccess')
-    },
     preQuestion () {
       this.preQuestionCnt++
         this.curQueNum--
@@ -258,18 +255,15 @@ export default {
         this.preQuestionCnt--
       }
 
-      if (this.curQueNum >= 3) {
-        // todo
-        console.log('提交第（this.curQueNum - 2）号题')
-      }
-
       while (this.expressionsListList[this.curQueNum] == null) {
 
       }
 
-      console.log('this.expressionsListList[this.curQueNum]: ' + JSON.stringify(this.expressionsListList[this.curQueNum]))
-
         this.curQueNum++
+
+      if (this.curQueNum >= 3) {
+        this.submitAudioAnalysis(this.curQueNum - 2)
+      }
     },
     submit () { // 发送语音的方法
       console.log('submit')
@@ -279,23 +273,39 @@ export default {
       }
 
       this.questionNum--
-      this.spinTip = '数据提交中，请耐心等待测试报告哦 ~'
+      this.spinTip = '拼命计算中，请耐心等待测试报告哦 ~'
       this.isInSubmit = true
 
-      this.recordObjs[this.curQueNum].recorder.pause() // 暂停录音
-      this.recordObjs[this.curQueNum].formData = new FormData()
-      const blob = this.recordObjs[this.curQueNum].recorder.getWAVBlob()// 获取 wav 格式音频数据
+      for (let theSubmitQueNum = this.curQueNum - 1; theSubmitQueNum <= this.curQueNum; theSubmitQueNum++) {
+        this.submitAudioAnalysis(theSubmitQueNum)
+      }
+      this.audioAnalysisResultCheckInterval = setInterval(() => {
+        if (!this.audioAnalysisResultList.includes(null)) {
+          this.isInSubmit = false
+          clearInterval(this.audioAnalysisResultCheckInterval)
+          console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+          this.$refs.ARM.showModal(this.$options.name)
+        }
+        console.log('this.audioAnalysisResultCheckInterval')
+        console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+      }, 100)
+      events.$emit('closeCamera')
+    },
+    submitAudioAnalysis (theSubmitQueNum) {
+      this.recordObjs[theSubmitQueNum].formData = new FormData()
+      const blob = this.recordObjs[theSubmitQueNum].recorder.getWAVBlob()// 获取 wav 格式音频数据
       // 此处获取到 blob 对象后需要设置 fileName 满足当前项目上传需求，其它项目可直接传把 blob 作为 file 塞入 formData
       const newBolb = new Blob([blob], { type: 'audio/wav' })
-      const fileOfBlob = new File([newBolb], new Date().getTime() + '.wav')
+      const fileOfBlob = new File([newBolb],
+        theSubmitQueNum + '_' + this.$store.getters.id + '_' + new Date().getTime() + '.wav')
       // formData 是传给后端的对象
-      this.recordObjs[this.curQueNum].formData.append('file', fileOfBlob)
+      this.recordObjs[theSubmitQueNum].formData.append('multipartFile', fileOfBlob)
 
-      // 发送给后端的方法
-      // saveAudioAndAnalysis(this.recordObjs[this.curQueNum].formData).then(res => {
-      //   console.log('res:' + res)
-      // })
-      console.log('第 ' + this.curQueNum + ' 题上传完毕！')
+      // 发送给后端分析
+      audioAnalysis(this.recordObjs[theSubmitQueNum].formData).then(res => {
+        this.audioAnalysisResultList[theSubmitQueNum] = res.result
+        console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+      })
     },
     // 开始录音
     startRecording () {
@@ -347,7 +357,7 @@ export default {
         console.log(`${error.name} : ${error.message}`)
       })
       // 画图
-      this.drawAudio()
+      setTimeout(() => this.drawAudio(), 200)
     },
     // 停止录音
     stopRecording () {
@@ -365,7 +375,7 @@ export default {
       // 播放录音
       this.recordObjs[this.curQueNum].recorder.play()
       // 画图
-      this.drawAudio()
+      setTimeout(() => this.drawAudio(), 200)
     },
     addRecordingPlayingTime () {
       console.log('addRecordingPlayingTime')
