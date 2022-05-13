@@ -727,9 +727,9 @@ export default {
         userId: this.userId,
         username: this.username
       }
-      alert(JSON.stringify(data))
+      // alert(JSON.stringify(data))
       saveAssessRecord(data).then(res => {
-        alert(JSON.stringify(res))
+        // alert(JSON.stringify(res))
         if (res.success) {
           alert('传输成功')
         } else {
@@ -777,19 +777,19 @@ export default {
       this.result = this.result + val
       if (this.number === (this.nums - 1)) {
         // todo 将结果传入后端
-        this.computefunction()
         // 作假判断
-        this.modal2Visible = true
         if (this.getCode() >= this.wt_randomqus.length * 10) {
           // if (this.result > 40) {
             // alert('焦虑！！！！！')
+          this.computefunction()
           this.saveAssessRecord()
+          this.modal2Visible = true
             this.reset()
             this.$emit('change', 'table-index', val)
           // }
         } else {
           this.saveAssessRecord()
-          alert('存在作假测试！')
+          alert('存在作假测试！请重新测试！')
         }
       } else {
         this.number++

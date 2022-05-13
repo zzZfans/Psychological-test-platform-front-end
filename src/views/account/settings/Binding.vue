@@ -3,48 +3,54 @@
     itemLayout="horizontal"
     :dataSource="data"
   >
-    <div>
-      <a-upload
-        v-model="fileList"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        list-type="picture"
-      >
-        <a-button>
-          <upload-outlined></upload-outlined>
-          从相册上传
-        </a-button>
-        <span>-------</span>
-        <a-button>
-          拍摄
-        </a-button>
-      </a-upload>
+    <div style="position: relative;top: 10px">
+      <!--    本地获取-->
+        <a-row>
+          <a-col span="12"  style="position: relative;left: 30px">
+            <a-upload name="file" :beforeUpload="beforeUpload" :showUploadList="false">
+              <a-button type="primary" icon="file" >选择图片</a-button>
+            </a-upload>
+            <span>---</span>
+            <a-button type="primary" icon="upload" @click="uploadPic">上传</a-button>
+          </a-col>
+          <!--    本地获取-->
+          <!--      拍摄-->
+          <a-col span="12">
+            <div class="iCenter" style="position: relative;left: 90px">
+              <a-button type="primary"  icon="camera" @click="takePhone" >开启摄像头</a-button>
+              <span>---</span>
+              <a-button @click="drawImage" icon="el-icon-camera" >拍照</a-button>
+              <span>---</span>
+              <a-button id="stop" icon="el-icon-camera">完成</a-button>
+            </div>
+          </a-col>
+          <!--      拍摄-->
+        </a-row>
     </div>
-    <div class="camera-box" style="width: 900px;">
+    <div class="camera-box" style="width: 900px; position:relative;top: 20px">
       <el-row :gutter="20">
         <el-col :span="12">
-          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>
+<!--          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>-->
           <!-- 这里就是摄像头显示的画面 -->
-          <video id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight" autoPlay></video>
-          <canvas id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
-          <!--          <video id="video" width="400" height="300"></video>-->
-          <div class="iCenter" >
-            <a-button type="primary" size="small" icon="el-icon-camera" @click="takePhone" style="margin-top: 10px;">开启摄像头</a-button>
-            <a-button @click="drawImage" icon="el-icon-camera" size="small">拍照</a-button>
-            <a-button id="stop" icon="el-icon-camera" size="small">完成</a-button>
+          <img v-show="imgShow" style="width: 95%;height: 450px;vertical-align: middle;border-top-left-radius: 50px;border-top-right-radius: 50px;border-bottom-left-radius: 50px;border-bottom-right-radius: 50px" :src="img" />
+          <div v-show="shotShow">
+            <video   id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight"  ></video>
+            <canvas style="float: right" id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
           </div>
+          <!--          <video id="video" width="400" height="300"></video>-->
         </el-col>
-        <el-col :span="12">
-          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">拍摄效果</div>
-          <!-- 这里是点击拍照显示的图片画面 -->
-          <canvas id="canvas" width="400" height="300" style="display: block;"></canvas>
-          <el-button
-            :loading="loadingbut"
-            icon="el-icon-check"
-            type="primary"
-            size="small"
-            @click="takePhoneUpfile"
-            style="margin-top: 10px;">保存</el-button>
-        </el-col>
+<!--        <el-col :span="12">-->
+<!--          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">拍摄效果</div>-->
+<!--          &lt;!&ndash; 这里是点击拍照显示的图片画面 &ndash;&gt;-->
+<!--          <canvas id="canvas" width="400" height="300" style="display: block;background-color: red"></canvas>-->
+<!--          <el-button-->
+<!--            :loading="loadingbut"-->
+<!--            icon="el-icon-check"-->
+<!--            type="primary"-->
+<!--            size="small"-->
+<!--            @click="takePhoneUpfile"-->
+<!--            style="margin-top: 10px;">保存</el-button>-->
+<!--        </el-col>-->
       </el-row>
     </div>
   </a-list>
@@ -52,8 +58,12 @@
 
 <script>
 // import { putFileAttach } from '@/api/customer/animalinfo'
+import { UploadOutlined } from '@ant-design/icons-vue'
 import { faceUpload } from '@/api/user'
 export default {
+  components: {
+    UploadOutlined
+  },
   props: { // 拍摄所需属性
     tackPhoto: {// 父组件传过来的状态
       type: Boolean,
@@ -62,13 +72,16 @@ export default {
   },
   data () {
     return {
-      videoWidth: 500, // 绘画布的宽高
+      imgShow: false,
+      shotShow: true,
+      videoWidth: 400, // 绘画布的宽高
       videoHeight: 400,
       stt: '',
       os: false, // 控制摄像头开关
       thisCancas: null,
       thisContext: null,
       imgSrc: '',
+      img: '',
       thisVideo: null,
       loadingbut: false, // 拍摄所需
       preViewVisible: false,
@@ -76,6 +89,14 @@ export default {
       canvas: null,
       video: null,
       mediaStreamTrack: '',
+      options: {
+        // img: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        img: '',
+        autoCrop: true,
+        autoCropWidth: 200,
+        autoCropHeight: 200,
+        fixedBox: true
+      },
       data: [],
       fileList: {
         uid: '-1',
@@ -83,7 +104,8 @@ export default {
         status: 'done',
         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
         thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-      }
+      },
+      uploading: false
     }
   },
   watch: {
@@ -148,6 +170,43 @@ export default {
     this.canvas = document.getElementById('canvas')
   },
   methods: {
+    preView () {
+      const mycanvas = document.querySelector('#canvasCamera')
+      const ctx = mycanvas.getContext('2d')
+      var imgs = new Image()
+      imgs.src = this.img
+      imgs.onload = function () {
+        //   console.log(111)
+        ctx.drawImage(imgs, 0, 0, 500, 400)
+      }
+    },
+    uploadPic () {
+      const str = this.base64toFile(this.img, 'file')
+      const formData = new FormData()
+      formData.append('file', str)
+      faceUpload(formData).then(res => {
+        // alert(JSON.stringify(res))
+        if (res.success) {
+          this.$message.success('人脸采集成功！')
+        } else {
+          this.$message.error('采集失败！')
+        }
+      })
+    },
+    async beforeUpload (file) {
+      const reader = new FileReader()
+      // 把Array Buffer转化为blob 如果是base64不需要
+      // 转化为base64
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        this.img = reader.result
+      }
+      this.imgShow = true
+      this.shotShow = false
+      // 转化为blob
+      // reader.readAsArrayBuffer(file)
+      return false
+    },
     base64toFile (data, fileName) {
       const dataArr = data.split(',')
       const byteString = atob(dataArr[1])
@@ -166,7 +225,7 @@ export default {
       const formData = new FormData()
       formData.append('file', str)
       faceUpload(formData).then(res => {
-        alert(JSON.stringify(res))
+        // alert(JSON.stringify(res))
         if (res.success) {
           this.$message.success('人脸采集成功！')
         } else {
@@ -262,6 +321,7 @@ export default {
               navigator.getUserMedia
             // 有些浏览器不支持，会返回错误信息
             // 保持接口一致
+            // alert(777)
             if (!getUserMedia) {
               return Promise.reject(
                 new Error('getUserMedia is not implemented in this browser')
@@ -316,6 +376,8 @@ export default {
     },
     takePhone () { // 点击拍照截图画面
       this.getCompetence()
+      this.imgShow = false
+      this.shotShow = true
       // const that = this
       // that.canvas.getContext('2d').drawImage(this.video, 0, 0, 400, 300)
       // const dataurl = that.canvas.toDataURL('image/jpeg')

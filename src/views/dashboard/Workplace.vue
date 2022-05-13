@@ -1,6 +1,6 @@
 <template>
-  <page-header-wrapper :title="'title'" :tags="'tags'" :extra="'extra'">
-    <template v-slot:content>
+  <page-header-wrapper :title="'首页'">
+    <template v- v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
           <a-avatar size="large" :src="currentUser.avatar" />
@@ -9,23 +9,23 @@
           <div class="content-title">
             {{ timeFix }}，{{ user.name }}<span class="welcome-text">，{{ welcome }}</span>
           </div>
-          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
+<!--          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>-->
         </div>
       </div>
     </template>
-    <template v-slot:extraContent>
-      <div class="extra-content">
-        <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
-        </div>
-      </div>
-    </template>
+<!--    <template v-slot:extraContent>-->
+<!--      <div class="extra-content">-->
+<!--        <div class="stat-item">-->
+<!--          <a-statistic title="项目数" :value="56" />-->
+<!--        </div>-->
+<!--        <div class="stat-item">-->
+<!--          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />-->
+<!--        </div>-->
+<!--        <div class="stat-item">-->
+<!--          <a-statistic title="项目访问" :value="2223" />-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </template>-->
 
     <div>
       <a-row :span="24" >
@@ -42,7 +42,23 @@
             <div>
             </div>
           </a-card>
-
+<!--          轮播-->
+          <template>
+            <div class="modal_box" style="width: 100%;height: 500px;background-color: #99a9bf">
+              <a-icon type="left" style="font-size: 50px" @click="handlePrev" />
+              <a-carousel autoplay ref="img" >
+                <a href="https://www.baidu.com"  target="_blank">
+                  <img src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png">
+                </a>
+              </a-carousel>
+              <a-icon
+                type="right"
+                style="font-size: 50px;float: right"
+                @click="handleNext"
+              />
+            </div>
+          </template>
+<!--          轮播-->
         </a-col>
       </a-row>
       <a-row >
@@ -52,7 +68,7 @@
               <a-list>
                 <a-list-item :key="index" v-for="(item, index) in activities">
                   <a-list-item-meta>
-                    <a-avatar slot="avatar" size="small" :src="item.user.avatar" />
+                    <a-avatar slot="avatar" size="small" :src="avatar" />
                     <div slot="title">
                       <span>{{ item.user.nickname }}</span>&nbsp; 在&nbsp;<a href="#">{{ item.project.name }}</a
                       >&nbsp; <span>{{ item.project.action }}</span
@@ -100,6 +116,7 @@ import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
+import { getUser } from '@/api/user'
 
 const DataSet = require('@antv/data-set')
 
@@ -111,6 +128,24 @@ export default {
   },
   data () {
     return {
+      // url: [
+      //   {
+      //   src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
+      //   title: '版权名称4'
+      //    },
+      //   {
+      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
+      //     title: '版权名称4'
+      //   },
+      //   {
+      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
+      //     title: '版权名称4'
+      //   },
+      //   {
+      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
+      //     title: '版权名称4'
+      //   }
+      // ],
       timeFix: timeFix(),
       avatar: '',
       user: {},
@@ -170,7 +205,7 @@ export default {
     currentUser () {
       return {
         name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+        avatar: this.avatar
       }
     },
     userInfo () {
@@ -194,8 +229,24 @@ export default {
     this.getActivity()
     this.getTeams()
     this.initRadar()
+    this.getUser()
   },
   methods: {
+    getUser () {
+      getUser().then(res => {
+        if (res.success) {
+          this.username = res.result.username
+          this.userId = res.result.id
+        }
+      })
+    },
+    handlePrev () {
+      // 通过上边指定的ref 来操作
+      this.$refs.img.prev()
+    },
+    handleNext () {
+      this.$refs.img.next()
+    },
     getProjects () {
       this.$http.get('/list/search/projects').then(res => {
         this.projects = res.result && res.result.data
@@ -369,5 +420,15 @@ export default {
   .headerContent .title .welcome-text {
     display: none;
   }
+}
+.modal_box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.ant-carousel {
+  width: 75%;
 }
 </style>

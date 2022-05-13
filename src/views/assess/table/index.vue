@@ -34,25 +34,25 @@ export default {
         {
           title: '焦虑自评量表',
           type: 'sas',
-          cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
+          cover: 'http://www.amosdzhn.space:9000/mentalhealth/69f2f078-9011-442b-80a7-696a7a118543/blob',
           description: 'sas用于焦虑测试'
         },
         {
           title: '抑郁自评量表',
           type: 'sds',
-          cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
+          cover: 'http://www.amosdzhn.space:9000/mentalhealth/41f295b8-bd58-45fa-a7b5-3d112deaab57/blob',
           description: 'sds用于抑郁测试'
         },
         {
           title: '双相情感障碍测试',
           type: 'mdq',
-          cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
+          cover: 'http://www.amosdzhn.space:9000/mentalhealth/2d05a831-8196-4945-9b00-52f0569ca814/blob',
           description: 'mdq用于双相感情障碍测试'
         },
         {
           title: '轻躁狂症自测表',
           type: 'HCL-32',
-          cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
+          cover: 'http://www.amosdzhn.space:9000/mentalhealth/de1bc4c9-f14b-47a4-bb56-eb9c036b8950/blob',
           description: 'sas用于轻躁狂症测试'
         }
       ]

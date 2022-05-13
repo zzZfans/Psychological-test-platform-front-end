@@ -122,7 +122,7 @@ export default {
       resultplus: 0,
       lastvalue: '',
       show: true, // 计时器所用属性
-      count: '', // 计时器所用属性
+      count: 0, // 计时器所用属性
       timer: null, // 计时器所用属性
       date: new Date(),
       gettime: '', // 当前时间
@@ -276,14 +276,14 @@ export default {
   },
   methods: {
     saveAssessRecord () {
-      alert(777)
+      // alert(777)
       const data = {
         assessType: this.accessType,
         resultLevel: this.resultLevel,
         userId: this.userId,
         username: this.username
       }
-      alert(JSON.stringify(data))
+      // alert(JSON.stringify(data))
       saveAssessRecord(data).then(res => {
         if (res.success) {
           alert('传输成功')
@@ -386,15 +386,17 @@ export default {
         this.result = this.result + val
         if (this.number === (this.nums - 1)) {
           // 作假判断
-          this.computefunction()
-          this.modal2Visible = true
           if (this.getCode() >= this.wt.length * 10) {
             // alert(this.result)
+            this.computefunction()
             this.saveAssessRecord()
+            this.modal2Visible = true
             this.reset()
-            this.$emit('change', 'table-index', val)
+            // this.$emit('change', 'table-index', val)
+            this.$emit('change', 'table-index')
           } else {
-            alert('存在作假测试！')
+            alert('存在作假测试！请重新测试')
+            this.$emit('change', 'table-index')
           }
           } else {
             this.number++
