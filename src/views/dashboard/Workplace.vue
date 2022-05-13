@@ -9,23 +9,9 @@
           <div class="content-title">
             {{ timeFix }}，{{ user.name }}<span class="welcome-text">，{{ welcome }}</span>
           </div>
-<!--          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>-->
         </div>
       </div>
     </template>
-<!--    <template v-slot:extraContent>-->
-<!--      <div class="extra-content">-->
-<!--        <div class="stat-item">-->
-<!--          <a-statistic title="项目数" :value="56" />-->
-<!--        </div>-->
-<!--        <div class="stat-item">-->
-<!--          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />-->
-<!--        </div>-->
-<!--        <div class="stat-item">-->
-<!--          <a-statistic title="项目访问" :value="2223" />-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </template>-->
 
     <div>
       <a-row :span="24" >
@@ -62,7 +48,7 @@
         </a-col>
       </a-row>
       <a-row >
-        <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
+        <a-col :xl="10" :lg="24" :md="24" :sm="24" :xs="24">
           <div :span="12">
             <a-card :loading="loading" title="动态" :bordered="false">
               <a-list>
@@ -70,9 +56,8 @@
                   <a-list-item-meta>
                     <a-avatar slot="avatar" size="small" :src="avatar" />
                     <div slot="title">
-                      <span>{{ item.user.nickname }}</span>&nbsp; 在&nbsp;<a href="#">{{ item.project.name }}</a
-                      >&nbsp; <span>{{ item.project.action }}</span
-                      >&nbsp;
+                      <span>{{ item.user.nickname }}</span>&nbsp; 在&nbsp;<a href="#">{{ item.project.name }}</a>&nbsp;
+                      <span>{{ item.project.action }}</span>&nbsp;
                       <a href="#">{{ item.project.event }}</a>
                     </div>
                     <div slot="description">{{ item.time }}</div>
@@ -86,7 +71,7 @@
         </a-col>
         <a-col
           style="padding: 0 12px"
-          :xl="8"
+          :xl="14"
           :lg="24"
           :md="24"
           :sm="24"
@@ -94,14 +79,103 @@
           <a-card
             title="体验交谈区"
             style="margin-bottom: 24px"
-            :loading="radarLoading"
+            :loading="false"
             :bordered="false"
             :body-style="{ padding: 0 }"
           >
-            <!--                    评论区-->
-            <!--                    评论区-->
-            <div style="min-height: 400px;">
-              <radar :data="radarData" />
+            <div style="position: relative;top: 10px">
+              <a-row>
+                <a-col span="3">
+                  <a-avatar size="large" :src="currentUser.avatar" />
+                </a-col>
+                <a-col span="18">
+                  <a-input style="position: relative;height: 40px;float: left;width: 230px" placeholder="输入评论"></a-input>
+                </a-col>
+                <!--                <a-col span="3">-->
+                <!--                  <a-icon><plus-circle-outlined /></a-icon>-->
+                <!--                </a-col>-->
+                <a-col span="3">
+                  <a-button style="position: relative;height: 40px;float: right" type="primary">发送</a-button>
+                </a-col>
+              </a-row>
+              <div>
+                <a-list
+                  v-if="comments.length"
+                  :data-source="comments"
+                  item-layout="horizontal"
+                >
+                  <div v-for="(item) in comments" :key="item.id">
+                    <a-list-item slot="renderItem"  :key="item.id">
+                      <a-comment>
+                        <div style="font-size: small">
+                          <a-avatar
+                            :src="item.avatar"
+                          />
+                          &nbsp
+                          <a>{{ item.userName }}</a>
+                          <a-tooltip>
+                            <span> 发表于 {{ item.createTime }}</span>
+                          </a-tooltip>
+                        </div>
+                        <p style="margin-left: 50px">
+                          {{ item.content }}
+                        </p>
+                        <a-tooltip>
+                          <a-tooltip>
+                            <template slot="title">
+                              评论
+                            </template>
+                            <a-icon
+                              style="position: relative;margin-left: 8%;color: #1976d2"
+                              type="edit"
+                              @click="addComment(item)"
+                            >
+                            </a-icon>
+                          </a-tooltip>
+                          <a v-if="true">
+                            <a-icon
+                              style="position: relative;margin-left: 10%"
+                              type="delete"
+                              color="#1976d2"
+                              @click="deleteComment(item)"
+                            >
+                            </a-icon>
+                          </a>
+<!--                          <a-button @click="getChildren(index,item.id())">-->
+<!--                            详情-->
+<!--                          </a-button>-->
+                        </a-tooltip>
+                      </a-comment>
+                    </a-list-item>
+<!--                    <a-list-->
+<!--                      v-if="item.count"-->
+<!--                      style="margin-left: 70px"-->
+<!--                      :data-source="children[index]"-->
+<!--                      item-layout="horizontal"-->
+<!--                    >-->
+<!--                    </a-list>-->
+                  </div>
+                </a-list>
+                <a-comment>
+                  <a-avatar
+                    slot="avatar"
+                    src="https://cdn.vuetifyjs.com/images/john.jpg"
+                    alt="匿名用户"
+                  >
+                  </a-avatar>
+                  <div slot="content">
+                    <a-form-item>
+                      <a-textarea :rows="4" :value="value" @change="handleCommentChange">
+                      </a-textarea>
+                    </a-form-item>
+                    <a-form-item>
+                      <a-button html-type="submit" :loading="submitting" type="primary" @click="handleCommentSubmit">
+                        发表评论
+                      </a-button>
+                    </a-form-item>
+                  </div>
+                </a-comment>
+              </div>
             </div>
           </a-card>
         </a-col>
@@ -117,6 +191,7 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
 import { getUser } from '@/api/user'
+import { commentList, childrenList } from '@/api/comment'
 
 const DataSet = require('@antv/data-set')
 
@@ -128,24 +203,10 @@ export default {
   },
   data () {
     return {
-      // url: [
-      //   {
-      //   src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
-      //   title: '版权名称4'
-      //    },
-      //   {
-      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
-      //     title: '版权名称4'
-      //   },
-      //   {
-      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
-      //     title: '版权名称4'
-      //   },
-      //   {
-      //     src: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1672984128,966606357&fm=26&gp=0.jpg',
-      //     title: '版权名称4'
-      //   }
-      // ],
+      value: '',
+      comments: [],
+      children: '',
+      submitting: false,
       timeFix: timeFix(),
       avatar: '',
       user: {},
@@ -225,6 +286,7 @@ export default {
     })
   },
   mounted () {
+    this.getCommentList()
     this.getProjects()
     this.getActivity()
     this.getTeams()
@@ -232,6 +294,24 @@ export default {
     this.getUser()
   },
   methods: {
+    getChildren (index, id) {
+      childrenList(id).then(res => {
+        if (res.success) {
+          this.children[index] = res.result
+        }
+      })
+    },
+    getCommentList () {
+      commentList().then(res => {
+        if (res.success) {
+          this.comments = res.result
+          this.children = new Array(this.comments.length)
+        }
+      })
+    },
+    addComment () {
+      alert(7)
+    },
     getUser () {
       getUser().then(res => {
         if (res.success) {
