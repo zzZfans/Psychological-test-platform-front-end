@@ -28,12 +28,12 @@
             <div>
             </div>
           </a-card>
-<!--          轮播-->
+          <!--          轮播-->
           <template>
             <div class="modal_box" style="width: 100%;height: 500px;background-color: #99a9bf">
               <a-icon type="left" style="font-size: 50px" @click="handlePrev" />
               <a-carousel autoplay ref="img" >
-                <a href="https://www.baidu.com"  target="_blank">
+                <a href="https://www.baidu.com" target="_blank">
                   <img src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png">
                 </a>
               </a-carousel>
@@ -44,7 +44,7 @@
               />
             </div>
           </template>
-<!--          轮播-->
+          <!--          轮播-->
         </a-col>
       </a-row>
       <a-row >
@@ -99,82 +99,23 @@
                 </a-col>
               </a-row>
               <div>
-                <a-list
-                  v-if="comments.length"
-                  :data-source="comments"
-                  item-layout="horizontal"
-                >
-                  <div v-for="(item) in comments" :key="item.id">
-                    <a-list-item slot="renderItem"  :key="item.id">
-                      <a-comment>
-                        <div style="font-size: small">
-                          <a-avatar
-                            :src="item.avatar"
-                          />
-                          &nbsp
-                          <a>{{ item.userName }}</a>
-                          <a-tooltip>
-                            <span> 发表于 {{ item.createTime }}</span>
-                          </a-tooltip>
-                        </div>
-                        <p style="margin-left: 50px">
-                          {{ item.content }}
-                        </p>
-                        <a-tooltip>
-                          <a-tooltip>
-                            <template slot="title">
-                              评论
-                            </template>
-                            <a-icon
-                              style="position: relative;margin-left: 8%;color: #1976d2"
-                              type="edit"
-                              @click="addComment(item)"
-                            >
-                            </a-icon>
-                          </a-tooltip>
-                          <a v-if="true">
-                            <a-icon
-                              style="position: relative;margin-left: 10%"
-                              type="delete"
-                              color="#1976d2"
-                              @click="deleteComment(item)"
-                            >
-                            </a-icon>
-                          </a>
-<!--                          <a-button @click="getChildren(index,item.id())">-->
-<!--                            详情-->
-<!--                          </a-button>-->
-                        </a-tooltip>
-                      </a-comment>
-                    </a-list-item>
-<!--                    <a-list-->
-<!--                      v-if="item.count"-->
-<!--                      style="margin-left: 70px"-->
-<!--                      :data-source="children[index]"-->
-<!--                      item-layout="horizontal"-->
-<!--                    >-->
-<!--                    </a-list>-->
-                  </div>
+                <a-list item-layout="vertical" size="large" :data-source="comments">
+                  <div slot="footer"><b>ant design vue</b> footer part</div>
+                  <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                    <template v-for="{ type, text } in actions" slot="actions">
+                      <span :key="type">
+                        <a-icon :type="type" style="margin-right: 8px" />
+                        {{ text }}
+                      </span>
+                    </template>
+                    <a-list-item-meta :description="item.description">
+                      <a slot="title">{{ item.userName }}</a>&nbsp;
+                      <a slot="title" style="font-size: small">发表于{{ item.createTime }}</a>
+                      <a-avatar slot="avatar" :src="item.avatar" />
+                    </a-list-item-meta>
+                    <p>{{ item.content }}</p>
+                  </a-list-item>
                 </a-list>
-                <a-comment>
-                  <a-avatar
-                    slot="avatar"
-                    src="https://cdn.vuetifyjs.com/images/john.jpg"
-                    alt="匿名用户"
-                  >
-                  </a-avatar>
-                  <div slot="content">
-                    <a-form-item>
-                      <a-textarea :rows="4" :value="value" @change="handleCommentChange">
-                      </a-textarea>
-                    </a-form-item>
-                    <a-form-item>
-                      <a-button html-type="submit" :loading="submitting" type="primary" @click="handleCommentSubmit">
-                        发表评论
-                      </a-button>
-                    </a-form-item>
-                  </div>
-                </a-comment>
               </div>
             </div>
           </a-card>
@@ -203,6 +144,11 @@ export default {
   },
   data () {
     return {
+      actions: [
+        { type: 'star-o', text: '156' },
+        { type: 'like-o', text: '156' },
+        { type: 'message', text: '2' }
+      ],
       value: '',
       comments: [],
       children: '',
@@ -266,7 +212,7 @@ export default {
     currentUser () {
       return {
         name: 'Serati Ma',
-        avatar: this.avatar
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
       }
     },
     userInfo () {
@@ -319,13 +265,6 @@ export default {
           this.userId = res.result.id
         }
       })
-    },
-    handlePrev () {
-      // 通过上边指定的ref 来操作
-      this.$refs.img.prev()
-    },
-    handleNext () {
-      this.$refs.img.next()
     },
     getProjects () {
       this.$http.get('/list/search/projects').then(res => {
