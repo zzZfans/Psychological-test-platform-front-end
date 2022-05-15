@@ -1,277 +1,297 @@
 <template>
-  <page-header-wrapper>
-    <a-card >
-      <!-- 进度条 -->
-      <a-row type="flex" justify="center">
-        <a-col :span="20">
-          <a-progress :percent="40"/>
-        </a-col>
-      </a-row>
-      <!-- 题目 监控 -->
-
-      <a-row type="flex" justify="center">
-        <a-col :span="20">
-          <div style="height: 150px;vertical-align:middle;display:table-cell;" >
-            你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？
-          </div>
-        </a-col>
-      </a-row>
-
-      <!--<a-row type="flex" justify="space-around" align="middle" :gutter="48">-->
-      <!--  <a-col flex="8">你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？你今天好吗？-->
-      <!--  </a-col>-->
-      <!--  <a-col flex="4" align="center">-->
-      <!--    <div style="width: 150px;height: 150px;vertical-align:middle;display:table-cell;border: solid #de0e0e 1px;">-->
-      <!--      摄像头-->
-      <!--    </div>-->
-
-      <!--  </a-col>-->
-      <!--</a-row>-->
-
-      <!-- 录音 -->
-      <a-row type="flex" justify="end" align="middle" :gutter="24">
-        <a-col :span="12">
-          <canvas id="canvas" style="float: right;"></canvas>
-        </a-col>
-        <a-col :span="6">
-          <a-row type="flex" justify="start">
-            <a-col :span="8">
-              <!-- 开始录音 -->
-              <a-icon
-                v-if="!isRecording"
-                type="audio"
-                theme="twoTone"
-                @click="startRecording"
-                :style="{ fontSize: '32px' }" />
-              <!-- 停止录音 -->
-              <a-icon
-                v-else
-                type="poweroff"
-                @click="stopRecording"
-                :style="{ fontSize: '32px',color: 'rgb(217, 48, 37)' }" />
-              <span :style="{ fontSize: '24px' }"> {{ this.duration }}s </span>
-            </a-col>
-            <a-col :span="8">
-              <!-- 播放 -->
-              <a-icon
-                v-if="duration > 0 && !isRecordingPlaying"
-                type="sound"
-                theme="twoTone"
-                @click="audioPlayback"
-                :style="{ fontSize: '32px' }" />
-
-              <!-- 停止播放 -->
-              <a-icon
-                v-if="isRecordingPlaying"
-                type="poweroff"
-                @click="audioStopPlay"
-                :style="{ fontSize: '32px',color: 'rgb(217, 48, 37)'}"/>
-
-              <!-- 播放进度 -->
-              <span
-                v-if="isRecordingPlaying && recordingPlayingTime > 0"
-                :style="{ fontSize: '24px' }"> {{ this.recordingPlayingTime }}s </span>
-            </a-col>
-          </a-row>
-        </a-col>
-      </a-row>
-      <!-- 下一题 -->
-      <a-row type="flex" justify="end">
-        <a-col :span="5">
-          <a-button type="primary">
-            下一题<a-icon type="right" />
-          </a-button>
-        </a-col>
-      </a-row>
-    </a-card>
-  </page-header-wrapper>
-
+  <div>
+    <page-header-wrapper>
+      <a-spin
+        :tip="spin_tips"
+        size="large"
+        :spinning="spin_spinning">
+<!--        <a-alert message="这是一个message" description="这是一个description"></a-alert>-->
+        <div class="spin-content">
+          <!--测量内容-->
+          <a-card>
+            <!--1.进度条-->
+            <a-row type="flex" justify="center">
+              <a-col :span="20">
+                <a-progress
+                  style="font-size: 16px;font-weight: 600;"
+                  :strokeWidth="12"
+                  :percent="completePercent"/>
+              </a-col>
+            <!--      :percent="Math.round((crtSubject-1)/subjects.length*100)"/>        -->
+            </a-row>
+            <!-- 2.内容-->
+            <!--2.1问题-->
+            <a-row type="flex" justify="start" align="middle" :gutter="24">
+              <span id="subject">{{crtSubIdx + 1}}:{{ subjects[crtSubIdx].subject }}</span>
+            </a-row>
+            <br>
+            <br>
+            <!--2.2回答-->
+            <a-row type="flex" justify="start" align="middle" :gutter="24">
+              <span>我的回答:</span><br/>
+            </a-row>
+            <br/>
+            <a-row type="flex" justify="start" align="middle" :gutter="24">
+              <a-textarea v-model="answers[crtSubIdx]" showCount :max-length="100" :auto-size="{minRows:4,maxRows:6}">
+              </a-textarea>
+            </a-row>
+            <br/><br/>
+            <!--3.上/下题-->
+            <a-row type="flex">
+              <a-col :span="5">
+                <div style="float: right">
+                  <a-button v-if="isShowPreBtn" type="primary" @click="doPreSubject">
+                    <a-icon type="left" />上一题
+                  </a-button>
+                </div>
+              </a-col>
+              <a-col :span="5" :offset="14">
+                <a-button v-if="isShowNextBtn" type="primary" @click="doNextSubject">
+                  下一题<a-icon type="right" />
+                </a-button>
+                <a-button v-else type="primary" @click="doSubmitSubjects">
+                  提交<a-icon type="check" />
+                </a-button>
+<!--                <a-button type="primary" @click="handleShowInfo" v-show="false">Display normal message</a-button>-->
+              </a-col>
+            </a-row>
+          </a-card>
+        </div>
+      </a-spin>
+      <declaration ref="DA">
+        <template slot="content">
+          <p>一个简单的小评测。</p>
+          <p>需要您授予<strong>摄像头权限</strong>。</p>
+          <p>需要您授予录音权限。</p>
+          <p>点击已知悉即代表同意以上要求。</p>
+          <p>最终解释权归本小组所有。</p>
+        </template>
+      </declaration>
+<!--      <assess-result-modal ref="ARM">-->
+<!--        <template slot="content">-->
+<!--          <div>{{ 1 }}</div>-->
+<!--          <div>{{ 2 }}</div>-->
+<!--        </template>-->
+<!--      </assess-result-modal>-->
+    </page-header-wrapper>
+  </div>
 </template>
 <script>
-import Recorder from 'js-audio-recorder'
+import Declaration from '@/components/Declaration'
+import AssessResultModal from '@/components/assessResultModal'
+import { getTextSubjects, textAnalysis } from '@/api/text-test-api'
+import { message } from 'ant-design-vue'
 
 export default {
+  name: 'textQAEval',
+  components: {
+    Declaration,
+    AssessResultModal
+  },
   data () {
     return {
-      // 正在录音
-      isRecording: false,
-      // 正在播放录音
-      isRecordingPlaying: false,
-      // 播放时长
-      recordingPlayingTime: 0,
-      // 定时器
-      timer: null,
-      // 用于存储创建的语音对象
-      recorder: null,
-      formData: null,
-      // 录音时长
-      duration: 0,
-      drawRecordId: null,
-      ctx: null,
-      canvas: null
+      // spin
+      spin_spinning: true,
+      spin_tips: '文本测试题加载中...',
+      name: '',
+      // ajax拿到的题目
+      subjects: [''],
+      // 当前题目索引
+      crtSubIdx: 0,
+      // 每道题的回答
+      answers: [],
+      location: 0,
+      // 题目分析结果
+      analysisIdx: 0,
+      answersAnalysisResult: [],
+      finishedNum: 0
     }
   },
-  mounted () {
-    this.canvas = document.getElementById('canvas')
-    this.ctx = this.canvas.getContext('2d')
+  watch: {
+    finishedNum: function (newNum, oldNum) {
+      // console.log('当前完成的题目' + newNum)
+      if (newNum === this.subjects.length) {
+        this.spin_spinning = false
+        alert(this.answersAnalysisResult)
+      }
+    }
+  },
+  computed: {
+    // 计算进度条完成度
+    completePercent: function () {
+      // console.log('当前题目是否完成：' + this.isCurrentAnswer())
+      // console.log(((this.crtSubIdx + 1) / this.subjects.length) * 100)
+      let percent = 0
+      if (this.isCurrentAnswer()) {
+        percent = ((this.crtSubIdx + 1) / this.subjects.length) * 100
+      } else {
+        percent = (this.crtSubIdx / this.subjects.length) * 100
+      }
+      return Math.round(percent)
+    },
+    // 是否显示上一题按钮
+    isShowPreBtn () {
+      // console.log(this.crtSubIdx)
+      // console.log(this.answers.length)
+      if (this.crtSubIdx === 0 || this.crtSubIdx !== this.location) {
+        return false
+      }
+      return true
+    },
+    // 是否显示下一题按钮
+    isShowNextBtn () {
+      return (this.crtSubIdx + 1) !== this.subjects.length
+    }
   },
   methods: {
-    callback (key) {
-      console.log('callback')
-      console.log(key)
+    isLoading () {
+      console.log('isLoading')
     },
-    submit () { // 发送语音的方法
-      console.log('submit')
-      this.recorder.pause() // 暂停录音
-      this.timer = null
-      var formData = new FormData()
-      var blob = this.recorder.getWAVBlob()// 获取wav格式音频数据
-      // 此处获取到blob对象后需要设置fileName满足当前项目上传需求，其它项目可直接传把blob作为		  file塞入formData
-      var newbolb = new Blob([blob], { type: 'audio/wav' })
-      var fileOfBlob = new File([newbolb], new Date().getTime() + '.wav')
-      // formData是传给后端的对象,
-      formData.append('file', fileOfBlob)
-
-      // 发送给后端的方法
-      // sendAudio(formData).then(res => {
-      //   console.log(res)
-      // })
+    // 当前题目是否回答
+    isCurrentAnswer () {
+      const reg = /^\s+$/g
+      if (this.answers[this.crtSubIdx] === undefined || this.answers[this.crtSubIdx] === '' || reg.test(this.answers[this.crtSubIdx])) {
+        return false
+      }
+      return true
     },
-    // 开始录音
-    startRecording () {
-      console.log('startRecording')
-      if (this.recorder) {
-        this.recorderDestroy()
-        this.isRecordingPlaying = false
-      }
-      // 实例化语音对象
-      this.recorder = new Recorder({
-        // 16 16000 1 适合语音识别
-        sampleBits: 16, // 采样位数，支持 8 或 16，默认是16
-        sampleRate: 16000, // 采样率，支持 11025、16000、22050、24000、44100、48000，根据浏览器默认值，我的chrome是48000
-        numChannels: 1 // 声道，支持 1 或 2， 默认是1
-      })
-      // 录音时
-      this.recorder.onprogress = (params) => {
-        this.duration = params.duration.toFixed(0)
-        // console.log('录音时长(秒)', params.duration)
-        // console.log('录音大小(字节)', params.fileSize)
-        // console.log('录音音量百分比(%)', params.vol)
-      }
-      // 录音播放完成回调
-      this.recorder.onplayend = () => {
-        console.log('onplayend')
-        this.isRecordingPlaying = false
-        this.stopDrawAudio()
-      }
-      // 录音播放开始回调
-      this.recorder.onplay = () => {
-        console.log('onplay')
-        this.timer = setInterval(this.addRecordingPlayingTime, 1000)
-        this.isRecordingPlaying = true
-      }
-
-      Recorder.getPermission().then(() => {
-        // 开始录音
-        this.recorder.start()
-        this.isRecording = true
-      }, (error) => {
-        console.log(`${error.name} : ${error.message}`)
-      })
-      // 画图
-      this.drawAudio()
-    },
-    // 停止录音
-    stopRecording () {
-      console.log('stopRecording')
-      this.recorder.stop() // 停止录音
-      this.isRecording = false
-      this.stopDrawAudio()
-    },
-    // 播放录音
-    audioPlayback () {
-      console.log('audioPlayback')
-      if (this.isRecording) {
-        this.stopRecording()
-      }
-      // 播放录音
-      this.recorder.play()
-      // 画图
-      this.drawAudio()
-    },
-    addRecordingPlayingTime () {
-      console.log('addRecordingPlayingTime')
-      ++this.recordingPlayingTime
-      if (this.recordingPlayingTime >= this.duration) {
-        clearInterval(this.timer)
-        this.recordingPlayingTime = 0
+    // 上一题
+    doPreSubject () {
+      if (this.crtSubIdx > 0) {
+        this.crtSubIdx = this.crtSubIdx - 1
       }
     },
-    // 停止录音播放
-    audioStopPlay () {
-      console.log('audioStopPlay')
-      this.recorder.stopPlay()
-      this.isRecordingPlaying = false
-      clearInterval(this.timer)
-      this.recordingPlayingTime = 0
-      this.stopDrawAudio()
-    },
-    // 销毁录音实例
-    recorderDestroy () {
-      console.log('recorderDestroy')
-      if (this.recorder) {
-        this.recorder.destroy() // 销毁实例
+    // 下一题
+    doNextSubject () {
+      if (!this.isCurrentAnswer()) {
+        message.warning('请作答，空输入无效')
+        return
       }
-    },
-    // 绘图
-    drawAudio () {
-      console.log('drawAudio')
-      // 用 requestAnimationFrame 稳定 60 fps 绘制
-      this.drawRecordId = requestAnimationFrame(this.drawAudio)
-
-      // 实时获取音频大小数据
-      const dataArray = this.isRecording ? this.recorder.getRecordAnalyseData() : this.recorder.getPlayAnalyseData()
-      const bufferLength = dataArray.length
-
-      // 填充背景色
-      this.ctx.fillStyle = 'rgb(255, 255, 255)'
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-      // 设定波形绘制颜色
-      this.ctx.lineWidth = 2
-      this.ctx.strokeStyle = 'rgb(225,14,14)'
-
-      this.ctx.beginPath()
-
-      var sliceWidth = this.canvas.width * 1.0 / bufferLength // 一个点占多少位置，共有 bufferLength 个点要绘制
-      var x = 0 // 绘制点的 x 轴位置
-
-      for (var i = 0; i < bufferLength; i++) {
-        var v = dataArray[i] / 128.0
-        var y = v * this.canvas.height / 2
-
-        if (i === 0) {
-          // 第一个点
-          this.ctx.moveTo(x, y)
-        } else {
-          // 剩余的点
-          this.ctx.lineTo(x, y)
+      const crtAnswerLength = this.answers[this.crtSubIdx].length
+      if (crtAnswerLength < 10 || crtAnswerLength > 100) {
+        message.info('请作答，输入10~100字之间')
+        return
+      }
+      if (this.crtSubIdx < this.subjects.length) {
+        this.crtSubIdx = this.crtSubIdx + 1
+        if (this.crtSubIdx > this.location) {
+          this.location++
         }
-        // 依次平移，绘制所有点
-        x += sliceWidth
       }
-
-      this.ctx.lineTo(this.canvas.width, this.canvas.height / 2)
-      this.ctx.stroke()
+      // console.log('==========')
+      // console.log(this.location >= 2)
+      // console.log(this.answersAnalysisResult[this.analysisIdx] === undefined)
+      // console.log(this.answersAnalysisResult[this.analysisIdx])
+      // 用户已经测试到 2题（0题是第一题），开始发送第一题的请求
+      if (this.location >= 2 && this.answersAnalysisResult[this.analysisIdx] === undefined && ((this.location - 2) === this.analysisIdx)) {
+        const data = { 'text': this.answers[this.analysisIdx] }
+        const resultIdx = this.analysisIdx
+        this.analysisIdx++
+        textAnalysis(data)
+        .then(res => {
+          if (res.success) {
+            this.answersAnalysisResult[resultIdx] = res.result
+            this.finishedNum++
+          }
+          // this.answersAnalysisResult[this.analysisIdx] = res.result
+        })
+      }
     },
-    // 停止绘图
-    stopDrawAudio () {
-      console.log('stopDrawAudio')
-      // 让波形图复平
-      setTimeout(() => {
-        this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
-      }, 100)
+    // 提交
+    doSubmitSubjects () {
+      if (!this.isCurrentAnswer()) {
+        message.warning('请作答，空输入无效')
+        return
+      }
+      this.spin_tips = '解析中...'
+      this.spin_spinning = true
+      // 分析最后两题
+      const last2Data = { 'text': this.answers[this.answers.length - 2] }
+      const last2Idx = this.answers.length - 2
+      this.analysisIdx = last2Idx
+      textAnalysis(last2Data)
+      .then(res => {
+        if (res.success) {
+          this.answersAnalysisResult[last2Idx] = res.result
+          this.finishedNum++
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+      const last1Idx = this.answers.length - 1
+      const last1Data = { 'text': this.answers[this.answers.length - 1] }
+      this.analysisIdx = last1Idx
+      textAnalysis(last1Data)
+      .then(res => {
+        if (res.success) {
+          this.answersAnalysisResult[last1Idx] = res.result
+          this.finishedNum++
+        }
+      })
     }
+  },
+  // 钩子
+  beforeCreate () {
+    console.log('beforeCreate')
+    // this -> 当前组件
+    // 并没有methods中的方法
+    // console.log(this)
+  },
+  created () {
+    console.log('created')
+    // this -> 当前组件
+    // 当前组件创建完毕，可以使用当前组件的 Methods 和 data
+    // console.log(this)
+    // this.isLoading()
+    // console.log(this.name)
+    getTextSubjects().then(res => {
+      // console.log(res)
+      if (res.success === false) {
+        alert(res.result.message)
+      }
+      this.subjects = res.result.subjects
+      this.spin_spinning = false
+      // console.log('拿到了响应，就是还想加载一下')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  },
+  beforeMount () {
+    // console.log('beforeMount')
+  },
+  mounted () {
+    // console.log('mounted')
+  },
+  beforeUpdate () {
+    // console.log('beforeUpdate')
+  },
+  updated () {
+    // console.log('updated')
+  },
+  beforeDestroy () {
+    // console.log('beforeDestroy')
+  },
+  destroyed () {
+    // console.log('destroyed')
   }
 }
 </script>
+<style scoped>
+span#subject {
+  margin:0px;
+  padding:0px;
+  font-family:"微软雅黑","黑体","宋体";
+  font-size:24px;
+  color: darkblue;
+}
+span {
+  display: block;
+  margin:0px;
+  padding:0px;
+  font-family:"微软雅黑","黑体","宋体";
+  font-size:24px;
+  color: #b8b8cb;
+}
+</style>
