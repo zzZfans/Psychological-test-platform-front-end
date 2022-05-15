@@ -7,8 +7,8 @@
       :width="1000"
       :keyboard="false"
       @cancel="handleCancel">
-      <template slot="title">测试结果
-        <a-icon type="file-text" theme="twoTone" />
+      <template slot="title">
+        <a-icon type="file-text" theme="twoTone" /> 测试结果
       </template>
       <slot name="content"></slot>
       <template slot="footer">
