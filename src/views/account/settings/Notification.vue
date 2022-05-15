@@ -9,7 +9,7 @@
               <a @click="readMessage(item)">{{ item.title }}</a>
             </template>
             <template #avatar>
-              <a-badge :dot="item.status === 0 ? 1 : 0">
+              <a-badge :dot="item.status === 0">
                 <a-avatar src="https://joeschmoe.io/api/v1/random" />
               </a-badge>
             </template>
