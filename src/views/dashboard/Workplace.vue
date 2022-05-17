@@ -12,24 +12,24 @@
           <!--          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>-->
         </div>
       </div>
-    </template>>
-    <div>
+    </template>
+<!--    <div>-->
       <a-row :span="24" >
-        <a-col >
-          <a-card
-            class="project-list"
-            :loading="false"
-            style="margin-bottom: 24px;"
-            :bordered="false"
-            title="热门"
-            :body-style="{ padding: 0 }"
-          >
-            <a slot="extra">心理知识区</a>
-            <div>
-            </div>
-          </a-card>
+        <a-col  >
+<!--          <a-card-->
+<!--            class="project-list"-->
+<!--            :loading="false"-->
+<!--            style="margin-bottom: 24px;"-->
+<!--            :bordered="false"-->
+<!--            title="热门"-->
+<!--            :body-style="{ padding: 0 }"-->
+<!--          >-->
+<!--            <a slot="extra">心理知识区</a>-->
+<!--            <div>-->
+<!--            </div>-->
+<!--          </a-card>-->
           <!--          轮播-->
-          <div class="showImg" style="position:relative;height: 400px;width: 1100px;background-color: red" >
+          <div class="showImg" style="position:relative;height: 500px;width: 1152px;top: -124px" >
 <!--            //轮播图片-->
             <a href="https://www.baidu.com"  target="_blank">
             <img
@@ -44,11 +44,11 @@
             </a>
 <!--            //左侧按钮-->
             <div @click="clickIcon('up')" class="iconDiv icon-left">
-              <i class="el-icon-caret-left"></i>
+              <a-icon type="left" ></a-icon>
             </div>
 <!--            //右侧按钮-->
-            <div @click="clickIcon('down')" class="iconDiv icon-right">
-              <i class="el-icon-caret-right"></i>
+            <div  @click="clickIcon('down')" class="iconDiv icon-right">
+              <a-icon type="right" ></a-icon>
             </div>
 <!--            //控制圆点-->
             <div class="banner-circle">
@@ -66,165 +66,66 @@
         </a-col>
       </a-row>
           <!--      动态-->
-      <a-row >
-        <a-col :xl="13" :lg="24" :md="24" :sm="24" :xs="24">
-          <div >
-            <a-card :loading="false" title="动态" :bordered="false">
-              <a-list
-                :data-source="data"
-              >
-                <a-list-item slot="renderItem" slot-scope="item">
-                  <a-list-item-meta >
-                    <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
-                    <a slot="title" >
-                      <span style="color: #1890ff">{{ item.username }}</span>&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;
-                      <span>测试了</span>&nbsp;
-                      <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
-                      <!--                      <a href="#">{{ item.project.event }}</a>-->
-                      <span>...</span>
-                    </a>
-                    <div slot="description">{{ item.time }}</div>
-                  </a-list-item-meta>
-                </a-list-item>
-              </a-list>
-            </a-card>
-          </div>
-          <div :span="12">
-          </div>
-        </a-col>
-        <a-col
-          style="padding: 0 12px"
-          :xl="11"
-          :lg="24"
-          :md="24"
-          :sm="24"
-          :xs="24">
-          <a-card
-            title="体验交谈区"
-            style="margin-bottom: 24px"
-            :loading="false"
-            :bordered="false"
-            :body-style="{ padding: 0 }"
-          >
-            <!--                    评论区-->
-            <div style="position: relative;top: 10px">
-              <a-row>
-                <a-col span="3">
-                  <a-avatar size="large" :src="currentUser.avatar" />
-                </a-col>
-                <a-col span="18">
-                  <a-input style="position: relative;height: 40px;float: left;width: 390px" placeholder="输入评论"></a-input>
-                </a-col>
-                <a-col span="3">
-                  <a-button style="position: relative;height: 40px;float: right;width: 50px" type="primary">发送</a-button>
-                </a-col>
-              </a-row>
-              <div>
-                <a-list
-                  v-if="comments.length"
-                  :data-source="comments"
-                  item-layout="horizontal"
-                >
-                  <div v-for="(item) in comments" :key="item.id">
-                    <a-list-item slot="renderItem" :key="item.id">
-                      <div style="position: relative;background-color: #d3dce6;width: 100%">
-                        <a-comment>
-                          <div style="font-size: small">
-                            <a-avatar
-                              :src="item.avatar"
-                            />
-                            &nbsp
-                            <a>{{ item.userName }}</a>
-                            <a-tooltip>
-                              <span> 发表于 {{ item.createTime }}</span>
-                            </a-tooltip>
-                          </div>
-                          <p style="margin-left: 50px">
-                            {{ item.content }}
-                          </p>
-                          <a-tooltip>
-                            <a-tooltip>
-                              <template slot="title">
-                                评论
-                              </template>
-                              <a-icon
-                                style="position: relative;margin-left: 8%;color: #1976d2"
-                                type="edit"
-                                @click="addComment(item)"
-                              >
-                              </a-icon>
-                            </a-tooltip>
-                            <a v-if="true">
-                              <a-icon
-                                style="position: relative;margin-left: 10%"
-                                type="delete"
-                                color="#1976d2"
-                                @click="deleteComment(item)"
-                              >
-                              </a-icon>
-                            </a>
-                            <a-button @click="getChildren(index,item.id())">
-                              详情
-                            </a-button>
-                          </a-tooltip>
-                        </a-comment>
-                        <div v-show="true" style="position: relative;left: 100px;width: 400px;">
-                          <a-comment>
-                            <div style="font-size: small">
-                              <a-avatar
-                                :src="item.avatar"
-                              />
-                              &nbsp
-                              <a>{{ item.userName }}</a>
-                              <a-tooltip>
-                                <span> 发表于 {{ item.createTime }}</span>
-                              </a-tooltip>
-                            </div>
-                            <p style="margin-left: 50px">
-                              {{ item.content }}
-                            </p>
-                            <a-tooltip>
-                              <a-tooltip>
-                                <template slot="title">
-                                  评论
-                                </template>
-                                <a-icon
-                                  style="position: relative;margin-left: 8%;color: #1976d2"
-                                  type="edit"
-                                  @click="addComment(item)"
-                                >
-                                </a-icon>
-                              </a-tooltip>
-                              <a v-if="true">
-                                <a-icon
-                                  style="position: relative;margin-left: 10%"
-                                  type="delete"
-                                  color="#1976d2"
-                                  @click="deleteComment(item)"
-                                >
-                                </a-icon>
-                              </a>
-                            </a-tooltip>
-                          </a-comment>
-                        </div>
-                      </div>
+        <a-row style="position: relative;top: -75px" >
+          <div>
+            <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
+              <div  style="position: relative;top: -140px">
+                <a-card :loading="false" title="动态" :bordered="false">
+                  <a-list
+                    :data-source="data"
+                  >
+                    <a-list-item slot="renderItem" slot-scope="item">
+                      <a-list-item-meta >
+                        <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
+                        <a slot="title" >
+                          <span style="color: #1890ff">{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                          <span>测试了</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
+                          <!--                      <a href="#">{{ item.project.event }}</a>-->
+                          <span>...</span>
+                        </a>
+                        <div slot="description">{{ item.time }}</div>
+                      </a-list-item-meta>
                     </a-list-item>
-                    <!--                    <a-list-->
-                    <!--                      v-if="item.count"-->
-                    <!--                      style="margin-left: 70px"-->
-                    <!--                      :data-source="children[index]"-->
-                    <!--                      item-layout="horizontal"-->
-                    <!--                    >-->
-                    <!--                    </a-list>-->
-                  </div>
-                </a-list>
+                  </a-list>
+                </a-card>
               </div>
-            </div>
-          </a-card>
-          <!--                    评论区-->
-        </a-col>
-      </a-row>
-    </div>
+            </a-col>
+          </div>
+          <div style="position: relative;top: -140px">
+            <a-col
+              style="padding: 0 12px"
+              :xl="12"
+              :lg="24"
+              :md="24"
+              :sm="24"
+              :xs="24">
+              <a-card :loading="false" title="公告" :bordered="false">
+                <a-list :data-source="noticeData">
+                  <a-list-item slot="renderItem" slot-scope="item">
+                    <a-list-item-meta>
+                      <a slot="title" @click="watchNotice(item)">
+                    <span style="text-decoration: underline">
+                      <a-tooltip>
+                        <template #title>{{ item.noticeTitle }}</template>
+                        {{ item.noticeTitle | ellipsis }}
+                      </a-tooltip>
+                    </span>
+                      </a>
+                    </a-list-item-meta>
+                    <span style="white-space: nowrap">
+                  {{ item.createTime }}
+                </span>
+                  </a-list-item>
+                </a-list>
+              </a-card>
+            </a-col>
+      <a-modal v-model="modalVisible" :title="noticeTitle" @ok="handleOk">
+        <p>{{ noticeContent }}</p>
+      </a-modal>
+          </div>
+        </a-row>
+<!--      </div>-->
   </page-header-wrapper>
 </template>
 
@@ -237,6 +138,7 @@ import { getRoleList, getServiceList } from '@/api/manage'
 import { getUser } from '@/api/user'
 import { commentList, childrenList } from '@/api/comment'
 import { getUserHistoryList } from '@/api/assess'
+import { pageList } from '@/api/notice'
 const DataSet = require('@antv/data-set')
 
 export default {
@@ -245,13 +147,26 @@ export default {
     PageHeaderWrapper,
     Radar
   },
+  filters: {
+    ellipsis (value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 10) + '...'
+      }
+      return value
+    }
+  },
   data () {
     return {
+      modalVisible: false,
+      noticeTitle: '',
+      noticeData: '',
+      noticeContent: '',
       currentIndex: 0, // 当前所在图片下标
       timer: null, // 定时轮询
       imgArr: [
         {	id: 0,
-          url: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
         },
         {
           id: 1,
@@ -259,11 +174,11 @@ export default {
         },
         {
           id: 2,
-          url: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
         },
         {
           id: 3,
-          url: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
         }
       ],
       // 评论处理部分
@@ -355,6 +270,7 @@ export default {
     })
   },
   mounted () {
+    this.getNotice()
     this.getCommentList()
     this.getProjects()
     this.getActivity()
@@ -365,6 +281,31 @@ export default {
     this.startInterval()
   },
   methods: {
+    handleOk () {
+      this.modalVisible = false
+      this.noticeTitle = ''
+      this.noticeContent = ''
+    },
+    watchNotice (notice) {
+      this.modalVisible = true
+      this.noticeTitle = notice.noticeTitle
+      this.noticeContent = notice.noticeContent
+    },
+    getNotice () {
+      const data = {
+        page: 1,
+        pageSize: 10
+      }
+      pageList(data).then(res => {
+        if (res.success) {
+          // alert(JSON.stringify(res))
+          this.noticeData = res.result.records
+        }
+      })
+    },
+    getUsername (username) {
+      return username.substring(0, 1) + '**'
+    },
     // 获取子评论
     // childrenList () {
     //   const id =

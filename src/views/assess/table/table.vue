@@ -11,13 +11,15 @@
       </a-modal>
       <!--      进度条-->
       <div style=" width: 90%;white-space: nowrap ">
-        <div >
-          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>
-        </div>
+<!--        <div >-->
+<!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
+<!--        </div>-->
         <div style="font-size: 25px;white-space: nowrap">
-          <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
+          <a-icon style="font-size: 50px" type="dashboard"></a-icon>
+          <span v-show="!show" class="count">
+            {{ getCode() }}s</span>
           <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt.length*5) / 60) % 60) }}:{{ shownum(wt.length*5 % 60) }}s！</span>
-        </div>s
+        </div>
         <a-progress
           :strokeWidth="17"
           stroke-linecap="square"
@@ -342,6 +344,7 @@ export default {
     },
     requirePermissionSuccess () {
       console.log('requirePermissionSuccess')
+      this.getCode()
     },
     // created () { // 显示当前时间
     //   this.gettimes()

@@ -3,55 +3,45 @@
     itemLayout="horizontal"
     :dataSource="data"
   >
-    <div style="position: relative;top: 10px">
-      <!--    本地获取-->
+    <div style="position:relative;height: 500px">
+      <div style="position: relative;top: 10px;left:50px;height: 40px;width: 800px;">
+        <!--    本地获取-->
         <a-row>
           <a-col span="12"  style="position: relative;left: 30px">
             <a-upload name="file" :beforeUpload="beforeUpload" :showUploadList="false">
               <a-button type="primary" icon="file" >选择图片</a-button>
             </a-upload>
             <span>---</span>
-            <a-button type="primary" icon="upload" @click="uploadPic">上传</a-button>
+            <a-button  icon="upload" @click="uploadPic">上传</a-button>
           </a-col>
           <!--    本地获取-->
           <!--      拍摄-->
           <a-col span="12">
-            <div class="iCenter" style="position: relative;left: 90px">
+            <div class="iCenter" style="position: relative;float: right">
               <a-button type="primary"  icon="camera" @click="takePhone" >开启摄像头</a-button>
               <span>---</span>
               <a-button @click="drawImage" icon="el-icon-camera" >拍照</a-button>
               <span>---</span>
-              <a-button id="stop" icon="el-icon-camera">完成</a-button>
+              <a-button id="stop" icon="upload">完成</a-button>
             </div>
           </a-col>
           <!--      拍摄-->
         </a-row>
-    </div>
-    <div class="camera-box" style="width: 900px; position:relative;top: 20px">
-      <el-row :gutter="20">
-        <el-col :span="12">
-<!--          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>-->
-          <!-- 这里就是摄像头显示的画面 -->
-          <img v-show="imgShow" style="width: 95%;height: 450px;vertical-align: middle;border-top-left-radius: 50px;border-top-right-radius: 50px;border-bottom-left-radius: 50px;border-bottom-right-radius: 50px" :src="img" />
-          <div v-show="shotShow">
-            <video   id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight"  ></video>
-            <canvas style="float: right" id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
-          </div>
-          <!--          <video id="video" width="400" height="300"></video>-->
-        </el-col>
-<!--        <el-col :span="12">-->
-<!--          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">拍摄效果</div>-->
-<!--          &lt;!&ndash; 这里是点击拍照显示的图片画面 &ndash;&gt;-->
-<!--          <canvas id="canvas" width="400" height="300" style="display: block;background-color: red"></canvas>-->
-<!--          <el-button-->
-<!--            :loading="loadingbut"-->
-<!--            icon="el-icon-check"-->
-<!--            type="primary"-->
-<!--            size="small"-->
-<!--            @click="takePhoneUpfile"-->
-<!--            style="margin-top: 10px;">保存</el-button>-->
-<!--        </el-col>-->
-      </el-row>
+      </div>
+      <div class="camera-box" style="width: 900px; position:relative;top: 20px;" >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <!--          <div style="text-align: center;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>-->
+            <!-- 这里就是摄像头显示的画面 -->
+            <img v-show="imgShow" style="width: 95%;height: 450px;vertical-align: middle;border-top-left-radius: 50px;border-top-right-radius: 50px;border-bottom-left-radius: 50px;border-bottom-right-radius: 50px" :src="img" />
+            <div v-show="shotShow">
+              <video   id="videoCamera" class="canvas" :width="videoWidth" :height="videoHeight"  ></video>
+              <canvas style="float: right" id="canvasCamera" class="canvas" :width="videoWidth" :height="videoHeight"></canvas>
+            </div>
+            <!--          <video id="video" width="400" height="300"></video>-->
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </a-list>
 </template>

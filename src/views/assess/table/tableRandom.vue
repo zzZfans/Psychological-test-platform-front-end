@@ -11,12 +11,15 @@
     <a-card class="ant-pro-pages-list-projects-cardList">
       <!--      进度条-->
       <div style=" width: 90%;white-space: nowrap ">
-        <div >
-          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>
+<!--        <div >-->
+<!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
+<!--        </div>-->
+        <div style="position: relative;height: auto;width:100px;left: 325px;font-size: 27px">
+          随机测试类型：<span style="color: #1890ff">{{ randomtype() }}</span>
         </div>
-        <span style="right:600px; ">随机测试模块：{{ randomtype() }}</span>样
         <div style="font-size: 25px;white-space: nowrap">
-          <span v-show="!show" class="count">计时器:{{ getCode() }}s</span>
+          <a-icon style="font-size: 50px" type="dashboard"></a-icon>
+          <span v-show="!show" class="count">{{ getCode() }}s</span>
           <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt_randomqus.length*5) / 60) % 60) }}:{{ shownum(wt_randomqus.length*5 % 60) }}s！</span>
         </div>
         <a-progress
@@ -165,7 +168,7 @@ export default {
         [11, 24, 63, 67, 74, 81], // 敌对共6项
         [13, 25, 47, 50, 70, 75, 82], // 恐怖共7项
         [8, 18, 43, 68, 76, 83], // 偏执共6项
-        [7, 16, 35, 62, 77, 84, 85, 87, 88, 90], // 精神病性共10项
+        [7, 16, 35, 62, 77, 84, 85, 87, 88, 90], // 有人共10项
         [19, 44, 59, 60, 64, 66, 89] // 其他共7项
       ],
       wt_randomqus: [],
@@ -736,6 +739,10 @@ export default {
           alert(this.$error)
         }
       })
+    },
+    requirePermissionSuccess () {
+      console.log('requirePermissionSuccess')
+      this.getCode()
     },
     dateFormat (time) {
       var date = new Date(time)
