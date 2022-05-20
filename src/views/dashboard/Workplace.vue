@@ -1,6 +1,6 @@
 <template>
   <page-header-wrapper :title="'首页'">
-    <template  v-slot:content>
+    <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
           <a-avatar size="large" :src="currentUser.avatar" />
@@ -13,25 +13,25 @@
         </div>
       </div>
     </template>
-<!--    <div>-->
-      <a-row :span="24" >
-        <a-col  >
-<!--          <a-card-->
-<!--            class="project-list"-->
-<!--            :loading="false"-->
-<!--            style="margin-bottom: 24px;"-->
-<!--            :bordered="false"-->
-<!--            title="热门"-->
-<!--            :body-style="{ padding: 0 }"-->
-<!--          >-->
-<!--            <a slot="extra">心理知识区</a>-->
-<!--            <div>-->
-<!--            </div>-->
-<!--          </a-card>-->
-          <!--          轮播-->
-          <div class="showImg" style="position:relative;height: 500px;width: 1152px;top: -124px" >
-<!--            //轮播图片-->
-            <a href="https://www.baidu.com"  target="_blank">
+    <!--    <div>-->
+    <a-row :span="24" >
+      <a-col >
+        <!--          <a-card-->
+        <!--            class="project-list"-->
+        <!--            :loading="false"-->
+        <!--            style="margin-bottom: 24px;"-->
+        <!--            :bordered="false"-->
+        <!--            title="热门"-->
+        <!--            :body-style="{ padding: 0 }"-->
+        <!--          >-->
+        <!--            <a slot="extra">心理知识区</a>-->
+        <!--            <div>-->
+        <!--            </div>-->
+        <!--          </a-card>-->
+        <!--          轮播-->
+        <div class="showImg" style="position:relative;height: 500px;width: 1152px;top: -124px" >
+          <!--            //轮播图片-->
+          <a href="https://www.baidu.com" target="_blank">
             <img
               @mouseover="changeInterval(true)"
               @mouseleave="changeInterval(false)"
@@ -41,91 +41,91 @@
               alt="暂无图片"
               v-show="item.id===currentIndex"
             >
-            </a>
-<!--            //左侧按钮-->
-            <div @click="clickIcon('up')" class="iconDiv icon-left">
-              <a-icon type="left" ></a-icon>
-            </div>
-<!--            //右侧按钮-->
-            <div  @click="clickIcon('down')" class="iconDiv icon-right">
-              <a-icon type="right" ></a-icon>
-            </div>
-<!--            //控制圆点-->
-            <div class="banner-circle">
-              <ul>
-                <li
-                  @click="changeImg(item.id)"
-                  v-for="(item) in imgArr"
-                  :key="item.id"
-                  :class="item.id===currentIndex? 'active': '' "
-                ></li>
-              </ul>
-            </div>
+          </a>
+          <!--            //左侧按钮-->
+          <div @click="clickIcon('up')" class="iconDiv icon-left">
+            <a-icon type="left" ></a-icon>
           </div>
-          <!--          轮播-->
-        </a-col>
-      </a-row>
-          <!--      动态-->
-        <a-row style="position: relative;top: -75px" >
-          <div>
-            <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-              <div  style="position: relative;top: -140px">
-                <a-card :loading="false" title="动态" :bordered="false">
-                  <a-list
-                    :data-source="data"
-                  >
-                    <a-list-item slot="renderItem" slot-scope="item">
-                      <a-list-item-meta >
-                        <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
-                        <a slot="title" >
-                          <span style="color: #1890ff">{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                          <span>测试了</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
-                          <!--                      <a href="#">{{ item.project.event }}</a>-->
-                          <span>...</span>
-                        </a>
-                        <div slot="description">{{ item.time }}</div>
-                      </a-list-item-meta>
-                    </a-list-item>
-                  </a-list>
-                </a-card>
-              </div>
-            </a-col>
+          <!--            //右侧按钮-->
+          <div @click="clickIcon('down')" class="iconDiv icon-right">
+            <a-icon type="right" ></a-icon>
           </div>
+          <!--            //控制圆点-->
+          <div class="banner-circle">
+            <ul>
+              <li
+                @click="changeImg(item.id)"
+                v-for="(item) in imgArr"
+                :key="item.id"
+                :class="item.id===currentIndex? 'active': '' "
+              ></li>
+            </ul>
+          </div>
+        </div>
+        <!--          轮播-->
+      </a-col>
+    </a-row>
+    <!--      动态-->
+    <a-row style="position: relative;top: -75px" >
+      <div>
+        <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
           <div style="position: relative;top: -140px">
-            <a-col
-              style="padding: 0 12px"
-              :xl="12"
-              :lg="24"
-              :md="24"
-              :sm="24"
-              :xs="24">
-              <a-card :loading="false" title="公告" :bordered="false">
-                <a-list :data-source="noticeData">
-                  <a-list-item slot="renderItem" slot-scope="item">
-                    <a-list-item-meta>
-                      <a slot="title" @click="watchNotice(item)">
+            <a-card :loading="false" title="动态" :bordered="false">
+              <a-list
+                :data-source="data"
+              >
+                <a-list-item slot="renderItem" slot-scope="item">
+                  <a-list-item-meta >
+                    <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
+                    <a slot="title" >
+                      <span style="color: #1890ff">{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>测试了</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
+                      <!--                      <a href="#">{{ item.project.event }}</a>-->
+                      <span>...</span>
+                    </a>
+                    <div slot="description">{{ item.time }}</div>
+                  </a-list-item-meta>
+                </a-list-item>
+              </a-list>
+            </a-card>
+          </div>
+        </a-col>
+      </div>
+      <div style="position: relative;top: -140px">
+        <a-col
+          style="padding: 0 12px"
+          :xl="12"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24">
+          <a-card :loading="false" title="公告" :bordered="false">
+            <a-list :data-source="noticeData" :pagination="pagination">
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-list-item-meta>
+                  <a slot="title" @click="watchNotice(item)">
                     <span style="text-decoration: underline">
                       <a-tooltip>
                         <template #title>{{ item.noticeTitle }}</template>
                         {{ item.noticeTitle | ellipsis }}
                       </a-tooltip>
                     </span>
-                      </a>
-                    </a-list-item-meta>
-                    <span style="white-space: nowrap">
+                  </a>
+                </a-list-item-meta>
+                <span style="white-space: nowrap">
                   {{ item.createTime }}
                 </span>
-                  </a-list-item>
-                </a-list>
-              </a-card>
-            </a-col>
-      <a-modal v-model="modalVisible" :title="noticeTitle" @ok="handleOk">
-        <p>{{ noticeContent }}</p>
-      </a-modal>
-          </div>
-        </a-row>
-<!--      </div>-->
+              </a-list-item>
+            </a-list>
+          </a-card>
+        </a-col>
+        <a-modal v-model="modalVisible" :title="noticeTitle" @ok="handleOk">
+          <p>{{ noticeContent }}</p>
+        </a-modal>
+      </div>
+    </a-row>
+    <!--      </div>-->
   </page-header-wrapper>
 </template>
 
@@ -136,7 +136,7 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
 import { getUser } from '@/api/user'
-import { commentList, childrenList } from '@/api/comment'
+import { commentList } from '@/api/comment'
 import { getUserHistoryList } from '@/api/assess'
 import { pageList } from '@/api/notice'
 const DataSet = require('@antv/data-set')
@@ -164,6 +164,7 @@ export default {
       noticeContent: '',
       currentIndex: 0, // 当前所在图片下标
       timer: null, // 定时轮询
+      total: 0,
       imgArr: [
         {	id: 0,
           url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
@@ -181,6 +182,15 @@ export default {
           url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
         }
       ],
+      pagination: {
+        current: 1,
+        pageSize: 8,
+        total: 0,
+        showTotal: (total) => `共${total}条数据`,
+        onShowSizeChange: this.pageSizeChange,
+        onChange: this.pageChange
+
+      },
       // 评论处理部分
       commentShow: false,
       plheight: '0px',
@@ -281,6 +291,16 @@ export default {
     this.startInterval()
   },
   methods: {
+    pageSizeChange (pageNum) {
+      this.loading = true
+      this.pagination.pageSize = pageNum
+      this.pagination.current = 1
+      this.getNotice()
+    },
+    pageChange (page) {
+      this.pagination.current = page
+      this.getNotice()
+    },
     handleOk () {
       this.modalVisible = false
       this.noticeTitle = ''
@@ -293,13 +313,15 @@ export default {
     },
     getNotice () {
       const data = {
-        page: 1,
-        pageSize: 10
+        page: this.pagination.current,
+        pageSize: this.pagination.pageSize
       }
       pageList(data).then(res => {
         if (res.success) {
           // alert(JSON.stringify(res))
           this.noticeData = res.result.records
+          this.total = res.result.total
+          this.pagination.total = res.result.total
         }
       })
     },
@@ -366,15 +388,6 @@ export default {
         if (res.success) {
           this.data = res.result.records
           // alert(this.data.createTime)
-        }
-      })
-    },
-    getChildren (index, id) {
-      // this.commentShow = true
-      alert('莱菲欧')
-      childrenList(id).then(res => {
-        if (res.success) {
-          this.children[index] = res.result
         }
       })
     },
