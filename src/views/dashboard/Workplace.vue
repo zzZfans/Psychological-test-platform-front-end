@@ -76,9 +76,13 @@
               >
                 <a-list-item slot="renderItem" slot-scope="item">
                   <a-list-item-meta >
+                    <a-avatar
+                      slot="avatar"
+                      :src="item.avatar"
+                    />
                     <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
                     <a slot="title" >
-                      <span style="color: #1890ff">{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span style="color: #1890ff">&nbsp;&nbsp;&nbsp;{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
                       <span>测试了</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
                       <!--                      <a href="#">{{ item.project.event }}</a>-->
@@ -184,7 +188,7 @@ export default {
       ],
       pagination: {
         current: 1,
-        pageSize: 8,
+        pageSize: 12,
         total: 0,
         showTotal: (total) => `共${total}条数据`,
         onShowSizeChange: this.pageSizeChange,
