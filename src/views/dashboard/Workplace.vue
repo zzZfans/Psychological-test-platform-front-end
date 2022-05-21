@@ -14,8 +14,8 @@
       </div>
     </template>
     <!--    <div>-->
-    <a-row :span="24" >
-      <a-col >
+    <a-row :span="24">
+      <a-col>
         <!--          <a-card-->
         <!--            class="project-list"-->
         <!--            :loading="false"-->
@@ -29,10 +29,11 @@
         <!--            </div>-->
         <!--          </a-card>-->
         <!--          轮播-->
-        <div class="showImg" style="position:relative;height: 500px;width: 1152px;top: -124px" >
+        <div>
           <!--            //轮播图片-->
           <a href="https://www.baidu.com" target="_blank">
             <img
+              style="max-width: 100%;max-height: 100%"
               @mouseover="changeInterval(true)"
               @mouseleave="changeInterval(false)"
               v-for="(item) in imgArr"
@@ -44,11 +45,11 @@
           </a>
           <!--            //左侧按钮-->
           <div @click="clickIcon('up')" class="iconDiv icon-left">
-            <a-icon type="left" ></a-icon>
+            <a-icon type="left"></a-icon>
           </div>
           <!--            //右侧按钮-->
           <div @click="clickIcon('down')" class="iconDiv icon-right">
-            <a-icon type="right" ></a-icon>
+            <a-icon type="right"></a-icon>
           </div>
           <!--            //控制圆点-->
           <div class="banner-circle">
@@ -66,23 +67,24 @@
       </a-col>
     </a-row>
     <!--      动态-->
-    <a-row style="position: relative;top: -75px" >
+    <a-row :gutter="16" style="margin-top: 24px">
       <div>
-        <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-          <div style="position: relative;top: -140px">
+        <a-col :span="12">
+          <div>
             <a-card :loading="false" title="动态" :bordered="false">
               <a-list
                 :data-source="data"
               >
                 <a-list-item slot="renderItem" slot-scope="item">
-                  <a-list-item-meta >
+                  <a-list-item-meta>
                     <a-avatar
                       slot="avatar"
                       :src="item.avatar"
                     />
                     <!--                    <a-avatar slot="avatar" size="small" :src="item.avatar" />-->
-                    <a slot="title" >
-                      <span style="color: #1890ff">&nbsp;&nbsp;&nbsp;{{ getUsername (item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a slot="title">
+                      <span style="color: #1890ff">&nbsp;&nbsp;&nbsp;{{ getUsername(item.username) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      在&nbsp;<a href="#">{{ item.createTime }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
                       <span>测试了</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span style="color: #1890ff">{{ item.assessType }}</span>&nbsp;
                       <!--                      <a href="#">{{ item.project.event }}</a>-->
@@ -96,14 +98,8 @@
           </div>
         </a-col>
       </div>
-      <div style="position: relative;top: -140px">
-        <a-col
-          style="padding: 0 12px"
-          :xl="12"
-          :lg="24"
-          :md="24"
-          :sm="24"
-          :xs="24">
+      <div>
+        <a-col :span="12">
           <a-card :loading="false" title="公告" :bordered="false">
             <a-list :data-source="noticeData" :pagination="pagination">
               <a-list-item slot="renderItem" slot-scope="item">
@@ -171,20 +167,21 @@ export default {
       timer: null, // 定时轮询
       total: 0,
       imgArr: [
-        {	id: 0,
-          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
+        {
+          id: 0,
+          url: 'https://picsum.photos/seed/0x/1920/1080'
         },
         {
           id: 1,
-          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
+          url: 'https://picsum.photos/seed/11/1920/1080'
         },
         {
           id: 2,
-          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
+          url: 'https://picsum.photos/seed/2/1920/1080'
         },
         {
           id: 3,
-          url: 'https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g'
+          url: 'https://picsum.photos/seed/3/1920/1080'
         }
       ],
       pagination: {
@@ -458,7 +455,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang='less' scoped>
 @import './Workplace.less';
 
 //评论
@@ -480,6 +477,7 @@ export default {
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
 }
+
 //轮播
 .project-list {
   .card-title {
@@ -596,6 +594,7 @@ export default {
     display: none;
   }
 }
+
 .modal_box {
   width: 100%;
   display: flex;
@@ -603,32 +602,37 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .ant-carousel {
   width: 75%;
 }
+
 * {
   padding: 0;
   margin: 0;
 }
+
 /* 清除li前面的圆点 */
 li {
   list-style-type: none;
 }
-.showImg{
+
+.showImg {
   position: relative;
   width: 40%;
   height: 250px;
   margin: 100px auto;
   overflow: hidden;
 }
+
 /* 轮播图片 */
-.showImg img{
+.showImg img {
   width: 100%;
   height: 100%;
 }
 
 /* 箭头图标 */
-.iconDiv{
+.iconDiv {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -636,44 +640,50 @@ li {
   height: 30px;
   border: 1px solid #666;
   border-radius: 15px;
-  background-color: rgba(125,125,125,.2);
+  background-color: rgba(125, 125, 125, .2);
   line-height: 30px;
   text-align: center;
   font-size: 25px;
   cursor: pointer;
 }
-.iconDiv:hover{
+
+.iconDiv:hover {
   background-color: white;
 }
-.icon-left{
+
+.icon-left {
   left: 10px;
 }
-.icon-right{
+
+.icon-right {
   right: 10px;
 }
 
 /* 控制圆点 */
-.banner-circle{
+.banner-circle {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 20px;
 }
-.banner-circle ul{
+
+.banner-circle ul {
   margin: 0 50px;
   height: 100%;
   text-align: right;
 }
-.banner-circle ul li{
+
+.banner-circle ul li {
   display: inline-block;
   width: 14px;
   height: 14px;
   margin: 0 5px;
   border-radius: 7px;
-  background-color: rgba(125,125,125,.8);
+  background-color: rgba(125, 125, 125, .8);
   cursor: pointer;
 }
-.active{
+
+.active {
   background-color: black !important;
 }
 </style>
