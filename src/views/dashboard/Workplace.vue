@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ user.name }}<span class="welcome-text">，{{ welcome }}</span>
+            {{ timeFix }}，{{ user.username }}<span class="welcome-text">，{{ welcome }}</span>
           </div>
           <!--          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>-->
         </div>
@@ -143,6 +143,7 @@ import { getUser } from '@/api/user'
 import { commentList } from '@/api/comment'
 import { getUserHistoryList } from '@/api/assess'
 import { pageList } from '@/api/notice'
+
 const DataSet = require('@antv/data-set')
 
 export default {
