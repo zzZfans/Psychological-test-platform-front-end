@@ -26,16 +26,31 @@ router.beforeEach(async (to, from, next) => {
   })
   // console.log(accessToken, isValidToken)
   if (accessToken && isValidToken) {
+    // console.log('1')
+    if (store.getters.nickname === '游客' && to.path !== loginRoutePath) {
+      // console.log('2')
+        if (!(to.path === defaultRoutePath || to.path === '/assess/fast')) {
+          // console.log('3')
+          await store.dispatch('Logout')
+          next({ path: loginRoutePath })
+          NProgress.done()
+          return
+        }
+    }
     if (to.path === loginRoutePath) {
+      // console.log(4)
       next({ path: defaultRoutePath })
       NProgress.done()
     } else {
+      // console.log(5, to.path)
       // check login user.roles is null
       if (store.getters.roles.length === 0) {
+        // console.log(6)
         // request login userInfo
         store
           .dispatch('GetInfo')
           .then(res => {
+            // console.log('.then(res => {: ' + JSON.stringify(res))
             const permissions = res.result && res.result.permissions
             // generate dynamic router
             store.dispatch('GenerateRoutes', { permissions }).then(() => {
@@ -67,14 +82,17 @@ router.beforeEach(async (to, from, next) => {
             })
           })
       } else {
+        // console.log(7)
         next()
       }
     }
   } else {
     if (allowList.includes(to.name)) {
+      // console.log(8)
       // 在免登录名单，直接进入
       next()
     } else {
+      // console.log(9)
       next({ path: loginRoutePath, query: { redirect: to.fullPath } })
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }

@@ -66,13 +66,14 @@ const user = {
         getInfo().then(response => {
           const result = response.result
           console.log('getInfo().then(response => {:' + JSON.stringify(response))
-          if (result.roles.length > 0 && result.permissions.length > 0) {
+          if (result.roles.length > 0 && result.permissions.length > 0 || result.username === '游客') {
             commit('SET_ROLES', result.roles)
             commit('SET_PERMISSIONS', result.permissions)
             delete result.roles
             delete result.permissions
             commit('SET_INFO', result)
           } else {
+            // console.log('不满足条件')
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
 

@@ -17,6 +17,7 @@
     "ant-design-vue": "^1.7.6",
     "axios": ">=0.21.1",
     "core-js": "^3.1.2",
+    "echarts": "^5.3.2",
     "element": "^0.1.4",
     "element-ui": "^2.15.8",
     "enquire.js": "^2.1.6",

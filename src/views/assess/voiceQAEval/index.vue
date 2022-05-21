@@ -5,21 +5,21 @@
       size="large"
       :spinning="isCameraLoading || isInSubmit">
       <div class="spin-content">
-        <a-card >
+        <a-card>
           <!-- 进度条 -->
           <a-row type="flex" justify="center">
             <a-col :span="20">
               <a-progress
                 style="font-size: 16px;font-weight: 600"
                 :strokeWidth="12"
-                :percent="Math.round((curQueNum-1)/questionNum*100)"/>
+                :percent="Math.round((curQueNum-1)/questionNum*100)" />
             </a-col>
           </a-row>
           <!-- 题目 监控 -->
 
           <a-row type="flex" justify="center">
             <a-col :span="18">
-              <div style="height: 150px;vertical-align:middle;display:table-cell;font-size: 20px;font-weight: 600" >
+              <div style="height: 150px;vertical-align:middle;display:table-cell;font-size: 20px;font-weight: 600">
                 {{ curQueNum }}. {{ questions[curQueNum] }}
               </div>
             </a-col>
@@ -68,7 +68,7 @@
                       v-if="isRecordingPlaying"
                       type="poweroff"
                       @click="audioStopPlay"
-                      :style="{ fontSize: '32px',color: 'rgb(217, 48, 37)'}"/>
+                      :style="{ fontSize: '32px',color: 'rgb(217, 48, 37)'}" />
 
                     <!-- 播放进度 -->
                     <span
@@ -87,16 +87,19 @@
             <a-col :span="5">
               <div style="float: right">
                 <a-button v-if="curQueNum > 1 && preQuestionCnt === 0" type="primary" @click="preQuestion">
-                  <a-icon type="left" />上一题
+                  <a-icon type="left" />
+                  上一题
                 </a-button>
               </div>
             </a-col>
             <a-col :span="5" :offset="14">
               <a-button v-if="curQueNum === questionNum" type="primary" @click="submit">
-                提交<a-icon type="check" />
+                提交
+                <a-icon type="check" />
               </a-button>
-              <a-button v-else type="primary" @click="nextQuestion">
-                下一题<a-icon type="right" />
+              <a-button v-else-if="curQueNum < questionNum" type="primary" @click="nextQuestion">
+                下一题
+                <a-icon type="right" />
               </a-button>
             </a-col>
           </a-row>
@@ -114,8 +117,12 @@
     </declaration>
     <assess-result-modal ref="ARM">
       <template slot="content">
-        <div>{{ expressionsListList }}</div>
-        <div>{{ audioAnalysisResultList }}</div>
+        <span>
+          <span style="font-size: 18px" class="ant-rate-text">多维度加权心理测试结果：</span>
+          <a-rate style="font-size: 30px" :default-value="finalScore" :tooltips="rateDesc" disabled />
+          <span style="font-size: 16px" class="ant-rate-text">{{ rateDesc[finalScore - 1] }}</span>
+        </span>
+        <div id="chart" style="width: auto;height: 300px;margin-top: 20px"></div>
       </template>
     </assess-result-modal>
   </page-header-wrapper>
@@ -126,6 +133,7 @@ import { audioAnalysis } from '@/api/assess'
 import Declaration from '@/components/Declaration'
 import assessResultModal from '@/components/assessResultModal'
 import events from '@/components/MultiTab/events'
+import * as echarts from 'echarts'
 
 export default {
   name: 'VoiceQAEval',
@@ -135,6 +143,8 @@ export default {
   },
   data () {
     return {
+      finalScore: 0,
+      rateDesc: ['心理健康状况很差', '心理健康状况差', '心理健康状况一般', '心理健康状况不错', '心理健康状况很好'],
       audioAnalysisResultCheckInterval: null,
       spinTip: '若有权限提示，请点击允许！摄像头加载中，请稍等片刻 ~',
       isInSubmit: false,
@@ -143,7 +153,7 @@ export default {
       confirmDeclaration: false,
       preQuestionCnt: 0,
       curQueNum: 1,
-      questions: [ '',
+      questions: ['',
         '此时此刻，你正在想什么？',
         '你的梦想是什么？',
         '最近有觉得很压抑吗？',
@@ -156,6 +166,54 @@ export default {
         '你在什么时候感到真正的快乐？'],
       questionNum: 0,
       expressionsListList: [],
+      expressionsList: [],
+      audioEmotionCodeList: [],
+      textEmotionCodeList: [],
+      expressionScoreEnum: {
+        0: 40,
+        1: 50,
+        2: 10,
+        3: 10,
+        4: 10,
+        5: 10,
+        6: 50
+      },
+      textEmotionScoreEnum: {
+        'neutral': 40,
+        'good': 50,
+        'happy': 50,
+        'decline': 10,
+        'angry': 10,
+        'fear': 10,
+        'evil': 10,
+        'surprise': 50
+      },
+      textEmotionEnum: {
+        'neutral': 0,
+        'good': 1,
+        'happy': 1,
+        'decline': 2,
+        'angry': 3,
+        'fear': 4,
+        'evil': 5,
+        'surprise': 6
+      },
+      audioEmotionScoreEnum: {
+        'angry': 10,
+        'fear': 10,
+        'happy': 50,
+        'neutral': 40,
+        'sad': 10,
+        'surprise': 50
+      },
+      audioEmotionEnum: {
+        'angry': 3,
+        'fear': 4,
+        'happy': 1,
+        'neutral': 0,
+        'sad': 2,
+        'surprise': 6
+      },
       audioAnalysisResultList: [],
       recordObjs: [],
       // 正在录音
@@ -173,7 +231,7 @@ export default {
   },
   created () {
     events.$on('curQueExpressionsList' + this.$options.name, (curQueNum, expressionsList) => {
-            this.expressionsListList[curQueNum] = expressionsList
+      this.expressionsListList[curQueNum] = expressionsList
     })
     events.$on('ConfirmDeclaration' + this.$options.name, () => {
       this.isCameraLoading = true
@@ -217,7 +275,7 @@ export default {
   methods: {
     preQuestion () {
       this.preQuestionCnt++
-        this.curQueNum--
+      this.curQueNum--
     },
     notificationOfNoVideoAndAudioPermission () {
       this.notification('warning', '提示', '由于您未授予权限（摄像头和麦克风），测试启动失败！请授予权限后刷新页面。', 3)
@@ -255,22 +313,20 @@ export default {
         this.preQuestionCnt--
       }
 
-      while (this.expressionsListList[this.curQueNum] == null) {
-
-      }
-
-        this.curQueNum++
+      this.curQueNum++
 
       if (this.curQueNum >= 3) {
         this.submitAudioAnalysis(this.curQueNum - 2)
       }
     },
     submit () { // 发送语音的方法
-      console.log('submit')
+      // console.log('submit')
 
       if (!this.checkForRecording()) {
         return
       }
+
+      events.$emit('curQueDone', this.curQueNum)
 
       this.questionNum--
       this.spinTip = '拼命计算中，请耐心等待测试报告哦 ~'
@@ -280,16 +336,138 @@ export default {
         this.submitAudioAnalysis(theSubmitQueNum)
       }
       this.audioAnalysisResultCheckInterval = setInterval(() => {
+        // 全部解析完毕
         if (!this.audioAnalysisResultList.includes(null)) {
           this.isInSubmit = false
           clearInterval(this.audioAnalysisResultCheckInterval)
-          console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+          this.audioAnalysisResultList.shift()
+          this.expressionsListList.shift()
+          this.expressionsList = this.expressionsListList.map((arr) => {
+            let max = 1
+            let maxEle
+            arr.reduce(function (preVal, curVal) {
+              preVal[curVal] ? preVal[curVal]++ : preVal[curVal] = 1
+              if (preVal[curVal] > max) {
+                max++
+                maxEle = curVal
+              }
+              return preVal
+            }, {})
+            return maxEle
+          })
+          let faceEmotionScore = 0
+          for (const idx in this.expressionsList) {
+            faceEmotionScore += this.expressionScoreEnum[this.expressionsList[idx]]
+          }
+          let audioEmotionScore = 0
+          let textEmotionScore = 0
+          for (const idx in this.audioAnalysisResultList) {
+            audioEmotionScore += this.audioEmotionScoreEnum[this.audioAnalysisResultList[idx].audioEmotion]
+            this.audioEmotionCodeList.push(this.audioEmotionEnum[this.audioAnalysisResultList[idx].audioEmotion])
+            textEmotionScore += this.textEmotionScoreEnum[this.audioAnalysisResultList[idx].textEmotion]
+            this.textEmotionCodeList.push(this.textEmotionEnum[this.audioAnalysisResultList[idx].textEmotion])
+          }
+
+          this.finalScore = Math.round((faceEmotionScore * 0.2 + textEmotionScore * 0.6 + audioEmotionScore * 0.2) * 0.01)
+          console.log(faceEmotionScore, textEmotionScore, audioEmotionScore, this.finalScore)
+          // console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
           this.$refs.ARM.showModal(this.$options.name)
+          this.$nextTick(() => {
+            this.chartShow()
+          })
         }
-        console.log('this.audioAnalysisResultCheckInterval')
-        console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+        // console.log('this.audioAnalysisResultCheckInterval')
+        // console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
       }, 100)
       events.$emit('closeCamera')
+    },
+    chartShow () {
+      var chartDom = document.getElementById('chart')
+      var myChart = echarts.init(chartDom)
+      var option
+
+      option = {
+        title: {
+          text: '情绪波动'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['人脸情绪', '音频情绪', '文本情绪']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: true,
+          data: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10']
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: function (value, index) {
+              const texts = []
+              if (value === 6) {
+                texts.push('6 惊喜')
+              } else if (value === 5) {
+                texts.push('5 快乐')
+              } else if (value === 4) {
+                texts.push('4 中立')
+              } else if (value === 3) {
+                texts.push('3 生气')
+              } else if (value === 2) {
+                texts.push('2 厌恶')
+              } else if (value === 1) {
+                texts.push('1 忧虑')
+              } else if (value === 0) {
+                texts.push('0 悲伤')
+              }
+              return texts
+            }
+          }
+        },
+        series: [
+          {
+            name: '人脸情绪',
+            type: 'line',
+            data: this.expressionsList.map(this.codeMap),
+            smooth: true
+          },
+          {
+            name: '音频情绪',
+            type: 'line',
+            data: this.audioEmotionCodeList.map(this.codeMap),
+            smooth: true
+          },
+          {
+            name: '文本情绪',
+            type: 'line',
+            data: this.textEmotionCodeList.map(this.codeMap),
+            smooth: true
+          }
+        ]
+      }
+
+      option && myChart.setOption(option)
+    },
+    codeMap (code) {
+      if (code === 1) return 5
+      if (code === 0) return 4
+      if (code === 3) return 3
+      if (code === 5) return 2
+      if (code === 4) return 1
+      if (code === 2) return 0
+      return code
     },
     submitAudioAnalysis (theSubmitQueNum) {
       this.recordObjs[theSubmitQueNum].formData = new FormData()
@@ -304,12 +482,12 @@ export default {
       // 发送给后端分析
       audioAnalysis(this.recordObjs[theSubmitQueNum].formData).then(res => {
         this.audioAnalysisResultList[theSubmitQueNum] = res.result
-        console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
+        // console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
       })
     },
     // 开始录音
     startRecording () {
-      console.log('startRecording')
+      // console.log('startRecording')
       if (!this.confirmDeclaration) {
         this.$refs.DA.showModal(this.$options.name)
         return
@@ -338,13 +516,13 @@ export default {
       }
       // 录音播放完成回调
       this.recordObjs[this.curQueNum].recorder.onplayend = () => {
-        console.log('onplayend')
+        // console.log('onplayend')
         this.isRecordingPlaying = false
         this.stopDrawAudio()
       }
       // 录音播放开始回调
       this.recordObjs[this.curQueNum].recorder.onplay = () => {
-        console.log('onplay')
+        // console.log('onplay')
         this.timer = setInterval(this.addRecordingPlayingTime, 1000)
         this.isRecordingPlaying = true
       }
@@ -361,14 +539,14 @@ export default {
     },
     // 停止录音
     stopRecording () {
-      console.log('stopRecording')
+      // console.log('stopRecording')
       this.recordObjs[this.curQueNum].recorder.stop() // 停止录音
       this.isRecording = false
       this.stopDrawAudio()
     },
     // 播放录音
     audioPlayback () {
-      console.log('audioPlayback')
+      // console.log('audioPlayback')
       if (this.isRecording) {
         this.stopRecording()
       }
@@ -378,7 +556,7 @@ export default {
       setTimeout(() => this.drawAudio(), 200)
     },
     addRecordingPlayingTime () {
-      console.log('addRecordingPlayingTime')
+      // console.log('addRecordingPlayingTime')
       ++this.recordingPlayingTime
       if (this.recordingPlayingTime >= this.recordObjs[this.curQueNum].duration) {
         clearInterval(this.timer)
@@ -387,7 +565,7 @@ export default {
     },
     // 停止录音播放
     audioStopPlay () {
-      console.log('audioStopPlay')
+      // console.log('audioStopPlay')
       this.recordObjs[this.curQueNum].recorder.stopPlay()
       this.isRecordingPlaying = false
       clearInterval(this.timer)
@@ -396,14 +574,14 @@ export default {
     },
     // 销毁录音实例
     recorderDestroy () {
-      console.log('recorderDestroy')
+      // console.log('recorderDestroy')
       if (this.recordObjs[this.curQueNum].recorder) {
         this.recordObjs[this.curQueNum].recorder.destroy() // 销毁实例
       }
     },
     // 绘图
     drawAudio () {
-      console.log('drawAudio')
+      // console.log('drawAudio')
       // 用 requestAnimationFrame 稳定 60 fps 绘制
       this.drawRecordId = requestAnimationFrame(this.drawAudio)
 
@@ -445,7 +623,7 @@ export default {
     },
     // 停止绘图
     stopDrawAudio () {
-      console.log('stopDrawAudio')
+      // console.log('stopDrawAudio')
       // 让波形图复平
       this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
       this.canvas.getContext('2d').clearRect(0, 0, this.canvas.width, this.canvas.height)

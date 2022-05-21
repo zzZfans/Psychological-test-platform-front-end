@@ -39,6 +39,15 @@ export default {
   props: {},
   data () {
     return {
+      expressionEnum: {
+        'neutral': 0,
+        'happy': 1,
+        'sad': 2,
+        'angry': 3,
+        'fearful': 4,
+        'disgusted': 5,
+        'surprised': 6
+      },
       isStopWorking: false,
       warningCnt: 0,
       maxWarningCnt: 3,
@@ -302,7 +311,20 @@ export default {
       const { expressions, descriptor } = result
 
       // console.log('expressions:' + JSON.stringify(expressions))
-      this.expressionsList.push(expressions)
+
+      let curExpression = null
+      let curMaxScore = 0
+
+      for (const expressionsKey in expressions) {
+            if (expressions[expressionsKey] > curMaxScore) {
+              curMaxScore = expressions[expressionsKey]
+              curExpression = expressionsKey
+            }
+      }
+
+      // console.log(curMaxScore, curExpression)
+
+      this.expressionsList.push(this.expressionEnum[curExpression])
 
       const label = this.faceMatcher.findBestMatch(descriptor).toString()
 
@@ -359,7 +381,7 @@ export default {
         // console.log('dims.width:' + dims.width + ' dims.height:' + dims.height)
         const resizedResult = faceapi.resizeResults(result, dims)
 
-        console.log('resizedResult:' + JSON.stringify(resizedResult))
+        // console.log('resizedResult:' + JSON.stringify(resizedResult))
         const minConfidence = 0.05
 
         const { detection } = resizedResult

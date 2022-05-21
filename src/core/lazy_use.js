@@ -31,6 +31,7 @@ import {
   Popover,
   Progress,
   Radio,
+  Rate,
   Result,
   Row,
   Select,
@@ -93,6 +94,7 @@ Vue.use(Divider)
 Vue.use(DatePicker)
 Vue.use(TimePicker)
 Vue.use(Upload)
+Vue.use(Rate)
 Vue.use(TreeSelect)
 Vue.use(Tree)
 Vue.use(Progress)

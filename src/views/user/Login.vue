@@ -132,8 +132,11 @@
       </a-tabs>
 
       <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">{{ $t('user.login.remember-me') }}
-        </a-checkbox>
+        <!--<a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">{{ $t('user.login.remember-me') }}-->
+        <!--</a-checkbox>-->
+        <router-link @click.native="loginAsATourist" to="/">
+          以游客身份访问 <a-icon type="user" />
+        </router-link>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
@@ -199,14 +202,12 @@ import { timeFix } from '@/utils/util'
 import { getCaptcha } from '@/api/login'
 
 export default {
-  components: {
-
-  },
+  components: {},
   data () {
     return {
       loginTypeEnum: {
-      USERNAMEANDPASSWORD: 0,
-      MOBILE: 1,
+        USERNAMEANDPASSWORD: 0,
+        MOBILE: 1,
         EMAIL: 2
       },
       loginType: null,
@@ -241,6 +242,15 @@ export default {
       this.loginType = key
       // this.form.resetFields()
     },
+    loginAsATourist () {
+      const {
+          Login
+      } = this
+
+      Login({ 'identity': '游客', 'credentials': md5('123456'), 'loginType': 'usernameAndPassword' })
+        .then((res) => this.loginSuccess(res))
+        .catch(err => this.requestFailed(err))
+    },
     handleSubmit (e) {
       e.preventDefault()
       const {
@@ -254,19 +264,19 @@ export default {
 
       let validateFieldsKeys
 
-        switch (loginType) {
-          case this.loginTypeEnum.USERNAMEANDPASSWORD:
-            validateFieldsKeys = ['username', 'password']
-            break
-          case this.loginTypeEnum.MOBILE:
-            validateFieldsKeys = ['mobile', 'mobileCaptcha']
-            break
-          case this.loginTypeEnum.EMAIL:
-            validateFieldsKeys = ['email', 'emailCaptcha']
-            break
-          default:
-            validateFieldsKeys = []
-        }
+      switch (loginType) {
+        case this.loginTypeEnum.USERNAMEANDPASSWORD:
+          validateFieldsKeys = ['username', 'password']
+          break
+        case this.loginTypeEnum.MOBILE:
+          validateFieldsKeys = ['mobile', 'mobileCaptcha']
+          break
+        case this.loginTypeEnum.EMAIL:
+          validateFieldsKeys = ['email', 'emailCaptcha']
+          break
+        default:
+          validateFieldsKeys = []
+      }
 
       validateFields(validateFieldsKeys, { force: true }, (err, values) => {
         if (!err) {
