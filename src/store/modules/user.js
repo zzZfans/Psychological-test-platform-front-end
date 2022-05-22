@@ -66,7 +66,7 @@ const user = {
         getInfo().then(response => {
           const result = response.result
           // console.log('getInfo().then(response => {:' + JSON.stringify(response))
-          if (result.roles.length > 0 && result.permissions.length > 0 || result.username === '游客') {
+          if (result.roles.length > 0 && result.permissions.length > 0) {
             commit('SET_ROLES', result.roles)
             commit('SET_PERMISSIONS', result.permissions)
             delete result.roles
