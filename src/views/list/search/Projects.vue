@@ -83,7 +83,8 @@
 
 <script>
 import moment from 'moment'
-import { TagSelect, StandardFormRow, Ellipsis, AvatarList } from '@/components'
+import { AvatarList, Ellipsis, StandardFormRow, TagSelect } from '@/components'
+
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
 
@@ -113,11 +114,11 @@ export default {
   },
   methods: {
     handleChange (value) {
-      console.log(`selected ${value}`)
+      // console.log(`selected ${value}`)
     },
     getList () {
       this.$http.get('/list/article', { params: { count: 8 } }).then(res => {
-        console.log('res', res)
+        // console.log('res', res)
         this.data = res.result
         this.loading = false
       })

@@ -69,13 +69,13 @@ export default {
   },
   methods: {
     onOk () {
-      console.log('监听了 modal ok 事件')
+      // console.log('监听了 modal ok 事件')
       return new Promise(resolve => {
         resolve(true)
       })
     },
     onCancel () {
-      console.log('监听了 modal cancel 事件')
+      // console.log('监听了 modal cancel 事件')
       return new Promise(resolve => {
         resolve(true)
       })
@@ -85,7 +85,7 @@ export default {
       this.visible = true
       validateFields((errors, values) => {
         if (!errors) {
-          console.log('values', values)
+          // console.log('values', values)
         }
       })
     }

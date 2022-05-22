@@ -187,7 +187,7 @@ export default {
   methods: {
 
     handleChange (value, key, column, record) {
-      console.log(value, key, column)
+      // console.log(value, key, column)
       record[column.dataIndex] = value
     },
     edit (row) {
@@ -203,14 +203,14 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk () {
-          console.log('OK')
+          // console.log('OK')
           // 在这里调用删除接口
           return new Promise((resolve, reject) => {
             setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
-          }).catch(() => console.log('Oops errors!'))
+          })
         },
         onCancel () {
-          console.log('Cancel')
+          // console.log('Cancel')
         }
       })
     },

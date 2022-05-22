@@ -53,7 +53,7 @@ export default {
   methods: {
     getList () {
       this.$http.get('/list/article').then(res => {
-        console.log('res', res)
+        // console.log('res', res)
         this.data = res.result
         this.loading = false
       })

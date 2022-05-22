@@ -19,11 +19,12 @@
           <a-col :md="6" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="query">查询</a-button>
-              <a-button
-                type="primary"
-                style="margin-left: 8px"
-                @click="addUser"
-              >添加</a-button>
+              <!--<a-button-->
+              <!--  type="primary"-->
+              <!--  style="margin-left: 8px"-->
+              <!--  @click="$refs.userAdd.add()">-->
+              <!--  添加-->
+              <!--</a-button>-->
             </span>
           </a-col>
         </a-row>
@@ -50,7 +51,7 @@
           </a-descriptions-item>
           <a-descriptions-item label="性别">
             <a-tag :color="record.sex === 1 ? 'blue':record.sex === 0 ? 'cyan' : 'purple'">
-              {{ record.sex === 1 ? '男' : record.sex === 0 ? '女':'保密' }}
+              {{ record.sex === 1 ? '男' : record.sex === 0 ? '女' : '保密' }}
             </a-tag>
           </a-descriptions-item>
           <a-descriptions-item label="创建时间">
@@ -63,7 +64,7 @@
       </div>
       <span slot="sex" slot-scope="text, record">
         <a-tag :color="record.sex === 1 ? 'blue':record.sex === 0 ? 'cyan' : 'purple'">
-          {{ record.sex === 1 ? '男' : record.sex === 0 ? '女':'保密' }}
+          {{ record.sex === 1 ? '男' : record.sex === 0 ? '女' : '保密' }}
         </a-tag>
       </span>
       <span slot="status" slot-scope="text, record">
@@ -75,23 +76,30 @@
         <a-button
           type="primary"
           size="small"
-          @click="onEdit(record)"
-        >编辑</a-button>
-        <a-divider type="vertical" />
-        <a-button
-          type="primary"
-          size="small"
-          @click="onDelete(record)"
-        >删除</a-button>
+          @click="$refs.userEdit.edit(record)">
+          编辑
+        </a-button>
+        <!--<a-divider type="vertical" />-->
+        <!--<a-popconfirm placement="right" title="确认删除？" @confirm="() => onDelete(record)">-->
+        <!--  <a-button type="primary" size="small">删除</a-button>-->
+        <!--</a-popconfirm>-->
       </span>
     </a-table>
+    <user-add ref="userAdd" @ok="getUserList" />
+    <user-edit ref="userEdit" @ok="getUserList" />
   </a-card>
 </template>
 <script>
 import { userList } from '@/api/user'
+import userAdd from '@/views/systemManagement/userManagement/userAdd'
+import userEdit from '@/views/systemManagement/userManagement/userEdit'
 
 export default {
   name: 'User',
+  components: {
+    userAdd,
+    userEdit
+  },
   data () {
     return {
       queryForm: {},
@@ -132,15 +140,18 @@ export default {
       loading: false
     }
   },
+  created () {
+    this.getUserList()
+  },
   methods: {
     query () {
       this.pagination.defaultCurrent = 1
       this.getUserList()
     },
-    addUser () {},
-    tableChange (e) {},
-    onEdit (record) {},
-    onDelete (record) {},
+    tableChange (e) {
+    },
+    onDelete (record) {
+    },
     getUserList () {
       this.loading = true
       const pagingParams = {
@@ -157,9 +168,6 @@ export default {
         this.loading = false
       })
     }
-  },
-  created: function () {
-    this.getUserList()
   }
 }
 </script>

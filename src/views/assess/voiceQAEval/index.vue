@@ -369,7 +369,7 @@ export default {
           }
 
           this.finalScore = Math.round((faceEmotionScore * 0.2 + textEmotionScore * 0.6 + audioEmotionScore * 0.2) * 0.01)
-          console.log(faceEmotionScore, textEmotionScore, audioEmotionScore, this.finalScore)
+          // console.log(faceEmotionScore, textEmotionScore, audioEmotionScore, this.finalScore)
           // console.log('audioAnalysisResultList: ' + JSON.stringify(this.audioAnalysisResultList))
           this.$refs.ARM.showModal(this.$options.name)
           this.$nextTick(() => {

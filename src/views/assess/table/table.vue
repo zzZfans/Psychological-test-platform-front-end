@@ -295,7 +295,7 @@ export default {
       })
     },
     drawAudio () {
-      console.log('drawAudio')
+      // console.log('drawAudio')
       // 用 requestAnimationFrame 稳定 60 fps 绘制
       this.drawRecordId = requestAnimationFrame(this.drawAudio)
 
@@ -337,13 +337,13 @@ export default {
     },
     // 停止绘图
     stopDrawAudio () {
-      console.log('stopDrawAudio')
+      // console.log('stopDrawAudio')
       // 让波形图复平
       this.drawRecordId && cancelAnimationFrame(this.drawRecordId)
       this.canvas.getContext('2d').clearRect(0, 0, this.canvas.width, this.canvas.height)
     },
     requirePermissionSuccess () {
-      console.log('requirePermissionSuccess')
+      // console.log('requirePermissionSuccess')
       this.getCode()
     },
     // created () { // 显示当前时间
@@ -383,7 +383,7 @@ export default {
     async onChange (val) {
       this.lastvalue = val
         await this.sleep(1)
-        console.log('radio checked', this.value)
+        // console.log('radio checked', this.value)
         // alert('到onchange')
         this.isAble = false
         this.result = this.result + val

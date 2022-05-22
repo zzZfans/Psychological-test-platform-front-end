@@ -243,7 +243,7 @@ export default {
        return callback()
       }
       this.handlePasswordInputClick()
-      console.log('scorePassword:', scorePassword(value))
+      // console.log('scorePassword:', scorePassword(value))
       if (value.length >= 6) {
         if (scorePassword(value) >= 30) {
           this.state.level = 1
@@ -273,9 +273,9 @@ export default {
     },
 
     handlePhoneCheck (rule, value, callback) {
-      console.log('handlePhoneCheck, rule:', rule)
-      console.log('handlePhoneCheck, value', value)
-      console.log('handlePhoneCheck, callback', callback)
+      // console.log('handlePhoneCheck, rule:', rule)
+      // console.log('handlePhoneCheck, value', value)
+      // console.log('handlePhoneCheck, callback', callback)
       if (value === undefined) {
          return callback()
       }
@@ -310,7 +310,7 @@ export default {
       }
 
       validateFields(validateFieldsKeys, { force: true }, (err, values) => {
-        console.log('values:' + JSON.stringify(values))
+        // console.log('values:' + JSON.stringify(values))
         if (!err) {
           this.registerBtnLoading = true
           state.passwordLevelChecked = false
@@ -334,7 +334,7 @@ export default {
                 captcha: values.emailCaptcha
               }
           }
-          console.log('parameter:' + JSON.stringify(parameter))
+          // console.log('parameter:' + JSON.stringify(parameter))
           register(parameter).then(res => {
             $router.push({ name: 'registerResult', params: { ...values } })
           }).catch(err => {
@@ -361,7 +361,7 @@ export default {
 
       validateFields(validateFieldsKey, { force: true },
         (err, values) => {
-          console.log('values:' + JSON.stringify(values))
+          // console.log('values:' + JSON.stringify(values))
           if (!err) {
             state.captchaSendBtn = true
 
@@ -391,7 +391,7 @@ export default {
             parameter.scene = 'register'
 
             getCaptcha(parameter).then(res => {
-              console.log('res:' + JSON.stringify(res))
+              // console.log('res:' + JSON.stringify(res))
               setTimeout(hide)
               $notification['success']({
                 message: '提示',
@@ -420,7 +420,7 @@ export default {
   },
   watch: {
     'state.passwordLevel' (val) {
-      console.log(val)
+      // console.log(val)
     }
   }
 }

@@ -38,7 +38,7 @@ export default {
        events.$emit('ConfirmDeclaration' + this.caller)
     },
     handleCancel (e) {
-      console.log('handleCancel')
+      // console.log('handleCancel')
       this.visible = false
       events.$emit('CancelDeclaration' + this.caller)
     }

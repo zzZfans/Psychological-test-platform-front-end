@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     isLoading () {
-      console.log('isLoading')
+      // console.log('isLoading')
     },
     // 当前题目是否回答
     isCurrentAnswer () {
@@ -233,13 +233,13 @@ export default {
   },
   // 钩子
   beforeCreate () {
-    console.log('beforeCreate')
+    // console.log('beforeCreate')
     // this -> 当前组件
     // 并没有methods中的方法
     // console.log(this)
   },
   created () {
-    console.log('created')
+    // console.log('created')
     // this -> 当前组件
     // 当前组件创建完毕，可以使用当前组件的 Methods 和 data
     // console.log(this)

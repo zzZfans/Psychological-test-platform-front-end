@@ -50,6 +50,7 @@
 // import { putFileAttach } from '@/api/customer/animalinfo'
 import { UploadOutlined } from '@ant-design/icons-vue'
 import { faceUpload } from '@/api/user'
+
 export default {
   components: {
     UploadOutlined
@@ -166,7 +167,7 @@ export default {
       var imgs = new Image()
       imgs.src = this.img
       imgs.onload = function () {
-        //   console.log(111)
+        //   // console.log(111)
         ctx.drawImage(imgs, 0, 0, 500, 400)
       }
     },
@@ -230,7 +231,7 @@ export default {
       /* this.resetCanvas(); */
       // console.log(this.imgSrc);
       this.imgFile = this.dataURLtoFile(this.imgSrc, new Date() + '.png')
-      console.log(this.imgFile)
+      // console.log(this.imgFile)
       this.stopNavigator()
       // let par = {
       //   photo: this.imgFile,
@@ -238,7 +239,7 @@ export default {
       const data = new FormData()
       data.append('photo', this.imgFile) // 1是图片，2是视频
       // data.append("code", this.addForm.code);
-      console.log(data)
+      // console.log(data)
       // todo 图片上传
     },
     // 清空画布

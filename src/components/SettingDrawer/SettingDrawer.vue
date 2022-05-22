@@ -173,7 +173,7 @@
 <script>
 import SettingItem from './SettingItem'
 import config from '@/config/defaultSettings'
-import { updateTheme, updateColorWeak, colorList } from './settingConfig'
+import { colorList, updateColorWeak, updateTheme } from './settingConfig'
 
 export default {
   components: {
@@ -230,7 +230,7 @@ export default {
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true'
 }`
       this.$copyText(text).then(message => {
-        console.log('copy', message)
+        // console.log('copy', message)
         this.$message.success('复制完毕')
       }).catch(err => {
         console.log('copy.err', err)

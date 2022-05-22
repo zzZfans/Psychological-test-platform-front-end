@@ -49,7 +49,7 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          console.log('login(userInfo):' + JSON.stringify(response))
+          // console.log('login(userInfo):' + JSON.stringify(response))
           const result = response.result
           storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', result.token)
@@ -65,7 +65,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.result
-          console.log('getInfo().then(response => {:' + JSON.stringify(response))
+          // console.log('getInfo().then(response => {:' + JSON.stringify(response))
           if (result.roles.length > 0 && result.permissions.length > 0 || result.username === '游客') {
             commit('SET_ROLES', result.roles)
             commit('SET_PERMISSIONS', result.permissions)

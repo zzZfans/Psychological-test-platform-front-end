@@ -72,7 +72,7 @@ export default {
       this.$nextTick(() => {
         this.form.setFieldsValue(pick(this.mdl, 'id', 'name', 'status', 'describe'))
       })
-      console.log('this.mdl', this.mdl)
+      // console.log('this.mdl', this.mdl)
     },
     close () {
       this.$emit('close')
@@ -84,7 +84,7 @@ export default {
       this.form.validateFields((err, values) => {
         // 验证表单没错误
         if (!err) {
-          console.log('form values', values)
+          // console.log('form values', values)
 
           _this.confirmLoading = true
           // 模拟后端请求 2000 毫秒延迟

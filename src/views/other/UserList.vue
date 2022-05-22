@@ -230,7 +230,7 @@ export default {
       loadData: parameter => {
         return getRoleList(parameter)
           .then(res => {
-            console.log('getRoleList', res)
+            // console.log('getRoleList', res)
             // 展开全部行
             this.expandedRowKeys = res.result.data.map(item => item.id)
             return res.result
@@ -253,17 +253,17 @@ export default {
   },
   created () {
     getServiceList().then(res => {
-      console.log('getServiceList.call()', res)
+      // console.log('getServiceList.call()', res)
     })
 
     getRoleList().then(res => {
-      console.log('getRoleList.call()', res)
+      // console.log('getRoleList.call()', res)
     })
   },
   methods: {
     handleEdit (record) {
       this.visible = true
-      console.log('record', record)
+      // console.log('record', record)
 
       const checkboxGroup = {}
       this.permissions = record.permissions.map(permission => {
@@ -283,8 +283,8 @@ export default {
       })
 
       this.$nextTick(() => {
-        console.log('permissions', this.permissions)
-        console.log('checkboxGroup', checkboxGroup)
+        // console.log('permissions', this.permissions)
+        // console.log('checkboxGroup', checkboxGroup)
 
         this.form.setFieldsValue(pick(record, ['id', 'status', 'describe', 'name']))
         this.form.setFieldsValue(checkboxGroup)
@@ -301,7 +301,7 @@ export default {
       this.selectedRows = selectedRows
     },
     handleExpand (expanded, record) {
-      console.log('expanded', expanded, record)
+      // console.log('expanded', expanded, record)
       if (expanded) {
         this.expandedRowKeys.push(record.id)
       } else {

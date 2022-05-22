@@ -33,7 +33,7 @@ export default {
     handleEdit (record) {
       this.record = record || ''
       this.currentComponet = 'Edit'
-      console.log(record)
+      // console.log(record)
     },
     handleGoBack () {
       this.record = ''

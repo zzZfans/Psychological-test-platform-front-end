@@ -97,7 +97,7 @@ export default {
   // 进页面加载
   created () {
     systemInfo().then((res) => {
-      console.log(JSON.stringify(res))
+      // console.log(JSON.stringify(res))
       this.loading = false
       this.javaInfo = res.result.javaRuntimeInfo
       this.osInfo = res.result.osInfo

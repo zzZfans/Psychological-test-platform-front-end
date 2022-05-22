@@ -135,7 +135,7 @@ export default {
       validateFields((err, values) => {
         if (!err) {
           // eslint-disable-next-line no-console
-          console.log('Received values of form: ', values)
+          // console.log('Received values of form: ', values)
         }
       })
     },
@@ -145,13 +145,13 @@ export default {
     loadEditInfo (data) {
       const { form } = this
       // ajax
-      console.log(`将加载 ${this.id} 信息到表单`)
+      // console.log(`将加载 ${this.id} 信息到表单`)
       new Promise((resolve) => {
         setTimeout(resolve, 1500)
       }).then(() => {
         const formData = pick(data, ['no', 'callNo', 'status', 'description', 'updatedAt'])
         formData.updatedAt = moment(data.updatedAt)
-        console.log('formData', formData)
+        // console.log('formData', formData)
         form.setFieldsValue(formData)
       })
     }

@@ -70,8 +70,8 @@ export default {
 
     handleOpenLoading () {
       this.$nextTick(function () {
-        console.log('this', this)
-        console.log('this.$refs.tInput', this.$refs.tInput)
+        // console.log('this', this)
+        // console.log('this.$refs.tInput', this.$refs.tInput)
       })
       this.$loading.show()
       setTimeout(() => {

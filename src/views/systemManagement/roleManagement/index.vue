@@ -161,7 +161,7 @@ export default {
       this.permissionList = []
       this.loading = true
       roleListAndPermissionList().then((res) => {
-        console.log('role():' + JSON.stringify(res))
+        // console.log('role():' + JSON.stringify(res))
         if (res.success) {
           this.data = res.result.roleList
           res.result.permissionList.forEach((v) => {
@@ -169,7 +169,7 @@ export default {
             if (v.icon) v.scopedSlots = { icon: 'icon' }
           })
           this.treeData = treeData(res.result.permissionList, 'id', 'parentId', 'children')
-          console.log('treeData:' + JSON.stringify(this.treeData))
+          // console.log('treeData:' + JSON.stringify(this.treeData))
           this.loading = false
         } else {
           this.notification('error', '错误', res.message, 1)
@@ -224,9 +224,9 @@ export default {
       this.roleID = record.id
       this.drawerVisible = true
       this.title = '编辑角色规则:' + record.roleName
-      console.log('record.id:' + JSON.stringify(record.id))
+      // console.log('record.id:' + JSON.stringify(record.id))
       permissionIdList(record.id).then((res) => {
-        console.log('res:' + JSON.stringify(res))
+        // console.log('res:' + JSON.stringify(res))
         if (res.success) {
           this.checkedKeys = res.result
         } else {
@@ -263,7 +263,7 @@ export default {
     },
     onCheck (checkedKeys) {
       this.checkedKeys = checkedKeys
-      console.log('checkedKeys', checkedKeys)
+      // console.log('checkedKeys', checkedKeys)
     }
   }
 }

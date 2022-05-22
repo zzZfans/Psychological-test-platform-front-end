@@ -1,7 +1,16 @@
 import request from '@/utils/request'
 
 const userApi = {
-  userList: '/user/list'
+  userList: '/user/list',
+  updateStatusAndRoles: 'user/updateStatusAndRoles'
+}
+
+export function updateStatusAndRoles (data) {
+  return request({
+    url: userApi.updateStatusAndRoles,
+    method: 'post',
+    data: data
+  })
 }
 
 export function userList (pagingParams, queryParams) {

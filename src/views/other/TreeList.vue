@@ -121,22 +121,22 @@ export default {
   },
   methods: {
     handleClick (e) {
-      console.log('handleClick', e)
+      // console.log('handleClick', e)
       this.queryParam = {
         key: e.key
       }
       this.$refs.table.refresh(true)
     },
     handleAdd (item) {
-      console.log('add button, item', item)
+      // console.log('add button, item', item)
       this.$message.info(`提示：你点了 ${item.key} - ${item.title} `)
       this.$refs.modal.add(item.key)
     },
     handleTitleClick (item) {
-      console.log('handleTitleClick', item)
+      // console.log('handleTitleClick', item)
     },
     titleClick (e) {
-      console.log('titleClick', e)
+      // console.log('titleClick', e)
     },
     handleSaveOk () {
 

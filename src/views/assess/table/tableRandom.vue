@@ -82,6 +82,7 @@ import Declaration from '@/components/Declaration'
 import events from '@/components/MultiTab/events'
 import { saveAssessRecord } from '@/api/assess'
 import { getUser } from '@/api/user'
+
 export default {
   name: 'TableRandom',
   props: {
@@ -741,7 +742,7 @@ export default {
       })
     },
     requirePermissionSuccess () {
-      console.log('requirePermissionSuccess')
+      // console.log('requirePermissionSuccess')
       this.getCode()
     },
     dateFormat (time) {
@@ -778,7 +779,7 @@ export default {
       // eslint-disable-next-line no-undef
       this.lastvalue = val
       await this.sleep(1)
-      console.log('radio checked', this.value)
+      // console.log('radio checked', this.value)
       // alert('到onchange')
       this.isAble = false
       this.result = this.result + val

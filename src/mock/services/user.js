@@ -3,7 +3,7 @@ import { builder } from '../util'
 
 // 原始 info
 // const info = options => {
-//   console.log('options', options)
+//   // console.log('options', options)
 //   const userInfo = {
 //     id: '4291d7da9005377ec9aec4a71ea837f',
 //     name: '天野远子',
@@ -468,7 +468,7 @@ import { builder } from '../util'
 
 // my mock info
 const info = options => {
-  console.log('options', options)
+  // console.log('options', options)
   const userInfo = {
     id: '123',
     username: 'I\'m a tester',
@@ -952,7 +952,7 @@ const info = options => {
 //     }
 //   ]
 //   const json = builder(nav)
-//   console.log('json', json)
+//   // console.log('json', json)
 //   return json
 // }
 
@@ -1343,7 +1343,7 @@ const userNav = options => {
     }
   ]
   const json = builder(nav)
-  console.log('json', json)
+  // console.log('json', json)
   return json
 }
 

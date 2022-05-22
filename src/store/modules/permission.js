@@ -66,8 +66,8 @@ const permission = {
       return new Promise(resolve => {
         const routerMap = cloneDeep(asyncRouterMap)
         const accessedRouters = filterAsyncRouter(routerMap, permissions)
-        console.log('accessedRouters:' + JSON.stringify(accessedRouters))
-        console.log('routerMap:' + JSON.stringify(routerMap))
+        // console.log('accessedRouters:' + JSON.stringify(accessedRouters))
+        // console.log('routerMap:' + JSON.stringify(routerMap))
         // 开发期间不过滤
         commit('SET_ROUTERS', cloneDeep(asyncRouterMap))
         resolve()

@@ -147,13 +147,13 @@ export default {
           record: {},
           on: {
             ok () {
-              console.log('ok 回调')
+              // console.log('ok 回调')
             },
             cancel () {
-              console.log('cancel 回调')
+              // console.log('cancel 回调')
             },
             close () {
-              console.log('modal close 回调')
+              // console.log('modal close 回调')
             }
           }
         },
@@ -166,20 +166,20 @@ export default {
         })
     },
     edit (record) {
-      console.log('record', record)
+      // console.log('record', record)
       this.$dialog(TaskForm,
         // component props
         {
           record,
           on: {
             ok () {
-              console.log('ok 回调')
+              // console.log('ok 回调')
             },
             cancel () {
-              console.log('cancel 回调')
+              // console.log('cancel 回调')
             },
             close () {
-              console.log('modal close 回调')
+              // console.log('modal close 回调')
             }
           }
         },

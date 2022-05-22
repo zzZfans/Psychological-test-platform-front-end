@@ -280,7 +280,7 @@ export default {
 
       validateFields(validateFieldsKeys, { force: true }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
+          // console.log('login form', values)
 
           const loginParams = {}
 
@@ -335,7 +335,7 @@ export default {
 
       validateFields(validateFieldsKey, { force: true },
         (err, values) => {
-          console.log('values:' + JSON.stringify(values))
+          // console.log('values:' + JSON.stringify(values))
           if (!err) {
             state.captchaSendBtn = true
 
@@ -365,7 +365,7 @@ export default {
             parameter.scene = 'login'
 
             getCaptcha(parameter).then(res => {
-              console.log('res:' + JSON.stringify(res))
+              // console.log('res:' + JSON.stringify(res))
               setTimeout(hide)
               $notification['success']({
                 message: '提示',
@@ -384,12 +384,12 @@ export default {
       )
     },
     loginSuccess (res) {
-      console.log(res)
+      // console.log(res)
       // check res.homePage define, set $router.push name res.homePage
       // Why not enter onComplete
       /*
       this.$rout.puersh({ name: 'analysis' }, () => {
-        console.log('onComplete')
+        // console.log('onComplete')
         this.$notification.success({
           message: '欢迎',
           description: `${timeFix()}，欢迎回来`

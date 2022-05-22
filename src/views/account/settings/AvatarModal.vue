@@ -55,7 +55,7 @@
 
 </template>
 <script>
-import { upload, getUser } from '@/api/user'
+import { getUser, upload } from '@/api/user'
 
 export default {
   data () {
@@ -122,7 +122,7 @@ export default {
 
     // 上传图片（点击上传按钮）
     finish (type) {
-      console.log('finish')
+      // console.log('finish')
       const _this = this
       const formData = new FormData()
       // 输出

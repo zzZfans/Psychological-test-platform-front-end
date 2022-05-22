@@ -46,7 +46,7 @@ export default {
   },
   beforeCreate () {
     this.form = this.$form.createForm(this)
-    console.log('form::', this.form)
+    // console.log('form::', this.form)
   },
   created () {
 
@@ -72,7 +72,7 @@ export default {
       this.form.validateFields((err, values) => {
         // 验证表单没错误
         if (!err) {
-          console.log('form values', values)
+          // console.log('form values', values)
 
           _this.confirmLoading = true
           // 模拟后端请求 2000 毫秒延迟

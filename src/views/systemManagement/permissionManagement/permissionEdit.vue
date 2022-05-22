@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新增权限"
+    title="编辑权限"
     :width="1000"
     :visible="visible"
     :confirmLoading="confirmLoading"

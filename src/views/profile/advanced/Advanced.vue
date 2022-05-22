@@ -324,7 +324,7 @@ export default {
   },
   methods: {
     handleTabChange (key) {
-      console.log('')
+      // console.log('')
       this.tabActiveKey = key
     }
   }
