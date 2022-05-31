@@ -14,7 +14,7 @@
             <div class="bio">海纳百川，有容乃大</div>
           </div>
           <a-divider/>
-          <a-divider :dashed="true"/>
+<!--          <a-divider :dashed="true"/>-->
         </a-card>
       </a-col>
       <a-col :md="24" :lg="17">
@@ -106,6 +106,7 @@ export default {
         pageSize: this.pagination.pageSize
       }
       getUserHistoryList(data).then(res => {
+        // alert(JSON.stringify(res))
         if (res.success) {
           this.userHistory = res.result.records
         }
