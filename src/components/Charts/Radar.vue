@@ -6,6 +6,7 @@
     <v-legend dataKey="user" marker="circle" :offset="30" />
     <v-coord type="polar" radius="0.8" />
     <v-line position="item*level" color="red" :size="2" />
+    <v-area  position="item*level" color="rgba(255,0,0,0.6)"/>
     <v-point position="item*level" color="red" :size="4" shape="circle" />
   </v-chart>
 </template>

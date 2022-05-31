@@ -109,7 +109,6 @@
           :pagination="pagination1"
           :columns="userHistoryColumns"
           :defaultExpandAllRows="true"
-          rowKey="key"
         >
           <span slot="resultLevel" slot-scope="a, record">
             <a-tag :color="record.resultLevel > 0 ? (record.resultLevel > 1 ? (record.resultLevel > 2 ? 'red' : 'yellow') : 'blue') : 'green'">

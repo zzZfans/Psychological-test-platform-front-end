@@ -42,6 +42,9 @@
           :columns="autoMessageColumns"
           rowKey="id"
         >
+          <span slot="type" slot-scope="record">
+            {{ record === 'all' ? '通用' : record }}
+          </span>
           <span slot="titles" slot-scope="text, record">
             <a-tooltip>
               <template #title>
@@ -170,7 +173,7 @@ export default {
         {
           title: '消息类型',
           dataIndex: 'type',
-          key: 'type'
+          scopedSlots: { customRender: 'type' }
         },
         {
           title: '消息',
