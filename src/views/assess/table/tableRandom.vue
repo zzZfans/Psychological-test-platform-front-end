@@ -1042,7 +1042,8 @@ export default {
       events.$emit('openCamera', this.$options.name, true)
     })
     events.$on('CancelDeclaration' + this.$options.name, () => {
-      this.notification('warning', '提示', '您未知悉 “测前须知”，若仍需测试，请点击 “下一题” 或 “录音” 按钮，重新知悉 “测前须知”。', 10)
+      this.$router.push({ path: '/' })
+      this.notification('warning', '提示', '您未知悉 “测前须知”，若仍需测试，请点击“已知悉”。', 5)
     })
     events.$on('CameraOpenSuccess' + this.$options.name, () => {
       this.hasVideoAndAudioPermission = true
