@@ -429,8 +429,8 @@ export default {
     getUserHistoryList (val) {
       const data = {
         userId: this.userId,
-        page: this.pagination.current,
-        pageSize: this.pagination.pageSize,
+        page: this.pagination1.current,
+        pageSize: this.pagination1.pageSize,
         assessType: this.assessType
       }
       if (val === 0) {
