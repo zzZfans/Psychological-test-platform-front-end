@@ -80,19 +80,20 @@
 import Declaration from '@/components/Declaration'
 import AssessResultModal from '@/components/assessResultModal'
 import { getTextSubjects, textAnalysis } from '@/api/text-test-api'
-import { message } from 'ant-design-vue'
+import { Modal, message } from 'ant-design-vue'
 
 export default {
   name: 'textQAEval',
   components: {
     Declaration,
-    AssessResultModal
+    AssessResultModal,
+    Modal
   },
   data () {
     return {
       // spin
       spin_spinning: true,
-      spin_tips: '文本测试题加载中...',
+      spin_tips: '文本情绪测试题加载中...',
       name: '',
       // ajax拿到的题目
       subjects: [''],
@@ -112,7 +113,32 @@ export default {
       // console.log('当前完成的题目' + newNum)
       if (newNum === this.subjects.length) {
         this.spin_spinning = false
-        alert(this.answersAnalysisResult)
+        // 分析测试结果
+        const rs = this.formatResult()
+        console.log(rs)
+        let maxEmotion
+        let maxEmotionNumber = 0
+        for (const rsKey in rs) {
+          if (rs[rsKey] > maxEmotionNumber) {
+            maxEmotion = rsKey
+            maxEmotionNumber = rs[rsKey]
+          }
+        }
+        console.log(Math.round((maxEmotionNumber / this.subjects.length) * 10000) / 100)
+        const maxEmotionPercent = (Math.round((maxEmotionNumber / this.subjects.length) * 10000) / 100) + '%'
+        console.log(maxEmotionPercent)
+        // 显示测试结果，并跳转到首页
+        const that = this
+        Modal.info({
+          title: '文本情绪测试结果：',
+          content: `你当前有${maxEmotionPercent}的机率处于${maxEmotion}情绪。`,
+          width: '700px',
+          okText: '回到首页',
+          onOk () {
+            that.$router.push('/')
+          },
+          keyboard: false
+        })
       }
     }
   },
@@ -203,6 +229,11 @@ export default {
         message.warning('请作答，空输入无效')
         return
       }
+      const crtAnswerLength = this.answers[this.crtSubIdx].length
+      if (crtAnswerLength < 10 || crtAnswerLength > 100) {
+        message.info('请作答，输入10~100字之间')
+        return
+      }
       this.spin_tips = '解析中...'
       this.spin_spinning = true
       // 分析最后两题
@@ -229,6 +260,21 @@ export default {
           this.finishedNum++
         }
       })
+    },
+    // 格式化结果(统计测试结果中出现的情绪的次数)
+    formatResult () {
+      const results = this.answersAnalysisResult
+      // 统计
+      const rs = {}
+      for (let i = 0; i < results.length; i++) {
+        const key = results[i]
+        if (rs[key] === undefined) {
+          rs[key] = 1
+        } else {
+          rs[key]++
+        }
+      }
+      return rs
     }
   },
   // 钩子
