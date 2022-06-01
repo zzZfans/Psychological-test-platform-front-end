@@ -78,8 +78,8 @@ export default {
       // preview.pro.antdv.com only use.
       isProPreviewSite: process.env.VUE_APP_PREVIEW === 'true' && process.env.NODE_ENV !== 'development',
       // end
-      isDev: process.env.NODE_ENV === 'development' || process.env.VUE_APP_PREVIEW === 'true',
-
+      // isDev: process.env.NODE_ENV === 'development' || process.env.VUE_APP_PREVIEW === 'true',
+      isDev: false,
       // base
       menus: [],
       // 侧栏收起状态
