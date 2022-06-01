@@ -320,6 +320,7 @@ export default {
       this.visible = false
       this.msgId = ''
       this.form.resetFields()
+      this.html = ''
     },
     afterVisibleChange () {
       this.visible = false
