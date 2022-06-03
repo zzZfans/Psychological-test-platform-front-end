@@ -260,6 +260,11 @@
           </a-card>
         </a-col>
         <a-col :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
+          <div>
+            <a-range-picker style="width: 70%" :value="dateData" @change="ondateChange" />
+            <a-button style="width: 15%;" type="primary" @click="search2()">查询</a-button>
+            <a-button style="width: 15%;" @click="reset2()">重置</a-button>
+          </div>
           <a-card
             style="margin-bottom: 24px"
             v-if="refresh"
@@ -333,6 +338,9 @@ export default {
   },
   data () {
     return {
+      dateData: [],
+      startTime: '',
+      endTime: '',
       allTypeDetails: '',
       nearAssessCount: 0,
       loading: true,
@@ -418,13 +426,73 @@ export default {
     }
   },
   methods: {
+    resetRadarData () {
+      this.radarData = [
+        {
+          item: '焦虑',
+          level: 0
+        },
+        {
+          item: '躯体化',
+          level: 0
+        },
+        {
+          item: '强迫症',
+          level: 0
+        },
+        {
+          item: '抑郁',
+          level: 0
+        },
+        {
+          item: '敌对',
+          level: 0
+        },
+        {
+          item: '恐怖',
+          level: 0
+        },
+        {
+          item: '偏执',
+          level: 0
+        },
+        {
+          item: '精神病性',
+          level: 0
+        },
+        {
+          item: '人际关系敏感',
+          level: 0
+        }
+      ]
+    },
+    ondateChange (date, dateString) {
+      this.dateData = date
+      this.startTime = date[0]
+      this.endTime = date[1]
+    },
+    search2 () {
+      this.getAnalysis()
+    },
+    reset2 () {
+      this.startTime = ''
+      this.endTime = ''
+      this.dateData = []
+      this.getAnalysis()
+    },
     callback () {
 
     },
     getAnalysis () {
       this.$nextTick(() => {
-        getAnalysis().then(res => {
+        const data = {
+          startTime: this.startTime,
+          endTime: this.endTime,
+          userId: ''
+        }
+        getAnalysis(data).then(res => {
           if (res.success) {
+            this.resetRadarData()
             const analysisData = res.result.analysisDetails
             this.nearAssess = res.result.allTypeDetails
             this.nearExc = res.result.nearExc
@@ -465,7 +533,7 @@ export default {
       this.searchForm2.year = ''
       this.searchForm2.month = ''
       this.searchForm2.type = ''
-      this.search1()
+      this.search1(0)
     },
     countReset () {
       this.searchForm.year = ''

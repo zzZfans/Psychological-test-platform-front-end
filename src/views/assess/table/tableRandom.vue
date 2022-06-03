@@ -88,7 +88,6 @@ import events from '@/components/MultiTab/events'
 import { saveAssessRecord } from '@/api/assess'
 import { getUser } from '@/api/user'
 export default {
-  name: 'TableRandom',
   props: {
     types: String
   },
@@ -150,6 +149,7 @@ export default {
   },
   data () {
     return {
+      isAble: false,
       userId: '',
       username: '',
       isInSubmit: false,

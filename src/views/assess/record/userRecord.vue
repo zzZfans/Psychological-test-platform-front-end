@@ -67,6 +67,11 @@
         </template>
       </a-modal>
       <a-drawer title="测试详情" width="30%" :visible="visible" @close="onClose">
+        <div>
+          <a-range-picker style="width: 70%" :value="dateData" @change="ondateChange" />
+          <a-button style="width: 15%;" type="primary" @click="search2()">查询</a-button>
+          <a-button style="width: 15%;" @click="reset2()">重置</a-button>
+        </div>
         <a-card
           style="margin-bottom: 0;height: 360px"
           v-if="refresh"
@@ -203,6 +208,9 @@ export default {
   },
   data () {
     return {
+      dateData: [],
+      startTime: '',
+      endTime: '',
       editor: null,
       html: '<p>hello</p>',
       toolbarConfig: { },
@@ -293,6 +301,20 @@ export default {
     }
   },
   methods: {
+    search2 () {
+      this.getUserAnalysis()
+    },
+    reset2 () {
+      this.startTime = ''
+      this.endTime = ''
+      this.dateData = []
+      this.getUserAnalysis()
+    },
+    ondateChange (date, dateString) {
+      this.dateData = date
+      this.startTime = date[0]
+      this.endTime = date[1]
+    },
     initRar () {
       this.radarData = [
         {
@@ -378,10 +400,15 @@ export default {
       this.modalVisible = true
     },
     getUserAnalysis () {
-      getUserAnalysis(this.userId).then(res => {
+      const data = {
+        userId: this.userId,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      getUserAnalysis(data).then(res => {
         if (res.success) {
+          this.initRar()
           const analysisData = res.result
-          this.nearAssess = res.result.allTypeDetails
           for (const key in analysisData) {
             for (let i = 0; i < this.radarData.length; i++) {
               if (this.radarData[i].item === key) {
@@ -401,6 +428,9 @@ export default {
       this.userId = ''
       this.refresh = false
       this.initRar()
+      this.dateData = []
+      this.startTime = ''
+      this.endTime = ''
     },
     afterVisibleChange () {
       this.visible = false

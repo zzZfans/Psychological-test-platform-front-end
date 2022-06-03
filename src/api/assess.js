@@ -66,10 +66,11 @@ export function audioAnalysis (formData) {
 }
 
 // 获取年份
-export function getAnalysis () {
+export function getAnalysis (data) {
   return request({
     url: '/assessResult/getAnalysis',
-    method: 'get'
+    method: 'post',
+    data: data
   })
 }
 
@@ -92,9 +93,10 @@ export function getUserHistoryList (data) {
 }
 
 // 获取用户分析结果
-export function getUserAnalysis (userId) {
+export function getUserAnalysis (data) {
   return request({
-    url: '/assessResult/getUserAnalysis/' + userId,
-    method: 'get'
+    url: '/assessResult/getUserAnalysis',
+    method: 'post',
+    data: data
   })
 }
