@@ -1,74 +1,69 @@
 <template>
   <page-header-wrapper>
-    <a-spin
-      :tip="spinTip"
-      size="large"
-      :spinning="isCameraLoading || isInSubmit">
-      <a-modal
-        v-model="modal2Visible"
-        title="测试结果展示"
-        centered
-        @ok="modal2Visible = false"
-      >
-        <p>{{ this.access_results }}</p>
-      </a-modal>
-      <a-card class="ant-pro-pages-list-projects-cardList">
-        <!--      进度条-->
-        <div style=" width: 90%;white-space: nowrap ">
-          <!--        <div >-->
-          <!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
-          <!--        </div>-->
-          <div style="position: relative;height: auto;width:100px;left: 325px;font-size: 27px">
-            随机测试类型：<span style="color: #1890ff">{{ randomtype() }}</span>
-          </div>
-          <div style="font-size: 25px;white-space: nowrap">
-            <a-icon style="font-size: 50px" type="dashboard"></a-icon>
-            <span v-show="!show" class="count">{{ getCode() }}s</span>
-            <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt_randomqus.length*5) / 60) % 60) }}:{{ shownum(wt_randomqus.length*5 % 60) }}s！</span>
-          </div>
-          <a-progress
-            :strokeWidth="17"
-            stroke-linecap="square"
-            :show-info="false"
-            :percent="(number+1)*100/wt_randomqus.length"/>
-          <span style="font-size: 18px">&nbsp;&nbsp; {{ number+1 }}/{{ wt_randomqus.length }}</span>
+    <a-modal
+      v-model="modal2Visible"
+      title="测试结果展示"
+      centered
+      @ok="modal2Visible = false"
+    >
+      <p>{{ this.access_results }}</p>
+    </a-modal>
+    <a-card class="ant-pro-pages-list-projects-cardList">
+      <!--      进度条-->
+      <div style=" width: 90%;white-space: nowrap ">
+<!--        <div >-->
+<!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
+<!--        </div>-->
+        <div style="position: relative;height: auto;width:100px;left: 325px;font-size: 27px">
+          随机测试类型：<span style="color: #1890ff">{{ randomtype() }}</span>
         </div>
-        <br/>
-        <!--      问题-->
-        <div v-for="(ques,index) in wt_randomqus" :key="index">
-          <div v-if="number === index">
-            <div id="question" style="font-size: 25px">{{ index+1 }}、{{ ques }}</div>
-            <br>
-            <div id="answer">
-              <div v-for="(ans,index1) in answer" :key="index1">
-                <a-radio-group v-model="value" @change="onChange(index1+1)" >
-                  <a-radio :style="radioStyle" :value="index1+1" style="border: none;font-size: 25px ">
-                    {{ ans }}
-                  </a-radio>
-                  <br>
-                </a-radio-group>
-              </div>
-              <div style="clear: both"></div>
+        <div style="font-size: 25px;white-space: nowrap">
+          <a-icon style="font-size: 50px" type="dashboard"></a-icon>
+          <span v-show="!show" class="count">{{ getCode() }}s</span>
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt_randomqus.length*5) / 60) % 60) }}:{{ shownum(wt_randomqus.length*5 % 60) }}s！</span>
+        </div>
+        <a-progress
+          :strokeWidth="17"
+          stroke-linecap="square"
+          :show-info="false"
+          :percent="(number+1)*100/wt_randomqus.length"/>
+        <span style="font-size: 18px">&nbsp;&nbsp; {{ number+1 }}/{{ wt_randomqus.length }}</span>
+      </div>
+      <br/>
+      <!--      问题-->
+      <div v-for="(ques,index) in wt_randomqus" :key="index">
+        <div v-if="number === index">
+          <div id="question" style="font-size: 25px">{{ index+1 }}、{{ ques }}</div>
+          <br>
+          <div id="answer">
+            <div v-for="(ans,index1) in answer" :key="index1">
+              <a-radio-group v-model="value" @change="onChange(index1+1)" >
+                <a-radio :style="radioStyle" :value="index1+1" style="border: none;font-size: 25px ">
+                  {{ ans }}
+                </a-radio>
+                <br>
+              </a-radio-group>
             </div>
-            <div style="width: auto;height: 80px">
-              <div>
-                <a-config-provider style="top: 35px" :auto-insert-space-in-button="false">
-                  <a-button :disabled="isAble" type="primary" @click="rollbackone(index)">
-                    <a-icon type="rollback" />返回上一题
-                  </a-button>
-                </a-config-provider>
-              </div>
-              <div>
-                <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
-                  <a-icon type="up-square-o" />
-                  退出测试
+            <div style="clear: both"></div>
+          </div>
+          <div style="width: auto;height: 80px">
+            <div>
+              <a-config-provider style="top: 35px" :auto-insert-space-in-button="false">
+                <a-button :disabled="isAble" type="primary" @click="rollbackone(index)">
+                  <a-icon type="rollback" />返回上一题
                 </a-button>
-              </div>
+              </a-config-provider>
+            </div>
+            <div>
+              <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
+                <a-icon type="up-square-o" />
+                退出测试
+              </a-button>
             </div>
           </div>
         </div>
-      </a-card>
-    </a-spin>
+      </div>
+    </a-card>
     <declaration ref="DA" @requirePermissionSuccess="requirePermissionSuccess">
       <template slot="content">
         <p>一个简单的小评测。</p>
@@ -87,7 +82,9 @@ import Declaration from '@/components/Declaration'
 import events from '@/components/MultiTab/events'
 import { saveAssessRecord } from '@/api/assess'
 import { getUser } from '@/api/user'
+
 export default {
+  name: 'TableRandom',
   props: {
     types: String
   },
@@ -112,7 +109,7 @@ export default {
         // }
         // 确定因子
         // eslint-disable-next-line no-unused-vars
-        const randomYinzi = this.random_access(8)
+        const randomYinzi = this.random_access(9)
         this.yinzitype = randomYinzi
         const temps = this.yinzi[randomYinzi] // 因子类型
         for (let i = 0; i < temps.length; i++) { // 遍历因子的各道题
@@ -149,7 +146,6 @@ export default {
   },
   data () {
     return {
-      isAble: false,
       userId: '',
       username: '',
       isInSubmit: false,
@@ -173,8 +169,8 @@ export default {
         [11, 24, 63, 67, 74, 81], // 敌对共6项
         [13, 25, 47, 50, 70, 75, 82], // 恐怖共7项
         [8, 18, 43, 68, 76, 83], // 偏执共6项
-        [7, 16, 35, 62, 77, 84, 85, 87, 88, 90] // 有人共10项
-        // [19, 44, 59, 60, 64, 66, 89] // 其他共7项
+        [7, 16, 35, 62, 77, 84, 85, 87, 88, 90], // 有人共10项
+        [19, 44, 59, 60, 64, 66, 89] // 其他共7项
       ],
       wt_randomqus: [],
       // 因子项目
@@ -739,7 +735,7 @@ export default {
       saveAssessRecord(data).then(res => {
         // alert(JSON.stringify(res))
         if (res.success) {
-          // alert('传输成功')
+          alert('传输成功')
         } else {
           alert(this.$error)
         }
@@ -790,21 +786,19 @@ export default {
       if (this.number === (this.nums - 1)) {
         // todo 将结果传入后端
         // 作假判断
-        // if (this.count >= this.wt_randomqus.length * 5) {
+        if (this.getCode() >= this.wt_randomqus.length * 10) {
           // if (this.result > 40) {
             // alert('焦虑！！！！！')
           this.computefunction()
           this.saveAssessRecord()
           this.modal2Visible = true
             this.reset()
-          // this.$emit('change', 'table-panel')
-          this.$router.push({ path: '/' })
+            this.$emit('change', 'table-index', val)
           // }
-        // } else {
-        //   // this.saveAssessRecord()
-        //   alert('存在作假测试！请重新测试！')
-        //   this.$emit('change', 'table-panel')
-        // }
+        } else {
+          this.saveAssessRecord()
+          alert('存在作假测试！请重新测试！')
+        }
       } else {
         this.number++
         this.value = ''
@@ -988,8 +982,7 @@ export default {
       }
     },
     backtop () {
-      // this.$emit('change', 1)
-      this.$router.push({ path: '/' })
+      this.$emit('change', 'table-index')
     },
     getCode () {
       // const TIME_COUNT = val
@@ -1030,7 +1023,7 @@ export default {
       if (this.yinzitype === 6) { return '恐怖' }
       if (this.yinzitype === 7) { return '偏执' }
       if (this.yinzitype === 8) { return '精神病性' }
-      // if (this.yinzitype === 9) { return '其它项目 (睡眠、饮食等)' }
+      if (this.yinzitype === 9) { return '其它项目 (睡眠、饮食等)' }
     }
   },
   created () {

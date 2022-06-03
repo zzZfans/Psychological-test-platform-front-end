@@ -1,72 +1,67 @@
 <template>
   <page-header-wrapper>
-    <a-spin
-      :tip="spinTip"
-      size="large"
-      :spinning="isCameraLoading || isInSubmit">
-      <a-card class="ant-pro-pages-list-projects-cardList">
-        <a-modal
-          v-model="modal2Visible"
-          title="测试结果展示"
-          centered
-          @ok="modal2Visible = false"
-        >
-          <p>{{ this.access_results }}</p>
-        </a-modal>
-        <!--      进度条-->
-        <div style=" width: 90%;white-space: nowrap ">
-          <!--        <div >-->
-          <!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
-          <!--        </div>-->
-          <div style="font-size: 25px;white-space: nowrap">
-            <a-icon style="font-size: 50px" type="dashboard"></a-icon>
-            <span v-show="!show" class="count">
-              {{ getCode() }}s</span>
-            <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt.length*5) / 60) % 60) }}:{{ shownum(wt.length*5 % 60) }}s！</span>
-          </div>
-          <a-progress
-            :strokeWidth="17"
-            stroke-linecap="square"
-            :show-info="false"
-            :percent="(number+1)*100/wt.length"/>
-          <span style="font-size: 18px">&nbsp;&nbsp; {{ number+1 }}/{{ wt.length }}</span>
+    <a-card class="ant-pro-pages-list-projects-cardList">
+      <a-modal
+        v-model="modal2Visible"
+        title="测试结果展示"
+        centered
+        @ok="modal2Visible = false"
+      >
+        <p>{{ this.access_results }}</p>
+      </a-modal>
+      <!--      进度条-->
+      <div style=" width: 90%;white-space: nowrap ">
+<!--        <div >-->
+<!--          <a-text style="text-align:center;" type="primary"><dashboard-outlined />{{ dateFormat(date) }}</a-text>-->
+<!--        </div>-->
+        <div style="font-size: 25px;white-space: nowrap">
+          <a-icon style="font-size: 50px" type="dashboard"></a-icon>
+          <span v-show="!show" class="count">
+            {{ getCode() }}s</span>
+          <span style="float: right;color: #ff0000" v-show="!show" class="count">建议时间:{{ shownum(parseInt((wt.length*5) / 60) % 60) }}:{{ shownum(wt.length*5 % 60) }}s！</span>
         </div>
-        <br/>
-        <!--      问题-->
-        <div v-for="(ques,index) in wt" :key="index">
-          <div v-if="number === index">
-            <div id="question" style="font-size: 25px">{{ ques }}</div>
-            <br>
-            <div id="answer">
-              <div v-for="(ans,index1) in answer" :key="index1">
-                <a-radio-group v-model="value" @change="onChange(index1+1)" >
-                  <a-radio :style="radioStyle" :value="index1" style="border: none;font-size: 25px ">
-                    {{ ans }}
-                  </a-radio>
-                  <br>
-                </a-radio-group>
-              </div>
-              <div style="clear: both"></div>
+        <a-progress
+          :strokeWidth="17"
+          stroke-linecap="square"
+          :show-info="false"
+          :percent="(number+1)*100/wt.length"/>
+        <span style="font-size: 18px">&nbsp;&nbsp; {{ number+1 }}/{{ wt.length }}</span>
+      </div>
+      <br/>
+      <!--      问题-->
+      <div v-for="(ques,index) in wt" :key="index">
+        <div v-if="number === index">
+          <div id="question" style="font-size: 25px">{{ ques }}</div>
+          <br>
+          <div id="answer">
+            <div v-for="(ans,index1) in answer" :key="index1">
+              <a-radio-group v-model="value" @change="onChange(index1+1)" >
+                <a-radio :style="radioStyle" :value="index1" style="border: none;font-size: 25px ">
+                  {{ ans }}
+                </a-radio>
+                <br>
+              </a-radio-group>
             </div>
-            <div style="width: auto;height: 80px">
-              <div>
-                <a-config-provider style="top: 35px" :auto-insert-space-in-button="false">
-                  <a-button :disabled="isAble" type="primary" @click="rollbackone(index)">
-                    <a-icon type="rollback" />返回上一题
-                  </a-button>
-                </a-config-provider>
-              </div>
-              <div>
-                <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
-                  <a-icon type="up-square-o" />
-                  退出测试
+            <div style="clear: both"></div>
+          </div>
+          <div style="width: auto;height: 80px">
+            <div>
+              <a-config-provider style="top: 35px" :auto-insert-space-in-button="false">
+                <a-button :disabled="isAble" type="primary" @click="rollbackone(index)">
+                  <a-icon type="rollback" />返回上一题
                 </a-button>
-              </div>
+              </a-config-provider>
+            </div>
+            <div>
+              <a-button style="height: 35px;left: 990px" type="primary" @click="backtop">
+                <a-icon type="up-square-o" />
+                退出测试
+              </a-button>
             </div>
           </div>
         </div>
-      </a-card>
-    </a-spin>
+      </div>
+    </a-card>
     <declaration ref="DA" @requirePermissionSuccess="requirePermissionSuccess">
       <template slot="content">
         <p>一个简单的小评测。</p>
@@ -86,7 +81,7 @@ import { getUser } from '@/api/user'
 import { saveAssessRecord } from '@/api/assess'
 
 export default {
-  name: 'Table',
+  name: 'TableRandom',
   props: {
     types: String
   },
@@ -112,7 +107,6 @@ export default {
   },
   data () {
     return {
-      isAble: false,
       isInSubmit: false,
       isCameraLoading: false,
       hasVideoAndAudioPermission: false,
@@ -294,7 +288,7 @@ export default {
       // alert(JSON.stringify(data))
       saveAssessRecord(data).then(res => {
         if (res.success) {
-          // alert('传输成功')
+          alert('传输成功')
         } else {
           alert(this.$error)
         }
@@ -395,7 +389,7 @@ export default {
         this.result = this.result + val
         if (this.number === (this.nums - 1)) {
           // 作假判断
-          // if (this.count >= this.wt.length * 5) {
+          if (this.getCode() >= this.wt.length * 10) {
             // alert(this.result)
             this.computefunction()
             this.saveAssessRecord()
@@ -403,10 +397,10 @@ export default {
             this.reset()
             // this.$emit('change', 'table-index', val)
             this.$emit('change', 'table-index')
-          // } else {
-          //   alert('存在作假测试！请重新测试')
-          //   this.$emit('change', 'table-index')
-          // }
+          } else {
+            alert('存在作假测试！请重新测试')
+            this.$emit('change', 'table-index')
+          }
           } else {
             this.number++
           }
@@ -495,8 +489,7 @@ export default {
       }
     },
     backtop () {
-      this.$router.push({ path: '/' })
-      // this.$emit('change', 'table-index')
+      this.$emit('change', 'table-index')
     },
     getCode () {
       // const TIME_COUNT = val
