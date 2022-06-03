@@ -5,7 +5,7 @@
         v-model="modal2Visible"
         title="测试结果展示"
         centered
-        @ok="modal2Visible = false"
+        @ok="Showmodal2Visible()"
       >
         <p>{{ this.access_results }}</p>
       </a-modal>
@@ -288,11 +288,15 @@ export default {
       // alert(JSON.stringify(data))
       saveAssessRecord(data).then(res => {
         if (res.success) {
-          alert('传输成功')
+          // alert('测试数据已上传')
         } else {
           alert(this.$error)
         }
       })
+    },
+    Showmodal2Visible () {
+      this.modal2Visible = false
+      this.$router.push({ path: '/' })
     },
     drawAudio () {
       // console.log('drawAudio')
@@ -382,30 +386,32 @@ export default {
     },
     async onChange (val) {
       this.lastvalue = val
-        await this.sleep(1)
-        // console.log('radio checked', this.value)
-        // alert('到onchange')
-        this.isAble = false
-        this.result = this.result + val
-        if (this.number === (this.nums - 1)) {
-          // 作假判断
-          if (this.getCode() >= this.wt.length * 10) {
-            // alert(this.result)
-            this.computefunction()
-            this.saveAssessRecord()
-            this.modal2Visible = true
-            this.reset()
-            // this.$emit('change', 'table-index', val)
-            this.$emit('change', 'table-index')
-          } else {
-            alert('存在作假测试！请重新测试')
-            this.$emit('change', 'table-index')
-          }
-          } else {
-            this.number++
-          }
-         this.value = ''
-      },
+      await this.sleep(1)
+      // console.log('radio checked', this.value)
+      // alert('到onchange')
+      this.isAble = false
+      this.result = this.result + val
+      if (this.number === (this.nums - 1)) {
+        // 作假判断
+        // if (this.count >= this.wt.length * 5) {
+        // alert(this.result)
+        this.computefunction()
+        this.saveAssessRecord()
+        this.modal2Visible = true
+        await this.sleep(10000)
+        this.reset()
+        // this.$emit('change', 'table-index', val)
+        // this.$emit('change', 'table-index')
+        this.$router.push({ path: '/' })
+        // } else {
+        //   alert('存在作假测试！请重新测试')
+        //   this.$emit('change', 'table-index')
+        // }
+      } else {
+        this.number++
+      }
+      this.value = ''
+    },
     // 计算方法分类
     computefunction () {
       if (this.types === 'sas') {
@@ -489,7 +495,8 @@ export default {
       }
     },
     backtop () {
-      this.$emit('change', 'table-index')
+      this.$router.push({ path: '/' })
+      // this.$emit('change', 'table-index')
     },
     getCode () {
       // const TIME_COUNT = val

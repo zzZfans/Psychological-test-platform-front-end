@@ -4,7 +4,7 @@
       v-model="modal2Visible"
       title="测试结果展示"
       centered
-      @ok="modal2Visible = false"
+      @ok="Showmodal2Visible()"
     >
       <p>{{ this.access_results }}</p>
     </a-modal>
@@ -735,11 +735,15 @@ export default {
       saveAssessRecord(data).then(res => {
         // alert(JSON.stringify(res))
         if (res.success) {
-          alert('传输成功')
+          // alert('测试数据已上传')
         } else {
           alert(this.$error)
         }
       })
+    },
+    Showmodal2Visible () {
+      this.modal2Visible = false
+      this.$router.push({ path: '/' })
     },
     requirePermissionSuccess () {
       // console.log('requirePermissionSuccess')
@@ -786,23 +790,24 @@ export default {
       if (this.number === (this.nums - 1)) {
         // todo 将结果传入后端
         // 作假判断
-        if (this.getCode() >= this.wt_randomqus.length * 10) {
+        // if (this.getCode() >= this.wt_randomqus.length * 10) {
           // if (this.result > 40) {
             // alert('焦虑！！！！！')
           this.computefunction()
           this.saveAssessRecord()
           this.modal2Visible = true
-            this.reset()
-            this.$emit('change', 'table-index', val)
+        await this.sleep(10000)
+          this.reset()
+          this.$router.push({ path: '/' })
           // }
-        } else {
-          this.saveAssessRecord()
-          alert('存在作假测试！请重新测试！')
-        }
+        // } else {
+        //   this.saveAssessRecord()
+        //   alert('存在作假测试！请重新测试！')
+        // }
       } else {
         this.number++
-        this.value = ''
       }
+      this.value = ''
     },
     // 计算方法分类
     computefunction () {
@@ -982,7 +987,8 @@ export default {
       }
     },
     backtop () {
-      this.$emit('change', 'table-index')
+      this.$router.push({ path: '/' })
+      // this.$emit('change', 'table-index')
     },
     getCode () {
       // const TIME_COUNT = val
