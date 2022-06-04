@@ -514,12 +514,14 @@ export default {
             if (res.result.nearExc === null || res.result.nearTerror === null) {
               this.nearExc = []
               this.nearTerror = []
+              this.terrorTime = []
+              this.nearExcTIme = []
             } else {
               this.nearExc = res.result.nearExc
               this.nearTerror = res.result.nearTerror
+              this.terrorTime = res.result.terrorTime
+              this.nearExcTIme = res.result.nearExcTIme
             }
-            // this.terrorTime = res.result.terrorTime
-            // this.nearExcTIme = res.result.nearExcTIme
             for (const key in analysisData) {
               for (let i = 0; i < this.radarData.length; i++) {
                 if (this.radarData[i].item === key) {
