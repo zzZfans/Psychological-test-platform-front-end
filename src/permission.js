@@ -33,6 +33,13 @@ router.beforeEach(async (to, from, next) => {
           // console.log('3')
           await store.dispatch('Logout')
           next({ path: loginRoutePath })
+
+          notification['warning']({
+            message: '提示',
+            description: '注册登录后即可使用目标功能。',
+            duration: 3
+          })
+
           NProgress.done()
           return
         }
