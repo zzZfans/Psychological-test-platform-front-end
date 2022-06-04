@@ -29,7 +29,6 @@
           :columns="userRecordColumns"
           :defaultExpandAllRows="true"
           :rowSelection="rowSelection"
-          rowKey="userId"
         >
           <span slot="sex" slot-scope="a, record">
             <a-tag :color="record.sex === 1 ? 'blue' : 'pink'">{{ record.sex === 1 ? '男' : '女' }}

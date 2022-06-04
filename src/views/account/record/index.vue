@@ -426,6 +426,19 @@ export default {
     }
   },
   methods: {
+    resetNearAssess () {
+      this.nearAssess = {
+        '躯体化': [0, 0, 0, 0],
+          '焦虑': [0, 0, 0, 0],
+          '强迫症': [0, 0, 0, 0],
+          '抑郁': [0, 0, 0, 0],
+          '敌对': [0, 0, 0, 0],
+          '偏执': [0, 0, 0, 0],
+          '恐怖': [0, 0, 0, 0],
+          '精神病性': [0, 0, 0, 0],
+          '人际关系敏感': [0, 0, 0, 0]
+      }
+    },
     resetRadarData () {
       this.radarData = [
         {
@@ -493,12 +506,20 @@ export default {
         getAnalysis(data).then(res => {
           if (res.success) {
             this.resetRadarData()
+            this.resetNearAssess()
             const analysisData = res.result.analysisDetails
-            this.nearAssess = res.result.allTypeDetails
-            this.nearExc = res.result.nearExc
-            this.nearTerror = res.result.nearTerror
-            this.terrorTime = res.result.terrorTime
-            this.nearExcTIme = res.result.nearExcTIme
+            if (res.result.allTypeDetails !== null) {
+              this.nearAssess = res.result.allTypeDetails
+            }
+            if (res.result.nearExc === null || res.result.nearTerror === null) {
+              this.nearExc = []
+              this.nearTerror = []
+            } else {
+              this.nearExc = res.result.nearExc
+              this.nearTerror = res.result.nearTerror
+            }
+            // this.terrorTime = res.result.terrorTime
+            // this.nearExcTIme = res.result.nearExcTIme
             for (const key in analysisData) {
               for (let i = 0; i < this.radarData.length; i++) {
                 if (this.radarData[i].item === key) {
