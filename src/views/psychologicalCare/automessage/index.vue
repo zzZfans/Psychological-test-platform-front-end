@@ -264,9 +264,9 @@ export default {
               message.success('添加成功!')
               this.getMsg(0)
               this.visible = false
+            } else {
+              message.error(JSON.stringify(res.message))
             }
-          }).catch(err => {
-            message.error(JSON.stringify(err))
           })
         }
       })
@@ -297,7 +297,6 @@ export default {
           message.success({ content: '添加成功', duration: 2 })
           this.handleCancel()
         } else {
-          alert(JSON.stringify(res))
           message.error(res.result.data)
         }
       })

@@ -29,6 +29,7 @@
           :columns="userRecordColumns"
           :defaultExpandAllRows="true"
           :rowSelection="rowSelection"
+          rowKey="userId"
         >
           <span slot="sex" slot-scope="a, record">
             <a-tag :color="record.sex === 1 ? 'blue' : 'pink'">{{ record.sex === 1 ? '男' : '女' }}
@@ -44,7 +45,7 @@
         </a-table>
       </div>
       <a-modal width="50%" v-model="modalVisible" title="心理建议" @ok="handleOk">
-        <a-textarea :autosize="{ minRows: 1, maxRows: 1}" v-model="title" placeholder="请输入标题" allow-clear />
+        <a-textarea v-model="title" placeholder="请输入标题" allow-clear />
         <div style="border: 1px solid #ccc;">
           <Toolbar
             style="border-bottom: 1px solid #ccc"
@@ -113,6 +114,7 @@
           :pagination="pagination1"
           :columns="userHistoryColumns"
           :defaultExpandAllRows="true"
+          rowKey="key"
         >
           <span slot="resultLevel" slot-scope="a, record">
             <a-tag :color="record.resultLevel > 0 ? (record.resultLevel > 1 ? (record.resultLevel > 2 ? 'red' : 'yellow') : 'blue') : 'green'">
