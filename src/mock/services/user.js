@@ -586,33 +586,6 @@ const info = options => {
 //       redirect: '/form/base-form',
 //       component: 'RouteView'
 //     },
-//     {
-//       name: 'basic-form',
-//       parentId: 10,
-//       id: 6,
-//       meta: {
-//         title: '基础表单'
-//       },
-//       component: 'BasicForm'
-//     },
-//     {
-//       name: 'step-form',
-//       parentId: 10,
-//       id: 5,
-//       meta: {
-//         title: '分步表单'
-//       },
-//       component: 'StepForm'
-//     },
-//     {
-//       name: 'advanced-form',
-//       parentId: 10,
-//       id: 4,
-//       meta: {
-//         title: '高级表单'
-//       },
-//       component: 'AdvanceForm'
-//     },
 //
 //     // list
 //     {
@@ -628,17 +601,6 @@ const info = options => {
 //       component: 'RouteView'
 //     },
 //     {
-//       name: 'table-list',
-//       parentId: 10010,
-//       id: 10011,
-//       path: '/list/table-list/:pageNo([1-9]\\d*)?',
-//       meta: {
-//         title: '查询表格',
-//         show: true
-//       },
-//       component: 'TableList'
-//     },
-//     {
 //       name: 'basic-list',
 //       parentId: 10010,
 //       id: 10012,
@@ -647,27 +609,6 @@ const info = options => {
 //         show: true
 //       },
 //       component: 'StandardList'
-//     },
-//     {
-//       name: 'card',
-//       parentId: 10010,
-//       id: 10013,
-//       meta: {
-//         title: '卡片列表',
-//         show: true
-//       },
-//       component: 'CardList'
-//     },
-//     {
-//       name: 'search',
-//       parentId: 10010,
-//       id: 10014,
-//       meta: {
-//         title: '搜索列表',
-//         show: true
-//       },
-//       redirect: '/list/search/article',
-//       component: 'SearchLayout'
 //     },
 //     {
 //       name: 'article',
@@ -723,16 +664,6 @@ const info = options => {
 //       },
 //       component: 'ProfileBasic'
 //     },
-//     {
-//       name: 'advanced',
-//       parentId: 10018,
-//       id: 10020,
-//       meta: {
-//         title: '高级详情页',
-//         show: true
-//       },
-//       component: 'ProfileAdvanced'
-//     },
 //
 //     // assess心理测评
 //     {
@@ -756,16 +687,6 @@ const info = options => {
 //         show: true
 //       },
 //       component: 'AssessTableItem'
-//     },
-//     {
-//       name: 'advanced',
-//       parentId: 11001,
-//       id: 11003,
-//       meta: {
-//         title: '多维度测评',
-//         show: true
-//       },
-//       component: 'ProfileAdvanced'
 //     },
 //     {
 //       name: 'table',
@@ -1017,33 +938,6 @@ const userNav = options => {
       redirect: '/form/base-form',
       component: 'RouteView'
     },
-    {
-      name: 'basic-form',
-      parentId: 10,
-      id: 6,
-      meta: {
-        title: '基础表单'
-      },
-      component: 'BasicForm'
-    },
-    {
-      name: 'step-form',
-      parentId: 10,
-      id: 5,
-      meta: {
-        title: '分步表单'
-      },
-      component: 'StepForm'
-    },
-    {
-      name: 'advanced-form',
-      parentId: 10,
-      id: 4,
-      meta: {
-        title: '高级表单'
-      },
-      component: 'AdvanceForm'
-    },
 
     // list
     {
@@ -1058,15 +952,6 @@ const userNav = options => {
       component: 'RouteView'
     },
     {
-      name: 'table-list',
-      parentId: 10010,
-      id: 10011,
-      meta: {
-        title: '查询表格'
-      },
-      component: 'TableList'
-    },
-    {
       name: 'basic-list',
       parentId: 10010,
       id: 10012,
@@ -1074,25 +959,6 @@ const userNav = options => {
         title: '标准列表'
       },
       component: 'StandardList'
-    },
-    {
-      name: 'card',
-      parentId: 10010,
-      id: 10013,
-      meta: {
-        title: '卡片列表'
-      },
-      component: 'CardList'
-    },
-    {
-      name: 'search',
-      parentId: 10010,
-      id: 10014,
-      meta: {
-        title: '搜索列表'
-      },
-      redirect: '/list/search/article',
-      component: 'SearchLayout'
     },
     {
       name: 'article',

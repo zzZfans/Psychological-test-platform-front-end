@@ -43,7 +43,6 @@
 
 <script>
 import { PageView, RouteView } from '@/layouts'
-import { AppPage, ArticlePage, ProjectPage } from './page'
 
 import { mapGetters } from 'vuex'
 import { getUser } from '@/api/user'
@@ -54,9 +53,6 @@ export default {
   components: {
     RouteView,
     PageView,
-    AppPage,
-    ArticlePage,
-    ProjectPage,
     [Timeline.Item.name]: Timeline.Item
   },
   data () {

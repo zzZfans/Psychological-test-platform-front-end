@@ -134,7 +134,6 @@ import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
 import { getUser } from '@/api/user'
 import { commentList } from '@/api/comment'
 import { getUserHistoryList } from '@/api/assess'
@@ -272,14 +271,6 @@ export default {
   created () {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
-
-    getRoleList().then(res => {
-      // console.log('workplace -> call getRoleList()', res)
-    })
-
-    getServiceList().then(res => {
-      // console.log('workplace -> call getServiceList()', res)
-    })
   },
   mounted () {
     this.getNotice()

@@ -7,7 +7,6 @@ import setting from './en-US/setting'
 import user from './en-US/user'
 
 import dashboard from './en-US/dashboard'
-import form from './en-US/form'
 import result from './en-US/result'
 import account from './en-US/account'
 
@@ -29,7 +28,6 @@ export default {
   ...setting,
   ...user,
   ...dashboard,
-  ...form,
   ...result,
   ...account
 }

@@ -123,6 +123,7 @@
           <span style="font-size: 16px" class="ant-rate-text">{{ rateDesc[finalScore - 1] }}</span>
         </span>
         <div id="chart" style="width: auto;height: 300px;margin-top: 20px"></div>
+        <!--{{audioAnalysisResultList}}-->
       </template>
     </assess-result-modal>
   </page-header-wrapper>
