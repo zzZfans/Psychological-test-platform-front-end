@@ -20,8 +20,8 @@
 
 - 拉取项目代码
 ```bash
-git clone https://github.com/zzZfans/Psychological-test-platform.git
-cd Psychological-test-platform
+git clone https://github.com/zzZfans/Psychological-test-platform-front-end.git
+cd Psychological-test-platform-front-end
 ```
 
 - 安装依赖
